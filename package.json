@@ -1,0 +1,41 @@
+{
+	"name": "romaints",
+	"version": "1.0.0",
+	"description": "RomainTS",
+	"funding": {
+		"url": "https://github.com/sponsors/RomainTHD/",
+		"type": "individual"
+	},
+	"homepage": "https://github.com/RomainTHD/RomainTS",
+	"author": "Romain THD",
+	"license": "GPL-3.0-or-later",
+	"bugs": {
+		"url": "https://github.com/RomainTHD/RomainTS/issues"
+	},
+	"scripts": {
+		"start": "ts-node ./src/main.ts",
+		"test": "ts-node node_modules/jasmine/bin/jasmine",
+		"lint": "npx eslint .",
+		"lint:fix": "npx eslint . --fix --max-warnings=0",
+		"prepare": "husky install",
+		"format": "prettier --write ."
+	},
+	"private": true,
+	"devDependencies": {
+		"@commitlint/cli": "^17.6.6",
+		"@commitlint/config-conventional": "^17.6.6",
+		"@types/jasmine": "~4.3.4",
+		"@types/node": "^20.3.2",
+		"@typescript-eslint/eslint-plugin": "^5.60.1",
+		"@typescript-eslint/parser": "^5.60.1",
+		"eslint": "^8.43.0",
+		"eslint-config-prettier": "^8.8.0",
+		"eslint-plugin-prettier": "^4.2.1",
+		"husky": "^8.0.3",
+		"jasmine": "^5.0.2",
+		"jasmine-core": "~5.0.1",
+		"prettier": "^2.8.8",
+		"ts-node": "^10.9.1",
+		"typescript": "~5.0.4"
+	}
+}
