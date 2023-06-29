@@ -2,6 +2,7 @@
 	"name": "romaints",
 	"version": "1.0.0",
 	"description": "RomainTS",
+	"type": "module",
 	"funding": {
 		"url": "https://github.com/sponsors/RomainTHD/",
 		"type": "individual"
@@ -13,7 +14,7 @@
 		"url": "https://github.com/RomainTHD/RomainTS/issues"
 	},
 	"scripts": {
-		"start": "ts-node ./src/main.ts",
+		"start": "ts-node --esm ./src/main.ts -i ./test/main.ts",
 		"test": "ts-node node_modules/jasmine/bin/jasmine",
 		"lint": "npx eslint .",
 		"lint:fix": "npx eslint . --fix --max-warnings=0",
@@ -21,10 +22,15 @@
 		"format": "prettier --write ."
 	},
 	"private": true,
+	"dependencies": {
+		"minimist": "^1.2.8",
+		"typescript": "~5.0.4"
+	},
 	"devDependencies": {
 		"@commitlint/cli": "^17.6.6",
 		"@commitlint/config-conventional": "^17.6.6",
 		"@types/jasmine": "~4.3.4",
+		"@types/minimist": "^1.2.2",
 		"@types/node": "^20.3.2",
 		"@typescript-eslint/eslint-plugin": "^5.60.1",
 		"@typescript-eslint/parser": "^5.60.1",
@@ -35,7 +41,6 @@
 		"jasmine": "^5.0.2",
 		"jasmine-core": "~5.0.1",
 		"prettier": "^2.8.8",
-		"ts-node": "^10.9.1",
-		"typescript": "~5.0.4"
+		"ts-node": "^10.9.1"
 	}
 }
