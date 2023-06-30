@@ -1,4 +1,5 @@
-import minimist from "minimist";
+import { Cli } from "./cli";
 
-const argv = minimist(process.argv.slice(2));
-console.log(argv);
+Cli.validate();
+
+console.log(Cli.getInputContent());
