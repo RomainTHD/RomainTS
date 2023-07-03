@@ -1,5 +1,9 @@
-import { Cli } from "./cli";
+import * as AST from "./AST";
+import * as CLI from "./CLI";
 
-Cli.validate();
+CLI.validate();
 
-console.log(Cli.getInputContent());
+const content = CLI.getInputContent();
+const node = AST.parse(content);
+
+console.log(AST.prettyPrint(node));
