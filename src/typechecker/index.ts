@@ -23,8 +23,7 @@ export async function accept(node: ts.Node) {
 	try {
 		visitorModule = await import(`./visitor/${kind}Visitor`);
 	} catch (e: unknown) {
-		console.error(`Couldn't find visitor for ${kind}`);
-		return;
+		throw new Error(`Couldn't find visitor for ${kind}`);
 	}
 
 	await visitorModule.visit(node);
