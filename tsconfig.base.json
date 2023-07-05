@@ -10,6 +10,8 @@
 		"emitDeclarationOnly": true,
 		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true,
+		"importHelpers": true,
+		"incremental": true,
 		"moduleResolution": "Node",
 		"noFallthroughCasesInSwitch": true,
 		"noImplicitAny": true,
