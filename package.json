@@ -26,7 +26,8 @@
 		"start": "tsx ./src/main.ts -i ./test/main.ts",
 		"start:watch": "tsx watch src/index.ts",
 		"start:debug": "node --inspect --loader tsx 'src/index.ts'",
-		"test": "vitest"
+		"test": "vitest",
+		"testsuite": "python3 test/testsuite.py"
 	},
 	"private": true,
 	"dependencies": {
