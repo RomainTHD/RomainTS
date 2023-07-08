@@ -1,12 +1,12 @@
 import type ts from "typescript";
-import { accept } from "../index";
+import { TypeChecker } from "..";
 
 export async function visit(node: ts.VariableDeclaration): Promise<void> {
-	await accept(node.name);
+	await TypeChecker.accept(node.name);
 	if (node.type) {
-		await accept(node.type);
+		await TypeChecker.accept(node.type);
 	}
 	if (node.initializer) {
-		await accept(node.initializer);
+		await TypeChecker.accept(node.initializer);
 	}
 }

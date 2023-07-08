@@ -1,7 +1,6 @@
-import * as console from "console";
 import type ts from "typescript";
-import { accept } from "../index";
+import { TypeChecker } from "..";
 
 export async function visit(node: ts.VariableStatement): Promise<void> {
-	await accept(node.declarationList);
+	await TypeChecker.accept(node.declarationList);
 }

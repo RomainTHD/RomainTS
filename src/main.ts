@@ -1,10 +1,8 @@
-import * as AST from "./AST";
-import * as CLI from "./CLI";
-import * as TypeChecker from "./typechecker";
-
-CLI.validate();
+import { AST } from "./AST";
+import { CLI } from "./CLI";
+import { TypeChecker } from "./typechecker";
 
 const content = CLI.getInputContent();
 const node = AST.parse(content);
 
-await TypeChecker.accept(node);
+await TypeChecker.typecheck(node);

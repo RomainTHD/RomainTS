@@ -1,9 +1,9 @@
 import type ts from "typescript";
-import { accept } from "..";
+import { TypeChecker } from "..";
 
 export async function visit(node: ts.CallExpression): Promise<void> {
-	await accept(node.expression);
+	await TypeChecker.accept(node.expression);
 	for (const arg of node.arguments) {
-		await accept(arg);
+		await TypeChecker.accept(arg);
 	}
 }

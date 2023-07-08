@@ -22,6 +22,7 @@
 		},
 		"removeComments": false,
 		"resolveJsonModule": true,
+		"skipLibCheck": true,
 		"skipDefaultLibCheck": true,
 		"sourceMap": true,
 		"strictFunctionTypes": true,
