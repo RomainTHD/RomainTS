@@ -7,5 +7,5 @@ module.exports = {
 	},
 	coverageReporters: ["html", "lcov"],
 	setupFiles: ["./jest.setup.ts"],
-	testPathIgnorePatterns: ["/node_modules/", "/.build/"],
+	testPathIgnorePatterns: ["/node_modules/", "/.build/", "/ts-testsuite/"],
 };

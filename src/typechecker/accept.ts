@@ -17,21 +17,22 @@ export namespace TypeChecker {
 
 	const logger = LoggerFactory.get("TypeChecker");
 
-	export async function accept(node: ts.Node) {
+	export async function accept<T>(node: ts.Node): Promise<T> {
 		logger.indent();
 
 		const kind = SyntaxKindNoDuplicates[node.kind];
 		logger.debug(kind);
 
-		let visitorModule: { visit: (node: ts.Node) => Promise<unknown> };
+		let visitorModule: { visit: (node: ts.Node) => Promise<T> };
 		try {
 			visitorModule = await import(`./visitor/${kind}Visitor`);
 		} catch (e: unknown) {
 			throw new Error(`Couldn't find visitor for ${kind}`);
 		}
 
-		await visitorModule.visit(node);
+		const res = await visitorModule.visit(node);
 		logger.unindent();
+		return res;
 	}
 
 	export async function typecheck(root: ts.Node) {
