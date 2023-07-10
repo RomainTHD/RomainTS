@@ -21,7 +21,6 @@
 		"postpublish": "pinst --enable",
 		"prepare": "husky install",
 		"prepublishOnly": "pinst --disable",
-		"start-old": "ts-node --esm -r tsconfig-paths/register ./src/main.ts -i ./test/main.ts",
 		"start": "tsx ./src/main.ts -i ./test/main.ts",
 		"start:watch": "tsx watch src/index.ts",
 		"start:debug": "node --inspect --loader tsx 'src/index.ts'",
@@ -41,7 +40,6 @@
 		"@commitlint/config-conventional": "^17.6.6",
 		"@tsconfig/node16": "^16.1.0",
 		"@types/jasmine": "~4.3.5",
-		"@types/minimist": "^1.2.2",
 		"@types/node": "^20.4.1",
 		"@typescript-eslint/eslint-plugin": "^5.61.0",
 		"@typescript-eslint/parser": "^5.61.0",
@@ -57,7 +55,6 @@
 		"jasmine-core": "~5.0.1",
 		"prettier": "^3.0.0",
 		"prettier-standard": "^16.4.1",
-		"tsconfig-paths": "^4.2.0",
 		"tsx": "^3.12.7",
 		"vitest": "^0.33.0"
 	}
