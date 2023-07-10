@@ -3,9 +3,9 @@ import * as console from "console";
 
 export module LoggerFactory {
 	export class Logger {
-		private readonly name: string;
+		private static totalIndent = 0;
 
-		private static totalIndent: number = 0;
+		private readonly name: string;
 
 		public constructor(name: string) {
 			this.name = name;

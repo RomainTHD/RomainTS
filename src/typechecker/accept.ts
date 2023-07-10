@@ -1,5 +1,6 @@
 import ts from "typescript";
 import { LoggerFactory } from "../utils/Logger";
+import { Env } from "./env";
 import { TypecheckingFailure } from "./TypecheckingFailure";
 
 export namespace TypeChecker {
@@ -17,28 +18,29 @@ export namespace TypeChecker {
 
 	const logger = LoggerFactory.get("TypeChecker");
 
-	export async function accept<T>(node: ts.Node): Promise<T> {
+	export async function accept<T>(node: ts.Node, env: Env): Promise<T> {
 		logger.indent();
 
 		const kind = SyntaxKindNoDuplicates[node.kind];
 		logger.debug(kind);
 
-		let visitorModule: { visit: (node: ts.Node) => Promise<T> };
+		let visitorModule: { visit: (node: ts.Node, env: Env) => Promise<T> };
 		try {
 			visitorModule = await import(`./visitor/${kind}Visitor`);
 		} catch (e: unknown) {
 			throw new Error(`Couldn't find visitor for ${kind}`);
 		}
 
-		const res = await visitorModule.visit(node);
+		const res = await visitorModule.visit(node, env);
 		logger.unindent();
 		return res;
 	}
 
-	export async function typecheck(root: ts.Node) {
+	export async function typecheck(root: ts.Node): Promise<boolean> {
+		const env = new Env();
 		try {
-			await accept(root);
-			logger.success("Typechecking successful!");
+			await accept(root, env);
+			return true;
 		} catch (e: unknown) {
 			if (e instanceof TypecheckingFailure) {
 				logger.error(e.message);
@@ -47,6 +49,7 @@ export namespace TypeChecker {
 			} else {
 				throw new Error(`Unknown error: ${e}`);
 			}
+			return false;
 		}
 	}
 }

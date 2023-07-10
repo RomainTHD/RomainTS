@@ -1,6 +1,6 @@
 import type ts from "typescript";
-import { TypeChecker } from "..";
+import { Env, TypeChecker } from "..";
 
-export async function visit(node: ts.ExpressionStatement): Promise<void> {
-	await TypeChecker.accept(node.expression);
+export async function visit(node: ts.ExpressionStatement, env: Env): Promise<void> {
+	await TypeChecker.accept(node.expression, env);
 }

@@ -1,3 +1,16 @@
 import type ts from "typescript";
+import { BaseType } from "../../types";
+import { Env, ValueSide } from "../env";
+import { TypecheckingFailure } from "../TypecheckingFailure";
 
-export async function visit(node: ts.Identifier): Promise<void> {}
+export async function visit(node: ts.Identifier, env: Env): Promise<string | BaseType> {
+	if (env.getSide() === ValueSide.LValue) {
+		return node.text;
+	} else {
+		const value = env.get(node.text);
+		if (!value) {
+			throw new TypecheckingFailure(`Identifier '${node.text}' not found in scope`, node);
+		}
+		return value.type;
+	}
+}

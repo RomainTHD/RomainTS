@@ -1,0 +1,76 @@
+import { BaseType } from "../types";
+import { assert } from "../utils";
+import { LoggerFactory } from "../utils/Logger";
+
+type Value = {
+	type: BaseType;
+	mutable: boolean;
+};
+
+type Scope = Map<string, Value>;
+
+export enum ValueSide {
+	LValue,
+	RValue,
+}
+
+export class Env {
+	private static logger = LoggerFactory.get("Env");
+
+	private readonly scopes: Scope[] = [];
+
+	private side: ValueSide = ValueSide.RValue;
+
+	public constructor() {}
+
+	public enterScope(): void {
+		this.scopes.push(new Map());
+	}
+
+	public exitScope(): void {
+		this.scopes.pop();
+	}
+
+	public get(name: string): Value | null {
+		for (let i = this.scopes.length - 1; i >= 0; i--) {
+			const scope = this.scopes[i];
+			const res = scope.get(name);
+			if (res) {
+				return res;
+			}
+		}
+		return null;
+	}
+
+	public add(name: string, type: BaseType, mutable: boolean): void {
+		assert(this.scopes.length > 0, "No scope to add to");
+		const scope = this.scopes[this.scopes.length - 1];
+		scope.set(name, {
+			type,
+			mutable,
+		});
+	}
+
+	public setSide(side: ValueSide): void {
+		this.side = side;
+	}
+
+	public getSide(): ValueSide {
+		return this.side;
+	}
+
+	public print(): void {
+		Env.logger.debug("Env start:");
+		for (const scope of this.scopes) {
+			Env.logger.debug("New scope:");
+			Env.logger.indent();
+			for (const [name, value] of scope) {
+				Env.logger.debug(`${name}: ${value.type}`);
+			}
+		}
+		for (const scope of this.scopes) {
+			Env.logger.unindent();
+		}
+		Env.logger.debug("Env end");
+	}
+}

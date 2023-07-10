@@ -1,8 +1,8 @@
 import type ts from "typescript";
-import { TypeChecker } from "..";
+import { Env, TypeChecker } from "..";
 
-export async function visit(node: ts.VariableDeclarationList): Promise<void> {
+export async function visit(node: ts.VariableDeclarationList, env: Env): Promise<void> {
 	for (const varDecl of node.declarations) {
-		await TypeChecker.accept(varDecl);
+		await TypeChecker.accept(varDecl, env);
 	}
 }
