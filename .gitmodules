@@ -1,0 +1,3 @@
+[submodule "ts-testsuite"]
+	path = ts-testsuite
+	url = https://github.com/microsoft/TypeScript.git
