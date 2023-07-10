@@ -1,9 +1,9 @@
-import { BaseType } from "../types";
+import { Type } from "../types";
 import { assert } from "../utils";
 import { LoggerFactory } from "../utils/Logger";
 
 type Value = {
-	type: BaseType;
+	type: Type;
 	mutable: boolean;
 };
 
@@ -42,7 +42,7 @@ export class Env {
 		return null;
 	}
 
-	public add(name: string, type: BaseType, mutable: boolean): void {
+	public add(name: string, type: Type, mutable: boolean): void {
 		assert(this.scopes.length > 0, "No scope to add to");
 		const scope = this.scopes[this.scopes.length - 1];
 		scope.set(name, {

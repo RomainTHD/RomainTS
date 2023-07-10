@@ -1,5 +1,5 @@
 export * from "./AnyType";
-export * from "./BaseType";
+export * from "./Type";
 export * from "./BooleanType";
 export * from "./NumberType";
 export * from "./StringType";

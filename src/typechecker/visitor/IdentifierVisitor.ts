@@ -1,9 +1,9 @@
 import type ts from "typescript";
-import { BaseType } from "../../types";
+import { Type } from "../../types";
 import { Env, ValueSide } from "../env";
 import { TypecheckingFailure } from "../TypecheckingFailure";
 
-export async function visit(node: ts.Identifier, env: Env): Promise<string | BaseType> {
+export async function visit(node: ts.Identifier, env: Env): Promise<string | Type> {
 	if (env.getSide() === ValueSide.LValue) {
 		return node.text;
 	} else {

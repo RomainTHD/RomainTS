@@ -1,15 +1,15 @@
-import { BaseType } from "./BaseType";
+import { Type } from "./Type";
 
-export class AnyType extends BaseType {
-	public override equals<T extends BaseType>(other: T): boolean {
+export class AnyType implements Type {
+	public equals<T extends Type>(other: T): boolean {
 		return other instanceof AnyType;
 	}
 
-	public override contains<T extends BaseType>(other: T): boolean {
+	public contains<T extends Type>(other: T): boolean {
 		return true;
 	}
 
-	public override toString(): string {
+	public toString(): string {
 		return "any";
 	}
 }
