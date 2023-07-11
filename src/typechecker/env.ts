@@ -45,6 +45,8 @@ export class Env {
 	public add(name: string, type: Type, mutable: boolean): void {
 		assert(this.scopes.length > 0, "No scope to add to");
 		const scope = this.scopes[this.scopes.length - 1];
+		assert(Boolean(name), `Name is unset, value is '${name}'`);
+		assert(Boolean(type), `Type is unset, value is '${type}'`);
 		scope.set(name, {
 			type,
 			mutable,

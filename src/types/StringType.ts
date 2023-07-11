@@ -1,6 +1,10 @@
 import { Type } from "./Type";
 
 export class StringType implements Type {
+	private static readonly instance: StringType = new StringType();
+
+	private constructor() {}
+
 	public equals<T extends Type>(other: T): boolean {
 		return other instanceof StringType;
 	}
@@ -11,5 +15,9 @@ export class StringType implements Type {
 
 	public toString(): string {
 		return "string";
+	}
+
+	public static get(): StringType {
+		return StringType.instance;
 	}
 }

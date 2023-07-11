@@ -3,5 +3,5 @@ import { AnyType } from "../../types";
 import { Env } from "../env";
 
 export async function visit(node: ts.Block, env: Env): Promise<AnyType> {
-	return new AnyType();
+	return AnyType.get();
 }

@@ -24,7 +24,7 @@ export async function visit(node: ts.VariableDeclaration, env: Env): Promise<voi
 		}
 	} else {
 		if (!varType) {
-			varType = new AnyType();
+			varType = AnyType.get();
 		}
 	}
 

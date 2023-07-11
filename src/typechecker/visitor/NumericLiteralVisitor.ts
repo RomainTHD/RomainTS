@@ -3,5 +3,5 @@ import { NumberType } from "../../types";
 import { Env } from "../env";
 
 export async function visit(node: ts.NumericLiteral, env: Env): Promise<NumberType> {
-	return new NumberType();
+	return NumberType.get();
 }

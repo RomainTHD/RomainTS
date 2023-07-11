@@ -2,20 +2,25 @@ import { assert } from "../utils";
 import { Type } from "./Type";
 
 export class UnionType implements Type {
-	private readonly types: Type[];
+	private readonly types: Set<Type>;
 
-	public constructor(types: Type[] = []) {
-		this.types = [];
+	private constructor(types: Type[] = []) {
+		this.types = new Set();
 		for (const t of types) {
-			this.addType(t);
+			this.add(t);
 		}
 	}
 
-	public addType(t: Type): void {
-		assert(!this.types.some((ot) => ot.equals(t)), "Duplicate type in union");
+	public add(t: Type): void {
 		assert(t !== null && t !== undefined, "Union type must be a BaseType, is actually " + t);
 		assert(!t.equals(this), "Union cannot contain itself");
-		this.types.push(t);
+		if (t instanceof UnionType) {
+			for (const ot of t.types) {
+				this.add(ot);
+			}
+		} else {
+			this.types.add(t);
+		}
 	}
 
 	public equals<T extends Type>(other: T): boolean {
@@ -23,11 +28,13 @@ export class UnionType implements Type {
 			return false;
 		}
 
-		if (this.types.length !== other.types.length) {
+		if (this.types.size !== other.types.size) {
 			return false;
 		}
 
-		return this.types.every((t) => other.types.some((ot) => t.equals(ot)));
+		return Array.from(this.types.values()).every((t) =>
+			Array.from(other.types.values()).some((ot) => t.equals(ot)),
+		);
 	}
 
 	public contains<T extends Type>(other: T): boolean {
@@ -38,10 +45,18 @@ export class UnionType implements Type {
 			union = new UnionType([other]);
 		}
 
-		return union.types.every((ot) => this.types.some((t) => t.contains(ot)));
+		return Array.from(union.types.values()).every((ot) =>
+			Array.from(this.types.values()).some((t) => t.contains(ot)),
+		);
 	}
 
 	public toString(): string {
-		return this.types.map((t) => t.toString()).join(" | ");
+		return Array.from(this.types.values())
+			.map((t) => t.toString())
+			.join(" | ");
+	}
+
+	public static get(types: Type[] = []): UnionType {
+		return new UnionType(types);
 	}
 }
