@@ -4,7 +4,7 @@ import { LoggerFactory } from "../utils/Logger";
 
 type Value = {
 	type: Type;
-	mutable: boolean;
+	mutabilityModifier: MutabilityModifier;
 };
 
 type Scope = Map<string, Value>;
@@ -12,6 +12,12 @@ type Scope = Map<string, Value>;
 export enum ValueSide {
 	LValue,
 	RValue,
+}
+
+export enum MutabilityModifier {
+	Var = "V",
+	Let = "L",
+	Const = "C",
 }
 
 export class Env {
@@ -40,7 +46,7 @@ export class Env {
 		return null;
 	}
 
-	public add(name: string, type: Type, mutable: boolean): void {
+	public add(name: string, type: Type, mutabilityModifier: MutabilityModifier): void {
 		assert(this.scopes.length > 0, "No scope to add to");
 		const scope = this.scopes[this.scopes.length - 1];
 		assert(Boolean(name), `Name is unset, value is '${name}'`);
@@ -48,7 +54,7 @@ export class Env {
 		assert(typeof type === "object", `Type '${type}' is not a Type`);
 		scope.set(name, {
 			type,
-			mutable,
+			mutabilityModifier,
 		});
 	}
 
@@ -58,7 +64,7 @@ export class Env {
 			Env.logger.debug("New scope:");
 			Env.logger.indent();
 			for (const [name, value] of scope) {
-				Env.logger.debug(`${name}: ${value.type}`);
+				Env.logger.debug(`${name}(${value.mutabilityModifier}): ${value.type}`);
 			}
 		}
 		for (const scope of this.scopes) {

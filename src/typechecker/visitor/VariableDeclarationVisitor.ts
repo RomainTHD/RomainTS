@@ -1,8 +1,10 @@
 import type ts from "typescript";
-import { Env, TypeChecker, TypecheckingFailure, ValueSide } from "..";
+import { Env, MutabilityModifier, TypeChecker, TypecheckingFailure, ValueSide } from "..";
 import { AnyType, Type } from "../../types";
+import { assert } from "../../utils";
 
-export async function visit(node: ts.VariableDeclaration, env: Env): Promise<void> {
+export async function visit(node: ts.VariableDeclaration, env: Env, data: MutabilityModifier): Promise<void> {
+	assert(Boolean(data), "Invalid variable declaration");
 	const name: string = await TypeChecker.accept(node.name, env, ValueSide.LValue);
 
 	let varType: Type | null = null;
@@ -26,6 +28,5 @@ export async function visit(node: ts.VariableDeclaration, env: Env): Promise<voi
 		}
 	}
 
-	// TODO: Check mutability
-	env.add(name, varType, false);
+	env.add(name, varType, data);
 }
