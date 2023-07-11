@@ -6,6 +6,7 @@ export class TypecheckingFailure extends Error {
 		let character = "?";
 		let filename = "<unknown>";
 		if (node.getSourceFile()) {
+			// Will be false if `setParentNodes` is set to false in the AST options
 			const pos = node.getSourceFile().getLineAndCharacterOfPosition(node.getStart());
 			line = String(pos.line + 1);
 			character = String(pos.character + 1);

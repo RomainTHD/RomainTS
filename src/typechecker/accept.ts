@@ -15,6 +15,8 @@ export namespace TypeChecker {
 		return result;
 	}
 
+	// Some enum values like `FirstAssignment` and `LastAssignment` are not unique and will be overwritten.
+	// This is not a problem, because we don't need them anyway, they are just there to make the enum more readable
 	const SyntaxKindNoDuplicates = removeSyntaxKindDuplicates();
 
 	const logger = LoggerFactory.get("TypeChecker");

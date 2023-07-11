@@ -7,12 +7,16 @@ import { LoggerFactory } from "../../utils/Logger";
 
 function visitPlusToken(node: ts.Node, left: Type, right: Type): Type {
 	if (left instanceof StringType || right instanceof StringType) {
+		// `0 + "a"` => "0a"
 		return StringType.get();
 	} else if (left instanceof BigIntType && right instanceof BigIntType) {
+		// `0n + 1n` => 1n
 		return BigIntType.get();
 	} else if (xor(left instanceof BigIntType, right instanceof BigIntType)) {
+		// `0 + 1n` => error
 		throw new TypecheckingFailure("Cannot mix BigInt and other types", node);
 	} else {
+		// Anything else is a number
 		return NumberType.get();
 	}
 }
@@ -40,6 +44,8 @@ export async function visit(node: ts.BinaryExpression, env: Env): Promise<Type> 
 			break;
 	}
 
+	// A BinaryExpression left expression can be either a LValue or a RValue
+	// example: `x = 0` where `x` is a LValue, or `x + 1` where `x` is a RValue
 	env.setValueSide(value);
 	const left: Type | string = await TypeChecker.accept(node.left, env);
 
@@ -70,7 +76,7 @@ export async function visit(node: ts.BinaryExpression, env: Env): Promise<Type> 
 		case ts.SyntaxKind.EqualsToken:
 			const variable = env.get(left as string);
 			if (!variable) {
-				// `x = 0` where `x` is not declared
+				// `x = 0` where `x` is not declared. Valid in non-strict mode
 				if (env.isStrict()) {
 					throw new TypecheckingFailure(`Variable ${left} not found`, node);
 				} else {

@@ -4,6 +4,8 @@ import { IllegalStateException } from "../../utils/IllegalStateException";
 
 export async function visit(node: ts.VariableDeclarationList, env: Env): Promise<void> {
 	const varType: MutabilityModifier = (() => {
+		// `x = 0;` where `x` is not declared is a BinaryExpression, not a VariableDeclarationList
+
 		switch (node.flags) {
 			case ts.NodeFlags.Const:
 				return MutabilityModifier.Const;

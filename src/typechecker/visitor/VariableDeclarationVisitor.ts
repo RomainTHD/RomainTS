@@ -12,6 +12,7 @@ export async function visit(node: ts.VariableDeclaration, env: Env, data: Mutabi
 
 	let varType: Type | null = null;
 	if (node.type) {
+		// `let x: number ...`
 		varType = await TypeChecker.accept(node.type, env);
 	}
 
@@ -19,14 +20,17 @@ export async function visit(node: ts.VariableDeclaration, env: Env, data: Mutabi
 		let exprType: Type = await TypeChecker.accept(node.initializer, env);
 
 		if (varType) {
+			// `let x: number = ...`
 			if (!varType.contains(exprType)) {
 				throw new TypecheckingFailure(`Type '${exprType}' is not assignable to type '${varType}'`, node);
 			}
 		} else {
+			// `let x = ...`
 			varType = exprType;
 		}
 	} else {
 		if (!varType) {
+			// `let x;` is equivalent to `let x: any;`
 			varType = AnyType.get();
 		}
 	}
