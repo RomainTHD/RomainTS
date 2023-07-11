@@ -3,9 +3,7 @@ import { Env, TypeChecker, TypecheckingFailure, ValueSide } from "..";
 import { AnyType, Type } from "../../types";
 
 export async function visit(node: ts.VariableDeclaration, env: Env): Promise<void> {
-	env.setSide(ValueSide.LValue);
-	const name: string = await TypeChecker.accept(node.name, env);
-	env.setSide(ValueSide.RValue);
+	const name: string = await TypeChecker.accept(node.name, env, ValueSide.LValue);
 
 	let varType: Type | null = null;
 	if (node.type) {

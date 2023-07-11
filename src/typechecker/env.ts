@@ -19,8 +19,6 @@ export class Env {
 
 	private readonly scopes: Scope[] = [];
 
-	private side: ValueSide = ValueSide.RValue;
-
 	public constructor() {}
 
 	public enterScope(): void {
@@ -47,18 +45,11 @@ export class Env {
 		const scope = this.scopes[this.scopes.length - 1];
 		assert(Boolean(name), `Name is unset, value is '${name}'`);
 		assert(Boolean(type), `Type is unset, value is '${type}'`);
+		assert(typeof type === "object", `Type '${type}' is not a Type`);
 		scope.set(name, {
 			type,
 			mutable,
 		});
-	}
-
-	public setSide(side: ValueSide): void {
-		this.side = side;
-	}
-
-	public getSide(): ValueSide {
-		return this.side;
 	}
 
 	public print(): void {
