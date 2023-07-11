@@ -31,6 +31,8 @@ function visitMultiplicativeOperatorOrHigherToken(node: ts.Node, left: Type, rig
 	}
 }
 
+const nonWritableGlobal = ["undefined", "NaN", "Infinity"];
+
 const logger = LoggerFactory.get("BinaryExpressionVisitor");
 
 export async function visit(node: ts.BinaryExpression, env: Env): Promise<Type> {
@@ -74,13 +76,21 @@ export async function visit(node: ts.BinaryExpression, env: Env): Promise<Type> 
 			return BooleanType.get();
 
 		case ts.SyntaxKind.EqualsToken:
+			if (nonWritableGlobal.includes(left as string)) {
+				if (env.isStrictMode()) {
+					throw new TypecheckingFailure(`Cannot assign to '${left}'`, node);
+				} else {
+					logger.warn(`Suspicious assignment to '${left}'`);
+				}
+			}
+
 			const variable = env.get(left as string);
 			if (!variable) {
 				// `x = 0` where `x` is not declared. Valid in non-strict mode
-				if (env.isStrict()) {
+				if (env.isStrictMode()) {
 					throw new TypecheckingFailure(`Variable ${left} not found`, node);
 				} else {
-					logger.warn(`Variable ${left} not found, declaring it`);
+					logger.warn(`Variable '${left}' not found, declaring it`);
 					env.add(left as string, right, MutabilityModifier.Undeclared);
 				}
 			}

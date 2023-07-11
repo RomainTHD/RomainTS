@@ -25,12 +25,12 @@ export class Env {
 	private static logger = LoggerFactory.get("Env");
 
 	private readonly scopes: Scope[] = [new Map()];
-	private readonly strict: boolean;
 
+	private strictMode: boolean;
 	private valueSide: ValueSide = ValueSide.RValue;
 
-	public constructor(strict = false) {
-		this.strict = strict;
+	public constructor(strictMode = false) {
+		this.strictMode = strictMode;
 	}
 
 	public enterScope(): void {
@@ -66,6 +66,7 @@ export class Env {
 
 	public print(): void {
 		Env.logger.debug("Env start:");
+		Env.logger.debug(`Strict mode: ${this.strictMode}`)
 		for (const scope of this.scopes) {
 			Env.logger.debug("New scope:");
 			Env.logger.indent();
@@ -87,11 +88,15 @@ export class Env {
 		this.valueSide = valueSide;
 	}
 
-	public isStrict(): boolean {
-		return this.strict;
+	public isStrictMode(): boolean {
+		return this.strictMode;
 	}
 
-	public static create(strict = false): Env {
-		return new Env(strict);
+	public enableStrictMode(): void {
+		this.strictMode = true;
+	}
+
+	public static create(strictMode = false): Env {
+		return new Env(strictMode);
 	}
 }
