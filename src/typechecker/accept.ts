@@ -15,6 +15,15 @@ export namespace TypeChecker {
 		return result;
 	}
 
+	function getVisitorPath(kind: string): string {
+		for (const end of ["Token", "Keyword", "Expression", "Statement", "Declaration", "Literal", "Node", "Type"]) {
+			if (kind.endsWith(end)) {
+				return `./visitor/${end.toLowerCase()}/${kind}Visitor`;
+			}
+		}
+		return `./visitor/other/${kind}Visitor`;
+	}
+
 	// Some enum values like `FirstAssignment` and `LastAssignment` are not unique and will be overwritten.
 	// This is not a problem, because we don't need them anyway, they are just there to make the enum more readable
 	const SyntaxKindNoDuplicates = removeSyntaxKindDuplicates();
@@ -29,9 +38,9 @@ export namespace TypeChecker {
 
 		let visitorModule: { visit: (node: ts.Node, env: Env, data: unknown) => Promise<T> };
 		try {
-			visitorModule = await import(`./visitor/${kind}Visitor`);
+			visitorModule = await import(getVisitorPath(kind));
 		} catch (e: unknown) {
-			throw new IllegalStateException(`Couldn't find visitor for ${kind}`);
+			throw new IllegalStateException(`Couldn't find visitor for ${kind}: ${e}`);
 		}
 
 		const res = await visitorModule.visit(node, env, data);
