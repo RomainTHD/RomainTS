@@ -1,4 +1,5 @@
 import ts from "typescript";
+import { IllegalStateException } from "../utils/IllegalStateException";
 import { LoggerFactory } from "../utils/Logger";
 import { Env } from "./env";
 import { TypecheckingFailure } from "./TypecheckingFailure";
@@ -28,7 +29,7 @@ export namespace TypeChecker {
 		try {
 			visitorModule = await import(`./visitor/${kind}Visitor`);
 		} catch (e: unknown) {
-			throw new Error(`Couldn't find visitor for ${kind}`);
+			throw new IllegalStateException(`Couldn't find visitor for ${kind}`);
 		}
 
 		const res = await visitorModule.visit(node, env, data);
@@ -44,10 +45,10 @@ export namespace TypeChecker {
 		} catch (e: unknown) {
 			if (e instanceof TypecheckingFailure) {
 				logger.error(e.message);
-			} else if (e instanceof Error) {
+			} else if (e instanceof IllegalStateException) {
 				logger.error(e.stack);
 			} else {
-				throw new Error(`Unknown error: ${e}`);
+				throw new IllegalStateException(`Unknown error: ${e}`);
 			}
 			return false;
 		}
