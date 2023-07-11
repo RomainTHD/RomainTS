@@ -2,7 +2,15 @@ import type ts from "typescript";
 
 export class TypecheckingFailure extends Error {
 	public constructor(message: string, node: ts.Node) {
-		let { line, character } = node.getSourceFile().getLineAndCharacterOfPosition(node.getStart());
-		super(`${message}, at ${node.getSourceFile().fileName} (L:${line + 1}, C:${character + 1})`);
+		let line = "?";
+		let character = "?";
+		let filename = "<unknown>";
+		if (node.getSourceFile()) {
+			const pos = node.getSourceFile().getLineAndCharacterOfPosition(node.getStart());
+			line = String(pos.line + 1);
+			character = String(pos.character + 1);
+			filename = node.getSourceFile().fileName;
+		}
+		super(`${message}, at ${filename} (L:${line}, C:${character})`);
 	}
 }

@@ -71,9 +71,12 @@ export async function visit(node: ts.BinaryExpression, env: Env): Promise<Type> 
 			const variable = env.get(left as string);
 			if (!variable) {
 				// `x = 0` where `x` is not declared
-				// TODO: Illegal in strict mode
-				logger.warn(`Variable ${left} not found, creating it`);
-				env.add(left as string, right, MutabilityModifier.None);
+				if (env.isStrict()) {
+					throw new TypecheckingFailure(`Variable ${left} not found`, node);
+				} else {
+					logger.warn(`Variable ${left} not found, declaring it`);
+					env.add(left as string, right, MutabilityModifier.Undeclared);
+				}
 			}
 			return right;
 

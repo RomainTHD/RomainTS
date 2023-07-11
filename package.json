@@ -25,6 +25,7 @@
 		"start:watch": "tsx watch src/index.ts",
 		"start:debug": "node --inspect --loader tsx 'src/index.ts'",
 		"test": "vitest run -r ./src",
+		"test:dev": "vitest dev -r ./src",
 		"testsuite": "python3 test/testsuite.py"
 	},
 	"private": true,

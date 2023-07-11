@@ -8,6 +8,6 @@ export module CLI {
 	const options = program.opts();
 
 	export function getInputContent(): string {
-		return fs.readFileSync(options.input, "utf8");
+		return fs.readFileSync(options["input"], "utf8");
 	}
 }

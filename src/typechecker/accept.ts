@@ -46,6 +46,7 @@ export namespace TypeChecker {
 			if (e instanceof TypecheckingFailure) {
 				logger.error(e.message);
 			} else if (e instanceof IllegalStateException) {
+				logger.error("Illegal state!");
 				logger.error(e.stack);
 			} else {
 				throw new IllegalStateException(`Unknown error: ${e}`);

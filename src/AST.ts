@@ -2,7 +2,7 @@ import ts from "typescript";
 
 export module AST {
 	export function parse(content: string): ts.Node {
-		return ts.createSourceFile("file.ts", content, ts.ScriptTarget.Latest, false);
+		return ts.createSourceFile("file.ts", content, ts.ScriptTarget.Latest, true);
 	}
 
 	export function prettyPrint(node: ts.Node): string {

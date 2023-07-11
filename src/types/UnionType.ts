@@ -56,6 +56,14 @@ export class UnionType implements Type {
 			.join(" | ");
 	}
 
+	public size(): number {
+		return this.types.size;
+	}
+
+	public getTypes(): Type[] {
+		return Array.from(this.types.values());
+	}
+
 	public static get(types: Type[] = []): UnionType {
 		return new UnionType(types);
 	}

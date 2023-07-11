@@ -1,11 +1,15 @@
 import type ts from "typescript";
 import { Env, TypeChecker } from "..";
-import { UnionType } from "../../types";
+import { Type, UnionType } from "../../types";
 
-export async function visit(node: ts.UnionTypeNode, env: Env): Promise<UnionType> {
+export async function visit(node: ts.UnionTypeNode, env: Env): Promise<Type> {
 	const union = UnionType.get();
 	for (const subType of node.types) {
 		union.add(await TypeChecker.accept(subType, env));
 	}
-	return union;
+	if (union.size() === 1) {
+		return union.getTypes()[0];
+	} else {
+		return union;
+	}
 }
