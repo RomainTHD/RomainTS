@@ -5,7 +5,10 @@ import { assert } from "../../utils";
 
 export async function visit(node: ts.VariableDeclaration, env: Env, data: MutabilityModifier): Promise<void> {
 	assert(Boolean(data), "Invalid variable declaration");
-	const name: string = await TypeChecker.accept(node.name, env, ValueSide.LValue);
+
+	env.setValueSide(ValueSide.LValue);
+	const name: string = await TypeChecker.accept(node.name, env);
+	env.setValueSide(ValueSide.RValue);
 
 	let varType: Type | null = null;
 	if (node.type) {

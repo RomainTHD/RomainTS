@@ -15,6 +15,7 @@ export enum ValueSide {
 }
 
 export enum MutabilityModifier {
+	None = "N",
 	Var = "V",
 	Let = "L",
 	Const = "C",
@@ -24,6 +25,8 @@ export class Env {
 	private static logger = LoggerFactory.get("Env");
 
 	private readonly scopes: Scope[] = [];
+
+	private valueSide: ValueSide = ValueSide.RValue;
 
 	public constructor() {}
 
@@ -71,5 +74,13 @@ export class Env {
 			Env.logger.unindent();
 		}
 		Env.logger.debug("Env end");
+	}
+
+	public getValueSide(): ValueSide {
+		return this.valueSide;
+	}
+
+	public setValueSide(valueSide: ValueSide): void {
+		this.valueSide = valueSide;
 	}
 }

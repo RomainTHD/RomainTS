@@ -3,12 +3,8 @@ import { Type } from "../../types";
 import { Env, ValueSide } from "../env";
 import { TypecheckingFailure } from "../TypecheckingFailure";
 
-export async function visit(
-	node: ts.Identifier,
-	env: Env,
-	valueSide: ValueSide = ValueSide.RValue,
-): Promise<string | Type> {
-	if (valueSide === ValueSide.LValue) {
+export async function visit(node: ts.Identifier, env: Env): Promise<string | Type> {
+	if (env.getValueSide() === ValueSide.LValue) {
 		return node.text;
 	} else {
 		const value = env.get(node.text);
