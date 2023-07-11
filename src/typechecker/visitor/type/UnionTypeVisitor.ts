@@ -1,5 +1,5 @@
 import type ts from "typescript";
-import { Env, TypeChecker } from "../../index";
+import { Env, TypeChecker } from "../..";
 import { Type, UnionType } from "../../../types";
 
 export async function visit(node: ts.UnionTypeNode, env: Env): Promise<Type> {

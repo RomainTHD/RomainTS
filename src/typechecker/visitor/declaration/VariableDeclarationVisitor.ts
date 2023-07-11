@@ -1,5 +1,5 @@
 import type ts from "typescript";
-import { Env, MutabilityModifier, TypeChecker, TypecheckingFailure, ValueSide } from "../../index";
+import { Env, MutabilityModifier, TypeChecker, TypecheckingFailure, ValueSide } from "../..";
 import { AnyType, Type } from "../../../types";
 import { assert } from "../../../utils";
 

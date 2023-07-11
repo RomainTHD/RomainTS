@@ -1,5 +1,5 @@
 import type ts from "typescript";
-import { Env, TypeChecker } from "../../index";
+import { Env, TypeChecker } from "../..";
 import { NotImplementedException } from "../../../utils/NotImplementedException";
 
 export async function visit(node: ts.CallExpression, env: Env): Promise<void> {
