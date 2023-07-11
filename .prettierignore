@@ -2,4 +2,4 @@
 /coverage/
 /dist/
 /ts-testsuite/
-test/main.ts
+/example.ts

@@ -21,7 +21,7 @@
 		"postpublish": "pinst --enable",
 		"prepare": "husky install",
 		"prepublishOnly": "pinst --disable",
-		"start": "tsx ./src/main.ts -i ./test/main.ts",
+		"start": "tsx ./src/main.ts -i ./example.ts",
 		"start:watch": "tsx watch src/index.ts",
 		"start:debug": "node --inspect --loader tsx 'src/index.ts'",
 		"test": "vitest run -r ./src",

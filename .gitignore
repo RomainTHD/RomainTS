@@ -131,4 +131,4 @@ dist
 
 .idea
 
-test/*.ts
+/example.ts
