@@ -1,6 +1,6 @@
 import ts from "typescript";
 import { Env, TypeChecker, TypecheckingFailure } from "..";
-import { BigIntType, NumberType, StringType, Type } from "../../types";
+import { BigIntType, BooleanType, NumberType, StringType, Type } from "../../types";
 import { xor } from "../../utils";
 import { IllegalStateException } from "../../utils/IllegalStateException";
 
@@ -39,6 +39,16 @@ export async function visit(node: ts.BinaryExpression, env: Env): Promise<Type> 
 		case ts.SyntaxKind.PercentToken:
 		case ts.SyntaxKind.AsteriskAsteriskToken:
 			return visitMultiplicativeOperatorOrHigherToken(node, left, right);
+
+		case ts.SyntaxKind.GreaterThanToken:
+		case ts.SyntaxKind.GreaterThanEqualsToken:
+		case ts.SyntaxKind.LessThanToken:
+		case ts.SyntaxKind.LessThanEqualsToken:
+		case ts.SyntaxKind.EqualsEqualsToken:
+		case ts.SyntaxKind.EqualsEqualsEqualsToken:
+		case ts.SyntaxKind.ExclamationEqualsToken:
+		case ts.SyntaxKind.ExclamationEqualsEqualsToken:
+			return BooleanType.get();
 
 		default:
 			throw new IllegalStateException(`Unexpected operator ${ts.SyntaxKind[node.operatorToken.kind]}`);
