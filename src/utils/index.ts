@@ -1,6 +1,6 @@
 import { IllegalStateException } from "./IllegalStateException";
 
-export function assert(condition: boolean | string | null | undefined, message?: string): void {
+export function assert(condition: unknown, message?: string): void {
 	if (!condition) {
 		throw new IllegalStateException(message ?? "Assertion failed");
 	}

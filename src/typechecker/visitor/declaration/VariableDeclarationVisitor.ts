@@ -4,7 +4,7 @@ import { AnyType, Type } from "../../../types";
 import { assert } from "../../../utils";
 
 export async function visit(node: ts.VariableDeclaration, env: Env, data: MutabilityModifier): Promise<void> {
-	assert(Boolean(data), "Invalid variable declaration");
+	assert(data, "Invalid variable declaration");
 
 	env.setValueSide(ValueSide.LValue);
 	const name: string = await TypeChecker.accept(node.name, env);

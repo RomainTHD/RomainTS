@@ -55,8 +55,8 @@ export class Env {
 	public add(name: string, type: Type, mutabilityModifier: MutabilityModifier): void {
 		assert(this.scopes.length > 0, "No scope to add to");
 		const scope = this.scopes[this.scopes.length - 1];
-		assert(Boolean(name), `Name is unset, value is '${name}'`);
-		assert(Boolean(type), `Type is unset, value is '${type}'`);
+		assert(name, `Name is unset, value is '${name}'`);
+		assert(type, `Type is unset, value is '${type}'`);
 		assert(typeof type === "object", `Type '${type}' is not a Type`);
 		scope.set(name, {
 			type,
@@ -66,7 +66,7 @@ export class Env {
 
 	public print(): void {
 		Env.logger.debug("Env start:");
-		Env.logger.debug(`Strict mode: ${this.strictMode}`)
+		Env.logger.debug(`Strict mode: ${this.strictMode}`);
 		for (const scope of this.scopes) {
 			Env.logger.debug("New scope:");
 			Env.logger.indent();
