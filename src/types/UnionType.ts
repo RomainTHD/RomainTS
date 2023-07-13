@@ -2,10 +2,9 @@ import { assert } from "../utils";
 import { Type } from "./Type";
 
 export class UnionType implements Type {
-	private readonly types: Set<Type>;
+	private readonly _types: Type[] = [];
 
 	private constructor(types: Type[] = []) {
-		this.types = new Set();
 		for (const t of types) {
 			this.add(t);
 		}
@@ -18,8 +17,8 @@ export class UnionType implements Type {
 			for (const ot of t.types) {
 				this.add(ot);
 			}
-		} else {
-			this.types.add(t);
+		} else if (!this.types.some((ownT) => ownT.equals(t))) {
+			this.types.push(t);
 		}
 	}
 
@@ -28,13 +27,11 @@ export class UnionType implements Type {
 			return false;
 		}
 
-		if (this.types.size !== other.types.size) {
+		if (this.types.length !== other.types.length) {
 			return false;
 		}
 
-		return Array.from(this.types.values()).every((t) =>
-			Array.from(other.types.values()).some((ot) => t.equals(ot)),
-		);
+		return this.types.every((t) => other.types.some((ot) => t.equals(ot)));
 	}
 
 	public contains<T extends Type>(other: T): boolean {
@@ -45,23 +42,19 @@ export class UnionType implements Type {
 			union = new UnionType([other]);
 		}
 
-		return Array.from(union.types.values()).every((ot) =>
-			Array.from(this.types.values()).some((t) => t.contains(ot)),
-		);
+		return union.types.every((ot) => this.types.some((t) => t.contains(ot)));
 	}
 
 	public toString(): string {
-		return Array.from(this.types.values())
-			.map((t) => t.toString())
-			.join(" | ");
+		return this.types.map((t) => t.toString()).join(" | ");
 	}
 
-	public size(): number {
-		return this.types.size;
+	public get size(): number {
+		return this.types.length;
 	}
 
-	public getTypes(): Type[] {
-		return Array.from(this.types.values());
+	public get types(): Type[] {
+		return this._types;
 	}
 
 	public static get(types: Type[] = []): UnionType {

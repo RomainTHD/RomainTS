@@ -7,9 +7,9 @@ export async function visit(node: ts.UnionTypeNode, env: Env): Promise<Type> {
 	for (const subType of node.types) {
 		union.add(await TypeChecker.accept(subType, env));
 	}
-	if (union.size() === 1) {
+	if (union.size === 1) {
 		// `number | number` is the same as `number`
-		return union.getTypes()[0];
+		return union.types[0];
 	} else {
 		return union;
 	}

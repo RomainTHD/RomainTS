@@ -23,11 +23,11 @@ export async function visit(node: ts.FunctionDeclaration, env: Env): Promise<Typ
 	env.add(name, fType, MutabilityModifier.Var);
 
 	env.enterScope();
-	env.pushReturnType(fType.getRetType());
+	env.pushReturnType(fType.retType);
 	// FIXME: Wrong signature
 	env.add("this", fType, MutabilityModifier.Const);
 
-	for (const param of fType.getParams()) {
+	for (const param of fType.params) {
 		env.add(param.name, param.pType, MutabilityModifier.Let);
 	}
 

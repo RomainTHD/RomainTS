@@ -8,9 +8,9 @@ export async function visit(node: ts.ArrowFunction, env: Env): Promise<Type> {
 	const fType = await visitFunction(env, node.parameters, node.type);
 
 	env.enterScope();
-	env.pushReturnType(fType.getRetType());
+	env.pushReturnType(fType.retType);
 
-	for (const param of fType.getParams()) {
+	for (const param of fType.params) {
 		env.add(param.name, param.pType, MutabilityModifier.Let);
 	}
 

@@ -18,11 +18,11 @@ describe("FunctionDeclarationVisitor", () => {
 		expect(t).not.toBeNull();
 		expect(t instanceof FunctionType).toBe(true);
 		const f = t as FunctionType;
-		expect(f.getRetType()).toBe(NumberType.get());
-		expect(f.getParams().length).toBe(2);
-		expect(f.getParams()[0].name).toBe("a");
-		expect(f.getParams()[0].pType).toBe(NumberType.get());
-		expect(f.getParams()[1].name).toBe("b");
-		expect(f.getParams()[1].pType).toBe(StringType.get());
+		expect(f.retType).toBe(NumberType.get());
+		expect(f.params.length).toBe(2);
+		expect(f.params[0].name).toBe("a");
+		expect(f.params[0].pType).toBe(NumberType.get());
+		expect(f.params[1].name).toBe("b");
+		expect(f.params[1].pType).toBe(StringType.get());
 	});
 });

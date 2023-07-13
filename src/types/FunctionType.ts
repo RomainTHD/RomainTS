@@ -3,12 +3,12 @@ import { Type } from "./Type";
 type Param = { name: string; pType: Type };
 
 export class FunctionType implements Type {
-	private readonly params: Param[];
-	private readonly retType: Type;
+	private readonly _params: Param[];
+	private readonly _retType: Type;
 
 	private constructor(params: Param[], retType: Type) {
-		this.params = params;
-		this.retType = retType;
+		this._params = params;
+		this._retType = retType;
 	}
 
 	public equals<T extends Type>(other: T): boolean {
@@ -51,12 +51,12 @@ export class FunctionType implements Type {
 		return "(" + this.params.map((param) => param.pType.toString()).join(", ") + ") => " + this.retType.toString();
 	}
 
-	public getParams(): Param[] {
-		return this.params;
+	public get params(): Param[] {
+		return this._params;
 	}
 
-	public getRetType(): Type {
-		return this.retType;
+	public get retType(): Type {
+		return this._retType;
 	}
 
 	public static get(params: Param[], retType: Type): FunctionType {
