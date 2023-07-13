@@ -20,6 +20,6 @@ export async function visit(node: ts.ReturnStatement, env: Env): Promise<void> {
 	}
 
 	if (!retType.contains(t)) {
-		throw new TypecheckingFailure(`Cannot return type ${t} from function with return type ${retType}`, node);
+		throw new TypecheckingFailure(`Cannot return type '${t}' from function with return type '${retType}'`, node);
 	}
 }

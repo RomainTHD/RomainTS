@@ -36,6 +36,7 @@ export async function visit(node: ts.FunctionDeclaration, env: Env): Promise<voi
 	if (node.type) {
 		retType = await accept(node.type, env);
 	} else {
+		// TODO: Infer return type
 		retType = AnyType.get();
 	}
 
