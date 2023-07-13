@@ -10,7 +10,7 @@ export class UnionType implements Type {
 		}
 	}
 
-	public add(t: Type): void {
+	private add(t: Type): void {
 		assert(t !== null && t !== undefined, "Union type must be a BaseType, is actually " + t);
 		assert(!t.equals(this), "Union cannot contain itself");
 		if (t instanceof UnionType) {

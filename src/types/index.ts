@@ -3,6 +3,8 @@ export * from "./BigIntType";
 export * from "./BooleanType";
 export * from "./FunctionType";
 export * from "./NumberType";
+export * from "./ObjectType";
+export * from "./RawObjectType";
 export * from "./StringType";
 export * from "./Type";
 export * from "./UnionType";

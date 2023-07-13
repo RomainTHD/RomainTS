@@ -17,7 +17,17 @@ export namespace TypeChecker {
 	}
 
 	function getVisitorPath(kind: string): string {
-		for (const end of ["Token", "Keyword", "Expression", "Statement", "Declaration", "Literal", "Node", "Type"]) {
+		for (const end of [
+			"Token",
+			"Keyword",
+			"Expression",
+			"Statement",
+			"Declaration",
+			"Literal",
+			"Node",
+			"Type",
+			"Signature",
+		]) {
 			if (kind.endsWith(end)) {
 				return `./visitor/${end.toLowerCase()}/${kind}Visitor`;
 			}
