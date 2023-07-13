@@ -1,6 +1,7 @@
 import ts from "typescript";
 import { IllegalStateException } from "../utils/IllegalStateException";
 import { LoggerFactory } from "../utils/Logger";
+import { NotImplementedException } from "../utils/NotImplementedException";
 import { Env } from "./env";
 import { TypecheckingFailure } from "./TypecheckingFailure";
 
@@ -59,6 +60,11 @@ export namespace TypeChecker {
 			} else if (e instanceof IllegalStateException) {
 				logger.error("Illegal state!");
 				logger.error(e.stack);
+			} else if (e instanceof NotImplementedException) {
+				logger.error("Not implemented, at:");
+				logger.error(e.stack);
+			} else if (e instanceof Error) {
+				throw new IllegalStateException(`Unknown error: ${e} ${e.stack}`);
 			} else {
 				throw new IllegalStateException(`Unknown error: ${e}`);
 			}
