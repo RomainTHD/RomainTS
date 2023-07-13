@@ -3,10 +3,9 @@ import { AST } from "../../../AST";
 import { NumberType } from "../../../types";
 import { TypeChecker } from "../../accept";
 import { Env, MutabilityModifier } from "../../env";
+import { TypecheckingFailure } from "../../TypecheckingFailure";
 
 describe("EqualsTokenVisitor", () => {
-	// TODO: Add more in-depth tests
-
 	it("should work for assignment", async () => {
 		const content = `
 		let x = 0;
@@ -31,5 +30,21 @@ describe("EqualsTokenVisitor", () => {
 			type: NumberType.get(),
 			mutabilityModifier: MutabilityModifier.Let,
 		});
+	});
+
+	it("should not work for assignment to const", async () => {
+		const content = `
+		const x = 0;
+		x = 1;
+		`;
+		await expect(TypeChecker.accept(AST.parse(content), new Env())).rejects.toThrowError(TypecheckingFailure);
+	});
+
+	it("should not work for mismatching types", async () => {
+		const content = `
+		let x = 0;
+		x = "s";
+		`;
+		await expect(TypeChecker.accept(AST.parse(content), new Env())).rejects.toThrowError(TypecheckingFailure);
 	});
 });

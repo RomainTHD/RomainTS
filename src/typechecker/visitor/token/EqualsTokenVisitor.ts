@@ -22,7 +22,13 @@ export async function visit(
 	}
 
 	const variable = env.get(left);
-	if (!variable) {
+	if (variable) {
+		if (variable.mutabilityModifier === MutabilityModifier.Const) {
+			throw new TypecheckingFailure(`Cannot assign to constant '${left}'`, node);
+		} else if (!variable.type.contains(right)) {
+			throw new TypecheckingFailure(`Type '${right}' is not assignable to type '${variable.type}'`, node);
+		}
+	} else {
 		// `x = 0` where `x` is not declared. Valid in non-strict mode
 		if (env.isStrictMode()) {
 			throw new TypecheckingFailure(`Variable ${left} not found`, node);

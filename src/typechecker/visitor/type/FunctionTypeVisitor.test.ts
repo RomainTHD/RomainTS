@@ -59,7 +59,7 @@ describe("FunctionTypeVisitor", () => {
 		const content = `
 		let f: (a: number) => number;
 		function g(n: number): string {
-			return 'c';
+			return 's';
 		}
 		f = g;
 		`;
