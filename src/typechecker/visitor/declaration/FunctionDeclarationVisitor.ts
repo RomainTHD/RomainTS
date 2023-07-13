@@ -1,10 +1,11 @@
 import type ts from "typescript";
 import { Env, MutabilityModifier, TypeChecker, ValueSide } from "../..";
-import { AnyType, FunctionType, Type } from "../../../types";
+import { Type } from "../../../types";
 import { NotImplementedException } from "../../../utils/NotImplementedException";
+import { visitFunction } from "../shared/function";
 import accept = TypeChecker.accept;
 
-export async function visit(node: ts.FunctionDeclaration, env: Env): Promise<void> {
+export async function visit(node: ts.FunctionDeclaration, env: Env): Promise<Type> {
 	if (!node.name) {
 		throw new NotImplementedException("Anonymous functions aren't supported yet");
 	}
@@ -13,45 +14,20 @@ export async function visit(node: ts.FunctionDeclaration, env: Env): Promise<voi
 	const name: string = await accept(node.name, env);
 	env.setValueSide(ValueSide.RValue);
 
-	const params: { name: string; pType: Type }[] = [];
-	for (const param of node.parameters) {
-		env.setValueSide(ValueSide.LValue);
-		const name: string = await accept(param.name, env);
-		env.setValueSide(ValueSide.RValue);
-
-		let pType: Type;
-		if (param.type) {
-			pType = await accept(param.type, env);
-		} else {
-			pType = AnyType.get();
-		}
-
-		params.push({
-			name,
-			pType,
-		});
-	}
-
-	let retType: Type;
-	if (node.type) {
-		retType = await accept(node.type, env);
-	} else {
-		// TODO: Infer return type
-		retType = AnyType.get();
-	}
+	const fType = await visitFunction(env, node.parameters, node.type);
 
 	if (!node.body) {
 		throw new NotImplementedException("Functions without body aren't supported yet");
 	}
 
-	env.add(name, FunctionType.get(params, retType), MutabilityModifier.Var);
+	env.add(name, fType, MutabilityModifier.Var);
 
 	env.enterScope();
-	env.pushReturnType(retType);
+	env.pushReturnType(fType.getRetType());
 	// FIXME: Wrong signature
-	env.add("this", FunctionType.get(params, retType), MutabilityModifier.Const);
+	env.add("this", fType, MutabilityModifier.Const);
 
-	for (const param of params) {
+	for (const param of fType.getParams()) {
 		env.add(param.name, param.pType, MutabilityModifier.Let);
 	}
 
@@ -61,4 +37,6 @@ export async function visit(node: ts.FunctionDeclaration, env: Env): Promise<voi
 
 	env.popReturnType();
 	env.exitScope();
+
+	return fType;
 }
