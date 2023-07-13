@@ -46,7 +46,8 @@ export async function visit(node: ts.FunctionDeclaration, env: Env): Promise<voi
 	env.add(name, FunctionType.get(params, retType), MutabilityModifier.Var);
 
 	env.enterScope();
-
+	env.pushReturnType(retType);
+	// FIXME: Wrong signature
 	env.add("this", FunctionType.get(params, retType), MutabilityModifier.Const);
 
 	for (const param of params) {
@@ -54,5 +55,9 @@ export async function visit(node: ts.FunctionDeclaration, env: Env): Promise<voi
 	}
 
 	await accept(node.body, env);
+
+	// TODO: Ensure that return is called
+
+	env.popReturnType();
 	env.exitScope();
 }

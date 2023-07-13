@@ -25,6 +25,7 @@ export class Env {
 	private static logger = LoggerFactory.get("Env");
 
 	private readonly scopes: Scope[] = [new Map()];
+	private readonly returnTypes: Type[] = [];
 
 	private strictMode: boolean;
 	private valueSide: ValueSide = ValueSide.RValue;
@@ -94,6 +95,21 @@ export class Env {
 
 	public enableStrictMode(): void {
 		this.strictMode = true;
+	}
+
+	public pushReturnType(t: Type): void {
+		this.returnTypes.push(t);
+	}
+
+	public popReturnType(): void {
+		this.returnTypes.pop();
+	}
+
+	public getReturnType(): Type | null {
+		if (this.returnTypes.length === 0) {
+			return null;
+		}
+		return this.returnTypes[this.returnTypes.length - 1];
 	}
 
 	public static create(strictMode = false): Env {
