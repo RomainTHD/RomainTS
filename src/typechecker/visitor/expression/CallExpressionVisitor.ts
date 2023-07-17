@@ -1,8 +1,9 @@
 import type ts from "typescript";
-import { Env, TypeChecker, TypecheckingFailure } from "../..";
+import { ExpressionVisitor } from ".";
+import { TypeChecker, TypecheckingFailure } from "../..";
 import { FunctionType, Type } from "../../../types";
 
-export async function visit(node: ts.CallExpression, env: Env): Promise<Type> {
+export const visit: ExpressionVisitor<ts.CallExpression> = async (node, env) => {
 	const left: Type = await TypeChecker.accept(node.expression, env);
 	if (!(left instanceof FunctionType)) {
 		throw new TypecheckingFailure(`Cannot call non-function type '${left}'`, node);
@@ -28,4 +29,4 @@ export async function visit(node: ts.CallExpression, env: Env): Promise<Type> {
 	}
 
 	return f.retType;
-}
+};

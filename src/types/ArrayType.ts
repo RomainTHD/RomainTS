@@ -1,4 +1,5 @@
 import { Type } from "./Type";
+import { UnionType } from ".";
 
 export class ArrayType implements Type {
 	private readonly _baseType: Type;
@@ -28,7 +29,11 @@ export class ArrayType implements Type {
 	}
 
 	public toString(): string {
-		return `${this.baseType}[]`;
+		if (this.baseType instanceof UnionType) {
+			return `(${this.baseType})[]`;
+		} else {
+			return `${this.baseType}[]`;
+		}
 	}
 
 	public static get(baseType: Type): ArrayType {

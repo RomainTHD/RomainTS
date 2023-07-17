@@ -1,4 +1,5 @@
 import { Type } from "./Type";
+import { ObjectType } from ".";
 
 export class RawObjectType implements Type {
 	private static readonly instance: RawObjectType = new RawObjectType();
@@ -10,7 +11,7 @@ export class RawObjectType implements Type {
 	}
 
 	public contains<T extends Type>(other: T): boolean {
-		return other instanceof RawObjectType;
+		return other instanceof RawObjectType || other instanceof ObjectType;
 	}
 
 	public toString(): string {

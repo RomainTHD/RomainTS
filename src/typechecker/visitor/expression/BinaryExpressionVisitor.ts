@@ -1,9 +1,10 @@
 import ts from "typescript";
-import { Env, TypeChecker, ValueSide } from "../..";
+import { ExpressionVisitor } from ".";
+import { TypeChecker, ValueSide } from "../..";
 import { Type } from "../../../types";
 import accept = TypeChecker.accept;
 
-export async function visit(node: ts.BinaryExpression, env: Env): Promise<Type> {
+export const visit: ExpressionVisitor<ts.BinaryExpression> = async (node, env) => {
 	let value = ValueSide.RValue;
 	switch (node.operatorToken.kind) {
 		// TODO: Use a visitor instead
@@ -25,4 +26,4 @@ export async function visit(node: ts.BinaryExpression, env: Env): Promise<Type> 
 	const right: Type = await TypeChecker.accept(node.right, env);
 
 	return await accept(node.operatorToken, env, { left, right });
-}
+};
