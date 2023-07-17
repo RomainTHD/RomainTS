@@ -1,8 +1,8 @@
 import type ts from "typescript";
 import { StatementVisitor } from ".";
 import { Type } from "../../../types";
+import { VoidType } from "../../../types/VoidType";
 import { Bool3 } from "../../../utils/Bool3";
-import { NotImplementedException } from "../../../utils/NotImplementedException";
 import { TypeChecker } from "../../accept";
 import { TypecheckingFailure } from "../../TypecheckingFailure";
 
@@ -11,8 +11,7 @@ export const visit: StatementVisitor<ts.ReturnStatement> = async (node, env) => 
 	if (node.expression) {
 		t = await TypeChecker.accept(node.expression, env);
 	} else {
-		// TODO: Void type
-		throw new NotImplementedException();
+		t = VoidType.get();
 	}
 
 	const retType = env.getReturnType();
