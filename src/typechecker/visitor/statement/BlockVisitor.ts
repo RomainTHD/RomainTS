@@ -1,6 +1,6 @@
 import type ts from "typescript";
 import { StatementReturn, StatementVisitor } from ".";
-import { TypeChecker } from "../..";
+import { TypeChecker, TypecheckingFailure } from "../..";
 import { UnionType } from "../../../types";
 import { assert } from "../../../utils";
 import { Bool3 } from "../../../utils/Bool3";
@@ -14,8 +14,9 @@ export const visit: StatementVisitor<ts.Block> = async (node, env) => {
 
 		assert(res !== undefined, "Statement return is undefined");
 
-		// TODO: Add unreachable code detection
-		// assert(res.doesReturn !== Bool3.True, "Unreachable code");
+		if (!env.config.allowUnreachableCode && doesReturn === Bool3.True) {
+			throw new TypecheckingFailure("Unreachable code detected", stmt);
+		}
 
 		if (res.doesReturn === Bool3.True) {
 			doesReturn = Bool3.True;

@@ -8,7 +8,7 @@ export const visit: StatementVisitor<ts.ExpressionStatement> = async (node, env,
 		if (node.expression.kind === ts.SyntaxKind.StringLiteral) {
 			const literal = node.expression as ts.StringLiteral;
 			if (literal.text === "use strict") {
-				env.enableStrictMode();
+				env.setConfigValue("strictMode", true);
 			}
 		}
 	}

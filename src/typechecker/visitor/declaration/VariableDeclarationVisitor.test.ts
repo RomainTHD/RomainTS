@@ -28,7 +28,7 @@ describe("VariableDeclarationVisitor", () => {
 
 	it("should work for undeclared if not in strict mode", async () => {
 		const content = "x = 0;";
-		const env = Env.get(false);
+		const env = Env.get({ strictMode: false });
 		await TypeChecker.accept(AST.parse(content), env);
 		expect(env.get("x")?.vType).toEqual(NumberType.get());
 	});

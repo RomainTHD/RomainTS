@@ -14,7 +14,7 @@ export async function visit(
 	const variable = env.get(left);
 	if (variable) {
 		if (variable.builtin) {
-			if (env.isStrictMode()) {
+			if (env.config.strictMode) {
 				throw new TypecheckingFailure(`Cannot assign to builtin '${left}'`, node);
 			} else {
 				logger.warn(`Suspicious assignment to builtin '${left}'`);
@@ -26,7 +26,7 @@ export async function visit(
 		}
 	} else {
 		// `x = 0` where `x` is not declared. Valid in non-strict mode
-		if (env.isStrictMode()) {
+		if (env.config.strictMode) {
 			throw new TypecheckingFailure(`Variable ${left} not found`, node);
 		} else {
 			logger.warn(`Variable '${left}' not found, declaring it`);

@@ -14,7 +14,7 @@ export async function visit(node: ts.Identifier, env: Env): Promise<string | Typ
 		// `x + 0`: `x` is a RValue
 		const value = env.get(node.text);
 		if (!value) {
-			if (env.isStrictMode()) {
+			if (env.config.strictMode) {
 				throw new TypecheckingFailure(`Identifier '${node.text}' not found in scope`, node);
 			} else {
 				logger.warn(`Identifier '${node.text}' not found in scope`);

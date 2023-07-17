@@ -11,6 +11,12 @@ type Value = {
 
 type Scope = Map<string, Value>;
 
+export type EnvConfig = {
+	allowUnreachableCode: boolean;
+	noImplicitAny: boolean;
+	strictMode: boolean;
+};
+
 export enum ValueSide {
 	LValue,
 	RValue,
@@ -22,17 +28,21 @@ export class Env {
 	private readonly globals: Map<string, Value> = new Map();
 	private readonly scopes: Scope[] = [new Map()];
 	private readonly returnTypes: Type[] = [];
+	private readonly _config: EnvConfig;
 
-	private strictMode: boolean;
 	private valueSide: ValueSide = ValueSide.RValue;
 
-	private constructor(strictMode = false) {
-		this.strictMode = strictMode;
+	private constructor(config: EnvConfig) {
+		this._config = config;
 		this.populateEnv();
 	}
 
-	public static get(strictMode = false): Env {
-		return new Env(strictMode);
+	public static get(config?: Partial<EnvConfig>): Env {
+		return new Env({
+			allowUnreachableCode: config?.allowUnreachableCode ?? true,
+			noImplicitAny: config?.noImplicitAny ?? false,
+			strictMode: config?.strictMode ?? false,
+		});
 	}
 
 	public enterScope(): void {
@@ -77,7 +87,7 @@ export class Env {
 		Env.logger.debug("Env start");
 		Env.logger.indent();
 
-		Env.logger.debug(`Strict mode: ${this.strictMode}`);
+		Env.logger.debug(`Config: ${this.config}`);
 
 		for (const scope of this.scopes) {
 			Env.logger.debug("New scope:");
@@ -111,12 +121,12 @@ export class Env {
 		this.valueSide = valueSide;
 	}
 
-	public isStrictMode(): boolean {
-		return this.strictMode;
+	public get config(): Readonly<EnvConfig> {
+		return this._config;
 	}
 
-	public enableStrictMode(): void {
-		this.strictMode = true;
+	public setConfigValue<K extends keyof EnvConfig>(key: K, value: EnvConfig[K]): void {
+		this._config[key] = value;
 	}
 
 	public pushReturnType(t: Type): void {
