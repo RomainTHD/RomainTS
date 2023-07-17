@@ -6,6 +6,6 @@ import { Env } from "../../env";
 describe("ExpressionStatementVisitor", () => {
 	it("should work for expressions", async () => {
 		const content = "1;";
-		await TypeChecker.accept(AST.parse(content), new Env());
+		await TypeChecker.accept(AST.parse(content), Env.get());
 	});
 });

@@ -6,6 +6,6 @@ import { Env } from "../../env";
 describe("EmptyStatementVisitor", () => {
 	it("should work for empty statements", async () => {
 		const content = ";";
-		await TypeChecker.accept(AST.parse(content), new Env());
+		await TypeChecker.accept(AST.parse(content), Env.get());
 	});
 });

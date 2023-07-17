@@ -1,7 +1,7 @@
 import type ts from "typescript";
 import { Type } from "../../../types";
 import { LoggerFactory } from "../../../utils/Logger";
-import { Env, MutabilityModifier } from "../../env";
+import { Env } from "../../env";
 import { TypecheckingFailure } from "../../TypecheckingFailure";
 
 const logger = LoggerFactory.get("EqualsTokenVisitor");
@@ -25,10 +25,10 @@ export async function visit(
 
 	const variable = env.get(left);
 	if (variable) {
-		if (variable.mutabilityModifier === MutabilityModifier.Const) {
+		if (!variable.isMutable) {
 			throw new TypecheckingFailure(`Cannot assign to constant '${left}'`, node);
-		} else if (!variable.type.contains(right)) {
-			throw new TypecheckingFailure(`Type '${right}' is not assignable to type '${variable.type}'`, node);
+		} else if (!variable.vType.contains(right)) {
+			throw new TypecheckingFailure(`Type '${right}' is not assignable to type '${variable.vType}'`, node);
 		}
 	} else {
 		// `x = 0` where `x` is not declared. Valid in non-strict mode
@@ -36,7 +36,7 @@ export async function visit(
 			throw new TypecheckingFailure(`Variable ${left} not found`, node);
 		} else {
 			logger.warn(`Variable '${left}' not found, declaring it`);
-			env.add(left, right, MutabilityModifier.Undeclared);
+			env.add(left, { vType: right, isLocal: false, isMutable: true });
 		}
 	}
 	return right;

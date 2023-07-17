@@ -22,6 +22,6 @@ export async function visit(node: ts.Identifier, env: Env): Promise<string | Typ
 				return AnyType.get();
 			}
 		}
-		return value.type;
+		return value.vType;
 	}
 }

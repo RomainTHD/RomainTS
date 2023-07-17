@@ -1,5 +1,5 @@
 import type ts from "typescript";
-import { Env, MutabilityModifier, TypeChecker, TypecheckingFailure, ValueSide } from "../..";
+import { Env, TypeChecker, TypecheckingFailure, ValueSide } from "../..";
 import { AnyType, Type } from "../../../types";
 import { UndefinedType } from "../../../types/UndefinedType";
 import { VoidType } from "../../../types/VoidType";
@@ -24,16 +24,16 @@ export async function visit(node: ts.FunctionDeclaration, env: Env): Promise<Typ
 		throw new NotImplementedException("Functions without body aren't supported yet");
 	}
 
-	env.add(name, fType, MutabilityModifier.Var);
+	env.add(name, { vType: fType, isLocal: false, isMutable: true });
 
 	env.enterScope();
 	env.pushReturnType(fType.retType);
 
 	// FIXME: Wrong signature
-	env.add("this", fType, MutabilityModifier.Const);
+	env.add("this", { vType: fType, isLocal: true, isMutable: false });
 
 	for (const param of fType.params) {
-		env.add(param.name, param.pType, MutabilityModifier.Let);
+		env.add(param.name, { vType: param.pType, isLocal: true, isMutable: true });
 	}
 
 	const retData: StatementReturn = await accept(node.body, env);

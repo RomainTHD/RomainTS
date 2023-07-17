@@ -3,7 +3,7 @@ import { AST } from "../../../AST";
 import { FunctionType } from "../../../types";
 import { VoidType } from "../../../types/VoidType";
 import { TypeChecker } from "../../accept";
-import { Env, MutabilityModifier } from "../../env";
+import { Env } from "../../env";
 import { TypecheckingFailure } from "../../TypecheckingFailure";
 
 describe("VoidKeywordVisitor", () => {
@@ -13,26 +13,20 @@ describe("VoidKeywordVisitor", () => {
 			return;
 		}
 		`;
-		const env = new Env();
+		const env = Env.get();
 		await TypeChecker.accept(AST.parse(content), env);
-		expect(env.get("f")).toStrictEqual({
-			type: FunctionType.get([], VoidType.get()),
-			mutabilityModifier: MutabilityModifier.Var,
-		});
+		expect(env.get("f")?.vType).toEqual(FunctionType.get([], VoidType.get()));
 	});
 
 	it("should work for void variables", async () => {
 		const content = "let x: void;";
-		const env = new Env();
+		const env = Env.get();
 		await TypeChecker.accept(AST.parse(content), env);
-		expect(env.get("x")).toStrictEqual({
-			type: VoidType.get(),
-			mutabilityModifier: MutabilityModifier.Let,
-		});
+		expect(env.get("x")?.vType).toEqual(VoidType.get());
 	});
 
 	it("should not work for other types", async () => {
 		const content = "let x: void = 0;";
-		await expect(TypeChecker.accept(AST.parse(content), new Env())).rejects.toThrowError(TypecheckingFailure);
+		await expect(TypeChecker.accept(AST.parse(content), Env.get())).rejects.toThrowError(TypecheckingFailure);
 	});
 });

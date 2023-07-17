@@ -6,6 +6,6 @@ import { Env } from "../../env";
 describe("StringLiteralVisitor", () => {
 	it("should work for string literals", async () => {
 		const content = "'word'";
-		await TypeChecker.accept(AST.parse(content), new Env());
+		await TypeChecker.accept(AST.parse(content), Env.get());
 	});
 });

@@ -69,7 +69,7 @@ export namespace TypeChecker {
 	}
 
 	export async function typecheck(root: ts.Node): Promise<boolean> {
-		const env = new Env();
+		const env = Env.get();
 		try {
 			await accept(root, env);
 			return true;

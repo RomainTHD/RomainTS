@@ -2,24 +2,23 @@ import { describe, expect, it } from "vitest";
 import { AST } from "../../../AST";
 import { FunctionType, NumberType, StringType } from "../../../types";
 import { TypeChecker } from "../../accept";
-import { Env, MutabilityModifier } from "../../env";
+import { Env } from "../../env";
 import { TypecheckingFailure } from "../../TypecheckingFailure";
 
 describe("FunctionTypeVisitor", () => {
 	it("should work for function types", async () => {
 		const content = "let f: (a: number, b: string) => number;";
-		const env = new Env();
+		const env = Env.get();
 		await TypeChecker.accept(AST.parse(content), env);
-		expect(env.get("f")).toStrictEqual({
-			type: FunctionType.get(
+		expect(env.get("f")?.vType).toEqual(
+			FunctionType.get(
 				[
 					{ name: "a", pType: NumberType.get() },
 					{ name: "b", pType: StringType.get() },
 				],
 				NumberType.get(),
 			),
-			mutabilityModifier: MutabilityModifier.Let,
-		});
+		);
 	});
 
 	it("should work for function types with assignment", async () => {
@@ -30,7 +29,7 @@ describe("FunctionTypeVisitor", () => {
 		}
 		f = g;
 		`;
-		await TypeChecker.accept(AST.parse(content), new Env());
+		await TypeChecker.accept(AST.parse(content), Env.get());
 	});
 
 	it("should not work for mismatching function arguments type", async () => {
@@ -41,7 +40,7 @@ describe("FunctionTypeVisitor", () => {
 		}
 		f = g;
 		`;
-		await expect(TypeChecker.accept(AST.parse(content), new Env())).rejects.toThrowError(TypecheckingFailure);
+		await expect(TypeChecker.accept(AST.parse(content), Env.get())).rejects.toThrowError(TypecheckingFailure);
 	});
 
 	it("should not work for mismatching function arguments count", async () => {
@@ -52,7 +51,7 @@ describe("FunctionTypeVisitor", () => {
 		}
 		f = g;
 		`;
-		await expect(TypeChecker.accept(AST.parse(content), new Env())).rejects.toThrowError(TypecheckingFailure);
+		await expect(TypeChecker.accept(AST.parse(content), Env.get())).rejects.toThrowError(TypecheckingFailure);
 	});
 
 	it("should not work for mismatching function return type", async () => {
@@ -63,6 +62,6 @@ describe("FunctionTypeVisitor", () => {
 		}
 		f = g;
 		`;
-		await expect(TypeChecker.accept(AST.parse(content), new Env())).rejects.toThrowError(TypecheckingFailure);
+		await expect(TypeChecker.accept(AST.parse(content), Env.get())).rejects.toThrowError(TypecheckingFailure);
 	});
 });

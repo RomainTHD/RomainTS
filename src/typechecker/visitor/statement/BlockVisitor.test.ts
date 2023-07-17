@@ -6,6 +6,6 @@ import { Env } from "../../env";
 describe("BlockVisitor", () => {
 	it("should work for blocks", async () => {
 		const content = "{}";
-		await TypeChecker.accept(AST.parse(content), new Env());
+		await TypeChecker.accept(AST.parse(content), Env.get());
 	});
 });

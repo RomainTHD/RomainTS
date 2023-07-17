@@ -1,39 +1,46 @@
 import type ts from "typescript";
-import { Env, MutabilityModifier, TypeChecker, TypecheckingFailure, ValueSide } from "../..";
+import { Env, TypeChecker, TypecheckingFailure, ValueSide } from "../..";
 import { AnyType, Type } from "../../../types";
-import { assert } from "../../../utils";
 
-export async function visit(node: ts.VariableDeclaration, env: Env, data: MutabilityModifier): Promise<void> {
-	assert(data, "Invalid variable declaration");
-
+export async function visit(
+	node: ts.VariableDeclaration,
+	env: Env,
+	{
+		isLocal,
+		isMutable,
+	}: {
+		isLocal: boolean;
+		isMutable: boolean;
+	},
+): Promise<void> {
 	env.setValueSide(ValueSide.LValue);
 	const name: string = await TypeChecker.accept(node.name, env);
 	env.setValueSide(ValueSide.RValue);
 
-	let varType: Type | null = null;
+	let vType: Type | null = null;
 	if (node.type) {
 		// `let x: number ...`
-		varType = await TypeChecker.accept(node.type, env);
+		vType = await TypeChecker.accept(node.type, env);
 	}
 
 	if (node.initializer) {
 		let exprType: Type = await TypeChecker.accept(node.initializer, env);
 
-		if (varType) {
+		if (vType) {
 			// `let x: number = ...`
-			if (!varType.contains(exprType)) {
-				throw new TypecheckingFailure(`Type '${exprType}' is not assignable to type '${varType}'`, node);
+			if (!vType.contains(exprType)) {
+				throw new TypecheckingFailure(`Type '${exprType}' is not assignable to type '${vType}'`, node);
 			}
 		} else {
 			// `let x = ...`
-			varType = exprType;
+			vType = exprType;
 		}
 	} else {
-		if (!varType) {
+		if (!vType) {
 			// `let x;` is equivalent to `let x: any;`
-			varType = AnyType.get();
+			vType = AnyType.get();
 		}
 	}
 
-	env.add(name, varType, data);
+	env.add(name, { vType, isLocal, isMutable });
 }

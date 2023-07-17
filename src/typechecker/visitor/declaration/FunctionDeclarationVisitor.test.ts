@@ -10,11 +10,11 @@ describe("FunctionDeclarationVisitor", () => {
 		function f(a: number, b: string): number {
 			return 0;
 		}`;
-		const env = new Env();
+		const env = Env.get();
 		await TypeChecker.accept(AST.parse(content), env);
 		const v = env.get("f");
 		expect(v).not.toBeNull();
-		const t = v!.type;
+		const t = v!.vType;
 		expect(t).not.toBeNull();
 		expect(t instanceof FunctionType).toBe(true);
 		const f = t as FunctionType;

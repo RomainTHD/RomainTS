@@ -8,6 +8,6 @@ describe("ArrowFunctionVisitor", () => {
 		const content = `
 		let f = (a: number, b: string) => number
 		`;
-		await TypeChecker.accept(AST.parse(content), new Env());
+		await TypeChecker.accept(AST.parse(content), Env.get());
 	});
 });

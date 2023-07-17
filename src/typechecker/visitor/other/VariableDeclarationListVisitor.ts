@@ -1,20 +1,29 @@
 import ts from "typescript";
-import { Env, MutabilityModifier, TypeChecker } from "../..";
+import { Env, TypeChecker } from "../..";
 import { IllegalStateException } from "../../../utils/IllegalStateException";
 
 export async function visit(node: ts.VariableDeclarationList, env: Env): Promise<void> {
-	const varType: MutabilityModifier = (() => {
-		// `x = 0;` where `x` is not declared is a BinaryExpression, not a VariableDeclarationList
+	const data = (() => {
+		// `x = 0;` when `x` is not declared, is a BinaryExpression, not a VariableDeclarationList
 
 		switch (node.flags) {
 			case ts.NodeFlags.Const:
-				return MutabilityModifier.Const;
+				return {
+					isLocal: true,
+					isMutable: false,
+				};
 
 			case ts.NodeFlags.Let:
-				return MutabilityModifier.Let;
+				return {
+					isLocal: true,
+					isMutable: true,
+				};
 
 			case ts.NodeFlags.None:
-				return MutabilityModifier.Var;
+				return {
+					isLocal: false,
+					isMutable: true,
+				};
 
 			default:
 				throw new IllegalStateException(
@@ -24,6 +33,6 @@ export async function visit(node: ts.VariableDeclarationList, env: Env): Promise
 	})();
 
 	for (const varDecl of node.declarations) {
-		await TypeChecker.accept(varDecl, env, varType);
+		await TypeChecker.accept(varDecl, env, data);
 	}
 }

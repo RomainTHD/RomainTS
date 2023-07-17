@@ -12,7 +12,7 @@ describe("CallExpressionVisitor", () => {
 		}
 		let x: number = f(1, 2);
 		`;
-		await TypeChecker.accept(AST.parse(content), new Env());
+		await TypeChecker.accept(AST.parse(content), Env.get());
 	});
 
 	it("should not work for mistyped return types", async () => {
@@ -22,7 +22,7 @@ describe("CallExpressionVisitor", () => {
 		}
 		let x: string = f(1, 2);
 		`;
-		await expect(TypeChecker.accept(AST.parse(content), new Env())).rejects.toThrowError(TypecheckingFailure);
+		await expect(TypeChecker.accept(AST.parse(content), Env.get())).rejects.toThrowError(TypecheckingFailure);
 	});
 
 	it("should not work for mistyped arguments", async () => {
@@ -32,7 +32,7 @@ describe("CallExpressionVisitor", () => {
 		}
 		let x: number = f(1, "s");
 		`;
-		await expect(TypeChecker.accept(AST.parse(content), new Env())).rejects.toThrowError(TypecheckingFailure);
+		await expect(TypeChecker.accept(AST.parse(content), Env.get())).rejects.toThrowError(TypecheckingFailure);
 	});
 
 	it("should not work for too many arguments", async () => {
@@ -42,7 +42,7 @@ describe("CallExpressionVisitor", () => {
 		}
 		let x: number = f(1, 2, 3);
 		`;
-		await expect(TypeChecker.accept(AST.parse(content), new Env())).rejects.toThrowError(TypecheckingFailure);
+		await expect(TypeChecker.accept(AST.parse(content), Env.get())).rejects.toThrowError(TypecheckingFailure);
 	});
 
 	it("should not work for too few arguments", async () => {
@@ -52,7 +52,7 @@ describe("CallExpressionVisitor", () => {
 		}
 		let x: number = f(1);
 		`;
-		await expect(TypeChecker.accept(AST.parse(content), new Env())).rejects.toThrowError(TypecheckingFailure);
+		await expect(TypeChecker.accept(AST.parse(content), Env.get())).rejects.toThrowError(TypecheckingFailure);
 	});
 
 	it("should not work for non-function calls", async () => {
@@ -60,6 +60,6 @@ describe("CallExpressionVisitor", () => {
 		let x = 0;
 		let y = x(1, 2);
 		`;
-		await expect(TypeChecker.accept(AST.parse(content), new Env())).rejects.toThrowError(TypecheckingFailure);
+		await expect(TypeChecker.accept(AST.parse(content), Env.get())).rejects.toThrowError(TypecheckingFailure);
 	});
 });

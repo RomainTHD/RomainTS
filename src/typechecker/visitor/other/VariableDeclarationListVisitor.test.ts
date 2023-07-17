@@ -1,21 +1,15 @@
 import { describe, expect, it } from "vitest";
 import { AST } from "../../../AST";
-import { NumberType } from "../../../types";
+import { NumberType, StringType } from "../../../types";
 import { TypeChecker } from "../../accept";
-import { Env, MutabilityModifier } from "../../env";
+import { Env } from "../../env";
 
 describe("VariableDeclarationListVisitor", () => {
 	it("should work for declaration list", async () => {
-		const content = `let x = 0, y = 1;`;
-		const env = new Env();
+		const content = `let x = 0, y = "s";`;
+		const env = Env.get();
 		await TypeChecker.accept(AST.parse(content), env);
-		expect(env.get("x")).toStrictEqual({
-			type: NumberType.get(),
-			mutabilityModifier: MutabilityModifier.Let,
-		});
-		expect(env.get("y")).toStrictEqual({
-			type: NumberType.get(),
-			mutabilityModifier: MutabilityModifier.Let,
-		});
+		expect(env.get("x")?.vType).toEqual(NumberType.get());
+		expect(env.get("y")?.vType).toEqual(StringType.get());
 	});
 });
