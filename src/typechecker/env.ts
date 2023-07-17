@@ -87,7 +87,7 @@ export class Env {
 		Env.logger.debug("Env start");
 		Env.logger.indent();
 
-		Env.logger.debug(`Config: ${this.config}`);
+		Env.logger.debug(`Config: ${JSON.stringify(this.config, null, 2)}`);
 
 		for (const scope of this.scopes) {
 			Env.logger.debug("New scope:");
