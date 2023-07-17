@@ -16,7 +16,7 @@ export async function visit(node: ts.FunctionDeclaration, env: Env): Promise<Typ
 	const name: string = await accept(node.name, env);
 	env.setValueSide(ValueSide.RValue);
 
-	const fType = await visitFunction(env, node.parameters, node.type);
+	const { fType, infer } = await visitFunction(env, node.parameters, node.type);
 
 	if (!node.body) {
 		throw new NotImplementedException("Functions without body aren't supported yet");
@@ -46,8 +46,7 @@ export async function visit(node: ts.FunctionDeclaration, env: Env): Promise<Typ
 	env.popReturnType();
 	env.exitScope();
 
-	// TODO: Handle explicit any
-	if (fType.retType.equals(AnyType.get()) && retData.inferredType) {
+	if (infer && fType.retType.equals(AnyType.get()) && retData.inferredType) {
 		fType.retType = retData.inferredType;
 	}
 

@@ -1,11 +1,13 @@
 import type ts from "typescript";
-import { Env, TypeChecker } from "../..";
-import { Type } from "../../../types";
+import { Env, TypeChecker, TypecheckingFailure } from "../..";
+import { AnyType, Type, UndefinedType, VoidType } from "../../../types";
+import { Bool3 } from "../../../utils/Bool3";
 import { visitFunction } from "../shared/function";
+import { StatementReturn } from "../statement";
 import accept = TypeChecker.accept;
 
 export async function visit(node: ts.ArrowFunction, env: Env): Promise<Type> {
-	const fType = await visitFunction(env, node.parameters, node.type);
+	const { fType, infer } = await visitFunction(env, node.parameters, node.type);
 
 	env.enterScope();
 	env.pushReturnType(fType.retType);
@@ -14,12 +16,21 @@ export async function visit(node: ts.ArrowFunction, env: Env): Promise<Type> {
 		env.add(param.name, { vType: param.pType, isLocal: true, isMutable: true });
 	}
 
-	await accept(node.body, env);
+	const retData: StatementReturn = await accept(node.body, env);
 
-	// TODO: Ensure that return is called
+	if (
+		retData.doesReturn !== Bool3.True &&
+		![VoidType.get(), AnyType.get(), UndefinedType.get()].some((t) => t.equals(fType.retType))
+	) {
+		throw new TypecheckingFailure(`Arrow function must return a value of type '${fType.retType}'`, node);
+	}
 
 	env.popReturnType();
 	env.exitScope();
+
+	if (infer && fType.retType.equals(AnyType.get()) && retData.inferredType) {
+		fType.retType = retData.inferredType;
+	}
 
 	return fType;
 }

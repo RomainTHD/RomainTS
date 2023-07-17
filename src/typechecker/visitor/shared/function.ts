@@ -8,7 +8,7 @@ export async function visitFunction(
 	env: Env,
 	nodeParams: ts.NodeArray<ts.ParameterDeclaration>,
 	nodeRetType: ts.TypeNode | undefined,
-): Promise<FunctionType> {
+): Promise<{ fType: FunctionType; infer: boolean }> {
 	const params: { name: string; pType: Type }[] = [];
 	for (const param of nodeParams) {
 		env.setValueSide(ValueSide.LValue);
@@ -29,12 +29,14 @@ export async function visitFunction(
 	}
 
 	let retType: Type;
+	let infer = false;
 	if (nodeRetType) {
 		retType = await accept(nodeRetType, env);
 	} else {
-		// TODO: Infer return type
+		// Function return type will be inferred later on
 		retType = AnyType.get();
+		infer = true;
 	}
 
-	return FunctionType.get(params, retType);
+	return { fType: FunctionType.get(params, retType), infer };
 }
