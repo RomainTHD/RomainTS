@@ -1,8 +1,6 @@
 import type ts from "typescript";
 import { Env, TypeChecker, TypecheckingFailure, ValueSide } from "../..";
-import { AnyType, Type } from "../../../types";
-import { UndefinedType } from "../../../types/UndefinedType";
-import { VoidType } from "../../../types/VoidType";
+import { AnyType, Type, UndefinedType, VoidType } from "../../../types";
 import { Bool3 } from "../../../utils/Bool3";
 import { NotImplementedException } from "../../../utils/NotImplementedException";
 import { visitFunction } from "../shared/function";

@@ -60,7 +60,7 @@ export namespace TypeChecker {
 		try {
 			visitorModule = await import(getVisitorPath(kind, node.kind));
 		} catch (e: unknown) {
-			throw new IllegalStateException(`Couldn't find visitor for ${kind}: ${e}`);
+			throw new NotImplementedException(`Couldn't find visitor for ${kind}: ${e}`);
 		}
 
 		const res = await visitorModule.visit(node, env, data);

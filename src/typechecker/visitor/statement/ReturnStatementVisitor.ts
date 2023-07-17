@@ -1,7 +1,6 @@
 import type ts from "typescript";
 import { StatementVisitor } from ".";
-import { Type } from "../../../types";
-import { VoidType } from "../../../types/VoidType";
+import { Type, VoidType } from "../../../types";
 import { Bool3 } from "../../../utils/Bool3";
 import { TypeChecker } from "../../accept";
 import { TypecheckingFailure } from "../../TypecheckingFailure";

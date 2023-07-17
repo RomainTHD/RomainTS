@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { AST } from "../../../AST";
-import { FunctionType } from "../../../types";
-import { VoidType } from "../../../types/VoidType";
+import { FunctionType, VoidType } from "../../../types";
 import { TypeChecker } from "../../accept";
 import { Env } from "../../env";
 import { TypecheckingFailure } from "../../TypecheckingFailure";

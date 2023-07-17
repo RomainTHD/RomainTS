@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { AST } from "../../../AST";
-import { UndefinedType } from "../../../types/UndefinedType";
+import { UndefinedType } from "../../../types";
 import { TypeChecker } from "../../accept";
 import { Env } from "../../env";
 import { TypecheckingFailure } from "../../TypecheckingFailure";

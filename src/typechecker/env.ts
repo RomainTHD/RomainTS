@@ -1,5 +1,4 @@
-import { NumberType, Type } from "../types";
-import { UndefinedType } from "../types/UndefinedType";
+import { NumberType, Type, UndefinedType } from "../types";
 import { assert } from "../utils";
 import { LoggerFactory } from "../utils/Logger";
 
@@ -7,6 +6,7 @@ type Value = {
 	vType: Type;
 	isLocal: boolean;
 	isMutable: boolean;
+	builtin?: boolean;
 };
 
 type Scope = Map<string, Value>;
@@ -29,6 +29,10 @@ export class Env {
 	private constructor(strictMode = false) {
 		this.strictMode = strictMode;
 		this.populateEnv();
+	}
+
+	public static get(strictMode = false): Env {
+		return new Env(strictMode);
 	}
 
 	public enterScope(): void {
@@ -89,7 +93,9 @@ export class Env {
 		Env.logger.debug("Globals:");
 		Env.logger.indent();
 		for (const [name, value] of this.globals) {
-			Env.logger.debug(`${name}(${value.isMutable ? "L" : "C"}): ${value.vType}`);
+			if (!value.builtin) {
+				Env.logger.debug(`${name}(${value.isMutable ? "L" : "C"}): ${value.vType}`);
+			}
 		}
 		Env.logger.unindent();
 
@@ -129,12 +135,8 @@ export class Env {
 	}
 
 	private populateEnv(): void {
-		this.add("undefined", { vType: UndefinedType.get(), isLocal: false, isMutable: false });
-		this.add("NaN", { vType: NumberType.get(), isLocal: false, isMutable: false });
-		this.add("Infinity", { vType: NumberType.get(), isLocal: false, isMutable: false });
-	}
-
-	public static get(strictMode = false): Env {
-		return new Env(strictMode);
+		this.add("undefined", { vType: UndefinedType.get(), isLocal: false, isMutable: false, builtin: true });
+		this.add("NaN", { vType: NumberType.get(), isLocal: false, isMutable: false, builtin: true });
+		this.add("Infinity", { vType: NumberType.get(), isLocal: false, isMutable: false, builtin: true });
 	}
 }
