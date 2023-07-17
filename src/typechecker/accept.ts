@@ -17,22 +17,25 @@ export namespace TypeChecker {
 	}
 
 	function getVisitorPath(kind: string): string {
-		type SpecialCase = { dir: string; name?: string; suffix?: string };
+		type SorterInfo = { dir: string; name?: string; suffix?: string };
 
-		const specialCase: SpecialCase[] = [
+		const sorter: SorterInfo[] = [
 			{ name: "TypeLiteral", dir: "type" },
+
+			{ suffix: "Token", dir: "token" },
+			{ suffix: "Expression", dir: "expression" },
+			{ suffix: "Statement", dir: "statement" },
+			{ suffix: "Declaration", dir: "declaration" },
+			{ suffix: "Literal", dir: "literal" },
+
 			{ suffix: "Keyword", dir: "type" },
+			{ suffix: "Type", dir: "type" },
+			{ suffix: "Signature", dir: "type" },
 		];
 
-		for (const end of ["Token", "Expression", "Statement", "Declaration", "Literal", "Node", "Type", "Signature"]) {
-			if (kind.endsWith(end) && !specialCase.some((e) => e.name === kind)) {
-				return `./visitor/${end.toLowerCase()}/${kind}Visitor`;
-			}
-		}
-
-		const isSpecialCase = (e: SpecialCase) => (e.name && e.name === kind) || (e.suffix && kind.endsWith(e.suffix));
-		if (specialCase.some(isSpecialCase)) {
-			return `./visitor/${specialCase.find(isSpecialCase)!.dir}/${kind}Visitor`;
+		const sorterInfo = sorter.find((e) => (e.name && e.name === kind) || (e.suffix && kind.endsWith(e.suffix)));
+		if (sorterInfo) {
+			return `./visitor/${sorterInfo.dir}/${kind}Visitor`;
 		}
 
 		return `./visitor/other/${kind}Visitor`;

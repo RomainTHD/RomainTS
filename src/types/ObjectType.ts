@@ -1,3 +1,4 @@
+import { assert } from "../utils";
 import { LoggerFactory } from "../utils/Logger";
 import { Type } from "./Type";
 
@@ -38,10 +39,14 @@ export class ObjectType implements Type {
 	}
 
 	public toString(): string {
-		return `{${this.members.map((member) => `${member.name}: ${member.mType.toString()}`).join(", ")}}`;
+		return `{${this.members.map((member) => `${member.name}: ${member.mType}`).join(", ")}}`;
 	}
 
 	public add(member: Member): void {
+		assert(member, "Invalid member");
+		assert(member.name, `Invalid member name, is '${member.name}'`);
+		assert(member.mType, `Invalid member type, is '${member.mType}'`);
+
 		if (this.members.some((m) => m.name === member.name)) {
 			ObjectType.logger.warn(
 				`Member with name '${member.name}' already exists in object type, will be overwritten.`,
@@ -50,6 +55,10 @@ export class ObjectType implements Type {
 		} else {
 			this._members.push(member);
 		}
+	}
+
+	public addAll(...members: Member[]): void {
+		members.forEach((member) => this.add(member));
 	}
 
 	public get members(): Member[] {
