@@ -16,12 +16,14 @@ export namespace TypeChecker {
 		return result;
 	}
 
-	function getVisitorPath(kind: string): string {
-		type SorterInfo = { dir: string; name?: string; suffix?: string };
+	function getVisitorPath(kind: string, kindEnum: ts.SyntaxKind): string {
+		type SorterInfo = { dir: string; name?: ts.SyntaxKind; suffix?: string };
 
 		const sorter: SorterInfo[] = [
-			{ name: "TypeLiteral", dir: "type" },
-			{ name: "Block", dir: "statement" },
+			{ name: ts.SyntaxKind.TypeLiteral, dir: "type" },
+			{ name: ts.SyntaxKind.Block, dir: "statement" },
+			{ name: ts.SyntaxKind.TrueKeyword, dir: "literal" },
+			{ name: ts.SyntaxKind.FalseKeyword, dir: "literal" },
 
 			{ suffix: "Token", dir: "token" },
 			{ suffix: "Expression", dir: "expression" },
@@ -34,7 +36,7 @@ export namespace TypeChecker {
 			{ suffix: "Signature", dir: "type" },
 		];
 
-		const sorterInfo = sorter.find((e) => (e.name && e.name === kind) || (e.suffix && kind.endsWith(e.suffix)));
+		const sorterInfo = sorter.find((e) => (e.name && e.name === kindEnum) || (e.suffix && kind.endsWith(e.suffix)));
 		if (sorterInfo) {
 			return `./visitor/${sorterInfo.dir}/${kind}Visitor`;
 		}
@@ -56,7 +58,7 @@ export namespace TypeChecker {
 
 		let visitorModule: { visit: (node: ts.Node, env: Env, data: unknown) => Promise<T> };
 		try {
-			visitorModule = await import(getVisitorPath(kind));
+			visitorModule = await import(getVisitorPath(kind, node.kind));
 		} catch (e: unknown) {
 			throw new IllegalStateException(`Couldn't find visitor for ${kind}: ${e}`);
 		}
