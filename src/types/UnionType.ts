@@ -10,8 +10,8 @@ export class UnionType implements Type {
 		}
 	}
 
-	private add(t: Type): void {
-		assert(t !== null && t !== undefined, "Union type must be a BaseType, is actually " + t);
+	public add(t: Type): void {
+		assert(t !== null && t !== undefined, "Union type must be a Type, is actually " + t);
 		assert(!t.equals(this), "Union cannot contain itself");
 		if (t instanceof UnionType) {
 			for (const ot of t.types) {
@@ -43,6 +43,14 @@ export class UnionType implements Type {
 		}
 
 		return union.types.every((ot) => this.types.some((t) => t.contains(ot)));
+	}
+
+	public simplify(): Type {
+		if (this.types.length === 1) {
+			return this.types[0];
+		}
+
+		return this;
 	}
 
 	public toString(): string {

@@ -1,8 +1,10 @@
 import type ts from "typescript";
-import { Env, MutabilityModifier, TypeChecker, ValueSide } from "../..";
-import { Type } from "../../../types";
+import { Env, MutabilityModifier, TypeChecker, TypecheckingFailure, ValueSide } from "../..";
+import { AnyType, Type } from "../../../types";
+import { Bool3 } from "../../../utils/Bool3";
 import { NotImplementedException } from "../../../utils/NotImplementedException";
 import { visitFunction } from "../shared/function";
+import { StatementReturn } from "../statement";
 import accept = TypeChecker.accept;
 
 export async function visit(node: ts.FunctionDeclaration, env: Env): Promise<Type> {
@@ -24,6 +26,7 @@ export async function visit(node: ts.FunctionDeclaration, env: Env): Promise<Typ
 
 	env.enterScope();
 	env.pushReturnType(fType.retType);
+
 	// FIXME: Wrong signature
 	env.add("this", fType, MutabilityModifier.Const);
 
@@ -31,12 +34,20 @@ export async function visit(node: ts.FunctionDeclaration, env: Env): Promise<Typ
 		env.add(param.name, param.pType, MutabilityModifier.Let);
 	}
 
-	await accept(node.body, env);
+	const retData: StatementReturn = await accept(node.body, env);
 
-	// TODO: Ensure that return is called
+	if (retData.doesReturn !== Bool3.True) {
+		// FIXME: Will throw for void functions
+		throw new TypecheckingFailure(`Function '${name}' must return a value`, node);
+	}
 
 	env.popReturnType();
 	env.exitScope();
+
+	// TODO: Handle explicit any
+	if (fType.retType.equals(AnyType.get()) && retData.inferredType) {
+		fType.retType = retData.inferredType;
+	}
 
 	return fType;
 }

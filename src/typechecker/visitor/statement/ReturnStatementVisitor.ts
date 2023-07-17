@@ -1,6 +1,7 @@
 import type ts from "typescript";
 import { StatementVisitor } from ".";
 import { Type } from "../../../types";
+import { Bool3 } from "../../../utils/Bool3";
 import { NotImplementedException } from "../../../utils/NotImplementedException";
 import { TypeChecker } from "../../accept";
 import { TypecheckingFailure } from "../../TypecheckingFailure";
@@ -22,4 +23,9 @@ export const visit: StatementVisitor<ts.ReturnStatement> = async (node, env) => 
 	if (!retType.contains(t)) {
 		throw new TypecheckingFailure(`Cannot return type '${t}' from function with return type '${retType}'`, node);
 	}
+
+	return {
+		doesReturn: Bool3.True,
+		inferredType: t,
+	};
 };

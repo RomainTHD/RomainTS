@@ -21,6 +21,7 @@ export namespace TypeChecker {
 
 		const sorter: SorterInfo[] = [
 			{ name: "TypeLiteral", dir: "type" },
+			{ name: "Block", dir: "statement" },
 
 			{ suffix: "Token", dir: "token" },
 			{ suffix: "Expression", dir: "expression" },

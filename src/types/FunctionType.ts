@@ -4,7 +4,7 @@ type Param = { name: string; pType: Type };
 
 export class FunctionType implements Type {
 	private readonly _params: Param[];
-	private readonly _retType: Type;
+	private _retType: Type;
 
 	private constructor(params: Param[], retType: Type) {
 		this._params = params;
@@ -57,6 +57,10 @@ export class FunctionType implements Type {
 
 	public get retType(): Type {
 		return this._retType;
+	}
+
+	public set retType(newType: Type) {
+		this._retType = newType;
 	}
 
 	public static get(params: Param[], retType: Type): FunctionType {
