@@ -1,7 +1,15 @@
 import type ts from "typescript";
-import { TypeChecker, ValueSide } from "../..";
-import { AnyType, Type } from "../../../types";
+import {
+	TypeChecker,
+	ValueSide,
+} from "../..";
+import {
+	AnyType,
+	Type,
+} from "../../../types";
 import { Env } from "../../env";
+
+// TODO: Move to type directory?
 
 export async function visit(node: ts.PropertySignature, env: Env): Promise<{ mType: Type; name: string }> {
 	let mType: Type;

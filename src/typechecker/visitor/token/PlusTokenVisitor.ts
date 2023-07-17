@@ -1,14 +1,10 @@
-import ts from "typescript";
-import { BigIntType, NumberType, StringType, Type } from "../../../types";
+import type ts from "typescript";
+import { TokenVisitor } from ".";
+import { BigIntType, NumberType, StringType } from "../../../types";
 import { xor } from "../../../utils";
-import { Env } from "../../env";
 import { TypecheckingFailure } from "../../TypecheckingFailure";
 
-export async function visit(
-	node: ts.Token<ts.SyntaxKind.PlusToken>,
-	env: Env,
-	{ left, right }: { left: Type; right: Type },
-): Promise<Type> {
+export const visit: TokenVisitor<ts.SyntaxKind.PlusToken> = (node, env, { left, right }) => {
 	if (left instanceof StringType || right instanceof StringType) {
 		// `0 + "a"` => "0a"
 		return StringType.get();
@@ -22,4 +18,4 @@ export async function visit(
 		// Anything else is a number
 		return NumberType.get();
 	}
-}
+};

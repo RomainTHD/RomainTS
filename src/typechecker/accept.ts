@@ -17,21 +17,24 @@ export namespace TypeChecker {
 	}
 
 	function getVisitorPath(kind: string): string {
-		for (const end of [
-			"Token",
-			"Keyword",
-			"Expression",
-			"Statement",
-			"Declaration",
-			"Literal",
-			"Node",
-			"Type",
-			"Signature",
-		]) {
-			if (kind.endsWith(end)) {
+		type SpecialCase = { dir: string; name?: string; suffix?: string };
+
+		const specialCase: SpecialCase[] = [
+			{ name: "TypeLiteral", dir: "type" },
+			{ suffix: "Keyword", dir: "type" },
+		];
+
+		for (const end of ["Token", "Expression", "Statement", "Declaration", "Literal", "Node", "Type", "Signature"]) {
+			if (kind.endsWith(end) && !specialCase.some((e) => e.name === kind)) {
 				return `./visitor/${end.toLowerCase()}/${kind}Visitor`;
 			}
 		}
+
+		const isSpecialCase = (e: SpecialCase) => (e.name && e.name === kind) || (e.suffix && kind.endsWith(e.suffix));
+		if (specialCase.some(isSpecialCase)) {
+			return `./visitor/${specialCase.find(isSpecialCase)!.dir}/${kind}Visitor`;
+		}
+
 		return `./visitor/other/${kind}Visitor`;
 	}
 

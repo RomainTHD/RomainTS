@@ -1,7 +1,8 @@
 import ts from "typescript";
-import { Env, TypeChecker } from "../..";
+import { StatementVisitor } from ".";
+import { TypeChecker } from "../..";
 
-export async function visit(node: ts.ExpressionStatement, env: Env, firstStatement: boolean): Promise<void> {
+export const visit: StatementVisitor<ts.ExpressionStatement> = async (node, env, firstStatement) => {
 	if (firstStatement) {
 		if (node.expression.kind === ts.SyntaxKind.StringLiteral) {
 			const literal = node.expression as ts.StringLiteral;
@@ -11,4 +12,4 @@ export async function visit(node: ts.ExpressionStatement, env: Env, firstStateme
 		}
 	}
 	await TypeChecker.accept(node.expression, env);
-}
+};

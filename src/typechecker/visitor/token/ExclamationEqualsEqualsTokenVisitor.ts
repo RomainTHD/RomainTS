@@ -1,11 +1,7 @@
-import ts from "typescript";
-import { BooleanType, Type } from "../../../types";
-import { Env } from "../../env";
+import type ts from "typescript";
+import { TokenVisitor } from ".";
+import { BooleanType } from "../../../types";
 
-export async function visit(
-	node: ts.Token<ts.SyntaxKind.ExclamationEqualsEqualsToken>,
-	env: Env,
-	{ left, right }: { left: Type; right: Type },
-): Promise<Type> {
+export const visit: TokenVisitor<ts.SyntaxKind.ExclamationEqualsEqualsToken> = () => {
 	return BooleanType.get();
-}
+};

@@ -1,8 +1,9 @@
 import type ts from "typescript";
-import { Env, TypeChecker } from "../..";
+import { TypeVisitor } from ".";
+import { TypeChecker } from "../..";
 import { Type, UnionType } from "../../../types";
 
-export async function visit(node: ts.UnionTypeNode, env: Env): Promise<Type> {
+export const visit: TypeVisitor<ts.UnionTypeNode> = async (node, env) => {
 	const types: Type[] = [];
 	for (const subType of node.types) {
 		types.push(await TypeChecker.accept(subType, env));
@@ -14,4 +15,4 @@ export async function visit(node: ts.UnionTypeNode, env: Env): Promise<Type> {
 	} else {
 		return union;
 	}
-}
+};

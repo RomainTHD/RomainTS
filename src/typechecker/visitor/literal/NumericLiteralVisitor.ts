@@ -1,7 +1,7 @@
 import type ts from "typescript";
+import { LiteralVisitor } from ".";
 import { NumberType } from "../../../types";
-import { Env } from "../../env";
 
-export async function visit(node: ts.NumericLiteral, env: Env): Promise<NumberType> {
+export const visit: LiteralVisitor<ts.NumericLiteral> = () => {
 	return NumberType.get();
-}
+};

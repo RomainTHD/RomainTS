@@ -1,8 +1,7 @@
 import type ts from "typescript";
-import { Env } from "../..";
-import { FunctionType } from "../../../types";
+import { TypeVisitor } from ".";
 import { visitFunction } from "../shared/function";
 
-export async function visit(node: ts.FunctionTypeNode, env: Env): Promise<FunctionType> {
-	return visitFunction(env, node.parameters, node.type);
-}
+export const visit: TypeVisitor<ts.FunctionTypeNode> = async (node, env) => {
+	return await visitFunction(env, node.parameters, node.type);
+};

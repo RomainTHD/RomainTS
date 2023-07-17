@@ -1,6 +1,6 @@
 import ts from "typescript";
-import { Type } from "../../../types";
 import { Env, TypeChecker, ValueSide } from "../..";
+import { Type } from "../../../types";
 import accept = TypeChecker.accept;
 
 export async function visit(node: ts.BinaryExpression, env: Env): Promise<Type> {

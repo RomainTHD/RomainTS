@@ -1,11 +1,11 @@
-import ts from "typescript";
+import type ts from "typescript";
+import { StatementVisitor } from ".";
 import { Type } from "../../../types";
 import { NotImplementedException } from "../../../utils/NotImplementedException";
 import { TypeChecker } from "../../accept";
-import { Env } from "../../env";
 import { TypecheckingFailure } from "../../TypecheckingFailure";
 
-export async function visit(node: ts.ReturnStatement, env: Env): Promise<void> {
+export const visit: StatementVisitor<ts.ReturnStatement> = async (node, env) => {
 	let t: Type;
 	if (node.expression) {
 		t = await TypeChecker.accept(node.expression, env);
@@ -22,4 +22,4 @@ export async function visit(node: ts.ReturnStatement, env: Env): Promise<void> {
 	if (!retType.contains(t)) {
 		throw new TypecheckingFailure(`Cannot return type '${t}' from function with return type '${retType}'`, node);
 	}
-}
+};

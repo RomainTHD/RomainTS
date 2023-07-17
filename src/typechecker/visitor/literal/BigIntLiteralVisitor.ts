@@ -1,7 +1,7 @@
 import type ts from "typescript";
+import { LiteralVisitor } from ".";
 import { BigIntType } from "../../../types";
-import { Env } from "../../env";
 
-export async function visit(node: ts.BigIntLiteral, env: Env): Promise<BigIntType> {
+export const visit: LiteralVisitor<ts.BigIntLiteral> = () => {
 	return BigIntType.get();
-}
+};

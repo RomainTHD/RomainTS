@@ -1,12 +1,6 @@
-import ts from "typescript";
-import { Type } from "../../../types";
-import { Env } from "../../env";
-import { visitMultiplicativeOperatorOrHigherToken } from "../shared/token";
+import type ts from "typescript";
+import { TokenVisitor, visitMultiplicativeOperatorOrHigherToken } from ".";
 
-export async function visit(
-	node: ts.Token<ts.SyntaxKind.SlashToken>,
-	env: Env,
-	{ left, right }: { left: Type; right: Type },
-): Promise<Type> {
+export const visit: TokenVisitor<ts.SyntaxKind.SlashToken> = (node, env, { left, right }) => {
 	return visitMultiplicativeOperatorOrHigherToken(node, left, right);
-}
+};

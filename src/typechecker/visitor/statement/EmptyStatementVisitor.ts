@@ -1,4 +1,4 @@
 import type ts from "typescript";
-import { Env } from "../..";
+import { StatementVisitor } from ".";
 
-export async function visit(node: ts.EmptyStatement, env: Env): Promise<void> {}
+export const visit: StatementVisitor<ts.EmptyStatement> = () => {};

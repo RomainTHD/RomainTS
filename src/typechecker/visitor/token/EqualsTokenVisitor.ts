@@ -1,4 +1,4 @@
-import ts from "typescript";
+import type ts from "typescript";
 import { Type } from "../../../types";
 import { LoggerFactory } from "../../../utils/Logger";
 import { Env, MutabilityModifier } from "../../env";
@@ -7,6 +7,8 @@ import { TypecheckingFailure } from "../../TypecheckingFailure";
 const logger = LoggerFactory.get("EqualsTokenVisitor");
 
 const nonWritableGlobal = ["undefined", "NaN", "Infinity"];
+
+// TODO: Refactor this visitor signature
 
 export async function visit(
 	node: ts.Token<ts.SyntaxKind.EqualsToken>,
