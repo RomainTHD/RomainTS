@@ -1,5 +1,5 @@
 import type ts from "typescript";
-import { AnyType, Type } from "../../../types";
+import { Type, UndefinedType } from "../../../types";
 import { LoggerFactory } from "../../../utils/Logger";
 import { Env, ValueSide } from "../../env";
 import { TypecheckingFailure } from "../../TypecheckingFailure";
@@ -18,8 +18,7 @@ export async function visit(node: ts.Identifier, env: Env): Promise<string | Typ
 				throw new TypecheckingFailure(`Identifier '${node.text}' not found in scope`, node);
 			} else {
 				logger.warn(`Identifier '${node.text}' not found in scope`);
-				// FIXME: `any`, `unknown`, `never` or `undefined`?
-				return AnyType.get();
+				return UndefinedType.get();
 			}
 		}
 		return value.vType;
