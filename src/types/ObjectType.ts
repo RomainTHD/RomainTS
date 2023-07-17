@@ -39,7 +39,10 @@ export class ObjectType implements Type {
 	}
 
 	public toString(): string {
-		return `{${this.members.map((member) => `${member.name}: ${member.mType}`).join(", ")}}`;
+		if (this.members.length === 0) {
+			return "{}";
+		}
+		return `{ ${this.members.map((member) => `${member.name}: ${member.mType}`).join(", ")} }`;
 	}
 
 	public add(member: Member): void {

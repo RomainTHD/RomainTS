@@ -35,6 +35,8 @@ export class UnionType implements Type {
 	}
 
 	public contains<T extends Type>(other: T): boolean {
+		assert(other !== null && other !== undefined, `Union type must be a Type, is actually '${other}'`);
+
 		let union: UnionType;
 		if (other instanceof UnionType) {
 			union = other;

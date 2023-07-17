@@ -1,6 +1,7 @@
 import type ts from "typescript";
 import { Env, MutabilityModifier, TypeChecker, TypecheckingFailure, ValueSide } from "../..";
 import { AnyType, Type } from "../../../types";
+import { UndefinedType } from "../../../types/UndefinedType";
 import { VoidType } from "../../../types/VoidType";
 import { Bool3 } from "../../../utils/Bool3";
 import { NotImplementedException } from "../../../utils/NotImplementedException";
@@ -39,9 +40,9 @@ export async function visit(node: ts.FunctionDeclaration, env: Env): Promise<Typ
 
 	if (
 		retData.doesReturn !== Bool3.True &&
-		!(fType.retType.equals(VoidType.get()) || fType.retType.equals(AnyType.get()))
+		![VoidType.get(), AnyType.get(), UndefinedType.get()].some((t) => t.equals(fType.retType))
 	) {
-		throw new TypecheckingFailure(`Function '${name}' must return a value`, node);
+		throw new TypecheckingFailure(`Function '${name}' must return a value of type '${fType.retType}'`, node);
 	}
 
 	env.popReturnType();
