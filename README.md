@@ -13,6 +13,6 @@ on it.
 tsx ./src/main.ts -i <file.ts>
 ```
 
-### Status
+### Project status
 
-See the "Projects" tab in GitHub.
+See the "Wiki" tab in GitHub.
