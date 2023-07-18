@@ -1,2 +1,36 @@
-<textarea #textArea></textarea>
-<button (click)="onClick()">Run</button>
+<mat-card>
+	<mat-card-title>
+		<mat-card-header>Click the button below to run your code</mat-card-header>
+	</mat-card-title>
+	<mat-card-content>
+		<div class="editor-container">
+			<ngx-monaco-editor [options]="editorOptions" [(ngModel)]="code"></ngx-monaco-editor>
+		</div>
+		<button mat-button (click)="onClick()">Run</button>
+		<br />
+		<mat-card>
+			<mat-card-title>
+				<mat-card-header>Code status</mat-card-header>
+			</mat-card-title>
+			<mat-card-content>
+				<span>{{ ok === null ? "No data" : ok ? "Typechecking successful!" : "Typechecking failed!" }}</span>
+			</mat-card-content>
+		</mat-card>
+		<mat-card>
+			<mat-card-title>
+				<mat-card-header>stdout</mat-card-header>
+			</mat-card-title>
+			<mat-card-content>
+				<pre>{{ stdout }}</pre>
+			</mat-card-content>
+		</mat-card>
+		<mat-card>
+			<mat-card-title>
+				<mat-card-header>stderr</mat-card-header>
+			</mat-card-title>
+			<mat-card-content>
+				<pre>{{ stderr }}</pre>
+			</mat-card-content>
+		</mat-card>
+	</mat-card-content>
+</mat-card>

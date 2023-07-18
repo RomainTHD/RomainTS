@@ -1,17 +1,25 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from "@angular/core";
-import { FormsModule } from "@angular/forms";
-import { MatInputModule } from "@angular/material/input";
-import { MatListModule } from "@angular/material/list";
-import { MatToolbarModule } from "@angular/material/toolbar";
+import { NgModule } from "@angular/core";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatCardModule } from "@angular/material/card";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { MonacoEditorModule } from "@materia-ui/ngx-monaco-editor";
 import { AppComponent } from "./app.component";
 
 @NgModule({
 	declarations: [AppComponent],
-	imports: [BrowserModule, FormsModule, MatListModule, BrowserAnimationsModule, MatToolbarModule, MatInputModule],
+	imports: [
+		BrowserModule,
+		BrowserAnimationsModule,
+		FormsModule,
+		ReactiveFormsModule,
+		MatCardModule,
+		MatButtonModule,
+		MonacoEditorModule,
+	],
 	providers: [],
 	bootstrap: [AppComponent],
-	schemas: [CUSTOM_ELEMENTS_SCHEMA],
+	schemas: [],
 })
 export class AppModule {}
