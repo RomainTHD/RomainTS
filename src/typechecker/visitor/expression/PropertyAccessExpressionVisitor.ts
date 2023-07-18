@@ -1,9 +1,12 @@
 import type ts from "typescript";
 import { ExpressionVisitor } from ".";
-import { ArrayType, ObjectType, RawObjectType, Type, UndefinedType } from "../../../types";
+import { ObjectType, Type, UndefinedType } from "../../../types";
+import { LoggerFactory } from "../../../utils/Logger";
 import { TypeChecker } from "../../accept";
 import { ValueSide } from "../../env";
 import { TypecheckingFailure } from "../../TypecheckingFailure";
+
+const logger = LoggerFactory.create("PropertyAccessExpressionVisitor");
 
 export const visit: ExpressionVisitor<ts.PropertyAccessExpression> = async (node, env) => {
 	const expr: Type = await TypeChecker.accept(node.expression, env);
@@ -12,7 +15,7 @@ export const visit: ExpressionVisitor<ts.PropertyAccessExpression> = async (node
 	const prop: string = await TypeChecker.accept(node.name, env);
 	env.setValueSide(ValueSide.RValue);
 
-	if (!(expr instanceof ObjectType || expr instanceof RawObjectType || expr instanceof ArrayType)) {
+	if (!(expr instanceof ObjectType)) {
 		throw new TypecheckingFailure(`Property access on non-object type '${expr}'`, node);
 	}
 
@@ -23,6 +26,7 @@ export const visit: ExpressionVisitor<ts.PropertyAccessExpression> = async (node
 	if (env.config.strictMode) {
 		throw new TypecheckingFailure(`Property '${prop}' does not exist on type '${expr}'`, node);
 	} else {
+		logger.warn(`Property '${prop}' does not exist on type '${expr}'`);
 		return UndefinedType.create();
 	}
 };
