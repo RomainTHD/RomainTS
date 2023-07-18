@@ -22,7 +22,7 @@ export class AppComponent {
 
 	public stdout = "";
 	public stderr = "";
-	public ok: boolean | null = null;
+	public status: "none" | "running" | "success" | "failure" = "none";
 
 	public constructor(private readonly appService: AppService) {}
 
@@ -35,10 +35,11 @@ export class AppComponent {
 	}
 
 	public onClick(): void {
+		this.status = "running";
 		this.appService.run(this.code).then(({ stdout, stderr, ok }) => {
 			this.stdout = stdout;
 			this.stderr = stderr;
-			this.ok = ok;
+			this.status = ok ? "success" : "failure";
 		});
 	}
 }

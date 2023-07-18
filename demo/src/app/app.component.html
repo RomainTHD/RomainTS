@@ -6,14 +6,17 @@
 		<div class="editor-container">
 			<ngx-monaco-editor [options]="editorOptions" [(ngModel)]="code"></ngx-monaco-editor>
 		</div>
-		<button mat-button (click)="onClick()">Run</button>
+		<button mat-button mat-raised-button color="accent" (click)="onClick()">Run</button>
 		<br />
 		<mat-card>
 			<mat-card-title>
 				<mat-card-header>Code status</mat-card-header>
 			</mat-card-title>
 			<mat-card-content>
-				<span>{{ ok === null ? "No data" : ok ? "Typechecking successful!" : "Typechecking failed!" }}</span>
+				<span *ngIf="status == 'none'">No data</span>
+				<span *ngIf="status == 'running'">Running...</span>
+				<span *ngIf="status == 'success'">Typechecking successful!</span>
+				<span *ngIf="status == 'failure'">Typechecking failed!</span>
 			</mat-card-content>
 		</mat-card>
 		<mat-card>
