@@ -38,10 +38,10 @@ export namespace TypeChecker {
 
 		const sorterInfo = sorter.find((e) => (e.name && e.name === kindEnum) || (e.suffix && kind.endsWith(e.suffix)));
 		if (sorterInfo) {
-			return `./visitor/${sorterInfo.dir}/${kind}Visitor`;
+			return `${sorterInfo.dir}/${kind}`;
 		}
 
-		return `./visitor/other/${kind}Visitor`;
+		return `other/${kind}`;
 	}
 
 	// Some enum values like `FirstAssignment` and `LastAssignment` are not unique and will be overwritten.
@@ -58,7 +58,7 @@ export namespace TypeChecker {
 
 		let visitorModule: { visit: (node: ts.Node, env: Env, data: unknown) => Promise<T> };
 		try {
-			visitorModule = await import(getVisitorPath(kind, node.kind));
+			visitorModule = await import("./visitor/" + getVisitorPath(kind, node.kind) + "Visitor");
 		} catch (e: unknown) {
 			throw new NotImplementedException(`Couldn't find visitor for ${kind}: ${e}`);
 		}
