@@ -1,4 +1,7 @@
 import { Injectable } from "@angular/core";
+import { AST } from "../../../src/AST";
+import { TypeChecker } from "../../../src/typechecker";
+import { LoggerFactory } from "../../../src/utils/Logger";
 
 @Injectable({
 	providedIn: "root",
@@ -6,8 +9,14 @@ import { Injectable } from "@angular/core";
 export class AppService {
 	public constructor() {}
 
-	public run(content: string): void {
-		// @ts-ignore
-		import("../../../src/main");
+	public async run(content: string): Promise<void> {
+		const node = AST.parse(content);
+		const logger = LoggerFactory.get("Demo");
+		const res = await TypeChecker.typecheck(node);
+		if (res) {
+			logger.success("Typechecking successful!");
+		} else {
+			logger.error("Typechecking failed!");
+		}
 	}
 }
