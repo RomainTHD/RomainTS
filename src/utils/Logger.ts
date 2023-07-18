@@ -2,6 +2,8 @@ import chalk from "chalk";
 import * as console from "console";
 
 export module LoggerFactory {
+	let ownConsole = console;
+
 	export class Logger {
 		private static totalIndent = 0;
 
@@ -12,7 +14,7 @@ export module LoggerFactory {
 		}
 
 		public group(): void {
-			console.group();
+			ownConsole.group();
 			Logger.totalIndent++;
 		}
 
@@ -21,7 +23,7 @@ export module LoggerFactory {
 		}
 
 		public groupEnd(): void {
-			console.groupEnd();
+			ownConsole.groupEnd();
 			Logger.totalIndent--;
 		}
 
@@ -36,24 +38,24 @@ export module LoggerFactory {
 		}
 
 		public debug(...args: unknown[]): void {
-			console.debug(chalk.gray(...args));
+			ownConsole.debug(chalk.gray(...args));
 		}
 
 		public success(...args: unknown[]): void {
-			console.info(chalk.green(...args));
+			ownConsole.info(chalk.green(...args));
 		}
 
 		public info(...args: unknown[]): void {
-			console.info(chalk.blue(...args));
+			ownConsole.info(chalk.blue(...args));
 		}
 
 		public warn(...args: unknown[]): void {
-			console.warn(chalk.yellow(...args));
+			ownConsole.warn(chalk.yellow(...args));
 		}
 
 		public error(...args: unknown[]): void {
 			this.resetIndent();
-			console.error(chalk.red(...args));
+			ownConsole.error(chalk.red(...args));
 		}
 	}
 
@@ -63,5 +65,9 @@ export module LoggerFactory {
 		} else {
 			return new Logger(ref.name);
 		}
+	}
+
+	export function setConsole(newConsole: typeof console): void {
+		ownConsole = newConsole;
 	}
 }
