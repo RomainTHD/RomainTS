@@ -41,4 +41,14 @@ describe("EqualsTokenVisitor", () => {
 		`;
 		await expect(TypeChecker.accept(AST.parse(content), Env.get())).rejects.toThrowError(TypecheckingFailure);
 	});
+
+	it("should not work for rvalue assignments", async () => {
+		const content = "0 = 1;";
+		await expect(TypeChecker.accept(AST.parse(content), Env.get())).rejects.toThrowError(TypecheckingFailure);
+	});
+
+	it("should not work for assignments without expression", async () => {
+		const content = "let x = ;";
+		await expect(TypeChecker.accept(AST.parse(content), Env.get())).rejects.toThrowError(TypecheckingFailure);
+	});
 });

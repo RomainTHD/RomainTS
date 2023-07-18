@@ -25,6 +25,16 @@ export async function visit(
 			throw new TypecheckingFailure(`Type '${right}' is not assignable to type '${variable.vType}'`, node);
 		}
 	} else {
+		if (typeof left !== "string") {
+			// `0 = ...;`
+
+			// FIXME: Use a cleaner way to check if `left` is a LValue or a RValue
+			throw new TypecheckingFailure(
+				"The left-hand side of an assignment expression must be a variable or a property access",
+				node,
+			);
+		}
+
 		// `x = 0` where `x` is not declared. Valid in non-strict mode
 		if (env.config.strictMode) {
 			throw new TypecheckingFailure(`Variable ${left} not found`, node);

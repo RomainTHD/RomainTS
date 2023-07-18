@@ -7,6 +7,11 @@ import { TypecheckingFailure } from "../../TypecheckingFailure";
 const logger = LoggerFactory.get("Identifier");
 
 export async function visit(node: ts.Identifier, env: Env): Promise<string | Type> {
+	if (node.text.trim() === "") {
+		// `x = ;`
+		throw new TypecheckingFailure("Expected an expression", node);
+	}
+
 	if (env.getValueSide() === ValueSide.LValue) {
 		// `x = 0`: `x` is a LValue
 		return node.text;
