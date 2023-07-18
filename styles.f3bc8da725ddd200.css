@@ -580,7 +580,8 @@ html {
   text-transform: var(--mdc-typography-button-text-transform, none);
 }
 
-html, body {
+html,
+body {
   height: 100%;
 }
 
