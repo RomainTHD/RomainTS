@@ -23,7 +23,7 @@ export enum ValueSide {
 }
 
 export class Env {
-	private static logger = LoggerFactory.get("Env");
+	private static logger = LoggerFactory.create("Env");
 	private static readonly hideBuiltins = true;
 
 	private readonly globals: Map<string, Value> = new Map();

@@ -4,7 +4,7 @@ import { LoggerFactory } from "../../../utils/Logger";
 import { Env, ValueSide } from "../../env";
 import { TypecheckingFailure } from "../../TypecheckingFailure";
 
-const logger = LoggerFactory.get("Identifier");
+const logger = LoggerFactory.create("Identifier");
 
 export async function visit(node: ts.Identifier, env: Env): Promise<string | Type> {
 	if (node.text.trim() === "") {

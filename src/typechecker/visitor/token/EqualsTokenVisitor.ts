@@ -4,7 +4,7 @@ import { LoggerFactory } from "../../../utils/Logger";
 import { Env } from "../../env";
 import { TypecheckingFailure } from "../../TypecheckingFailure";
 
-const logger = LoggerFactory.get("EqualsTokenVisitor");
+const logger = LoggerFactory.create("EqualsTokenVisitor");
 
 export async function visit(
 	node: ts.Token<ts.SyntaxKind.EqualsToken>,

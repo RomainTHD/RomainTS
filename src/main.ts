@@ -6,7 +6,7 @@ import { LoggerFactory } from "./utils/Logger";
 const content = CLI.getInputContent();
 const node = AST.parse(content);
 
-const logger = LoggerFactory.get("Main");
+const logger = LoggerFactory.create("Main");
 const res = await TypeChecker.typecheck(node);
 if (res) {
 	logger.success("Typechecking successful!");

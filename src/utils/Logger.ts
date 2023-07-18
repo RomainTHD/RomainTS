@@ -59,7 +59,7 @@ export module LoggerFactory {
 		}
 	}
 
-	export function get<T>(ref: (new () => T) | string): Logger {
+	export function create<T>(ref: (new () => T) | string): Logger {
 		if (typeof ref === "string") {
 			return new Logger(ref);
 		} else {

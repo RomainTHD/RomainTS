@@ -48,7 +48,7 @@ export namespace TypeChecker {
 	// This is not a problem, because we don't need them anyway, they are just there to make the enum more readable
 	const SyntaxKindNoDuplicates = removeSyntaxKindDuplicates();
 
-	const logger = LoggerFactory.get("TypeChecker");
+	const logger = LoggerFactory.create("TypeChecker");
 
 	export async function accept<T>(node: ts.Node, env: Env, data?: unknown): Promise<T> {
 		logger.indent();

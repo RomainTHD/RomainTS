@@ -4,7 +4,7 @@ import { LoggerFactory } from "../utils/Logger";
 import { RawObjectType } from "./RawObjectType";
 
 export class ObjectType extends RawObjectType {
-	private static readonly logger = LoggerFactory.get("ObjectType");
+	private static readonly logger = LoggerFactory.create("ObjectType");
 
 	private readonly _members: Member[] = [];
 

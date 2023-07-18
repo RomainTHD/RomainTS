@@ -7,7 +7,7 @@ program.parse();
 
 export module CLI {
 	const options = program.opts();
-	const logger = LoggerFactory.get("CLI");
+	const logger = LoggerFactory.create("CLI");
 
 	export function getInputContent(): string {
 		try {
