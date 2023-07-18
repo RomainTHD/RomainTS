@@ -1,5 +1,6 @@
-import type { Type } from ".";
+import type { Member, Type } from ".";
 import { NumberType, UnionType } from ".";
+import { NotImplementedException } from "../utils/NotImplementedException";
 import { ObjectType } from "./ObjectType";
 
 export class ArrayType extends ObjectType {
@@ -43,7 +44,13 @@ export class ArrayType extends ObjectType {
 		}
 	}
 
-	public static override create(baseType: Type): ArrayType {
-		return new ArrayType(baseType);
+	public static override create(baseTypeOrMembers?: Type | Member[]): ArrayType {
+		if (baseTypeOrMembers === undefined) {
+			throw new NotImplementedException("ArrayType.create() with no arguments");
+		}
+		if (Array.isArray(baseTypeOrMembers)) {
+			throw new NotImplementedException("ArrayType.create() with members");
+		}
+		return new ArrayType(baseTypeOrMembers);
 	}
 }

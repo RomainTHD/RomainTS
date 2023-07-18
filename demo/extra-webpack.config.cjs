@@ -6,6 +6,8 @@ module.exports = {
 	},
 	resolve: {
 		fallback: {
+			chalk: path.resolve(__dirname, "polyfills/chalk.cjs"),
+			commander: path.resolve(__dirname, "polyfills/commander.cjs"),
 			console: path.resolve(__dirname, "polyfills/console.cjs"),
 			child_process: false,
 			events: false,

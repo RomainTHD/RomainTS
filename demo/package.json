@@ -40,6 +40,7 @@
 		"monaco-editor": "^0.40.0",
 		"rxjs": "~7.8.1",
 		"tslib": "^2.6.0",
+		"typescript": "~5.1.6",
 		"zone.js": "~0.13.1"
 	},
 	"devDependencies": {
@@ -63,7 +64,6 @@
 		"eslint-plugin-prettier": "^5.0.0",
 		"prettier": "^3.0.0",
 		"start-server-and-test": "^2.0.0",
-		"ts-loader": "^9.4.4",
-		"typescript": "~5.1.6"
+		"ts-loader": "^9.4.4"
 	}
 }

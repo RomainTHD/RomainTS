@@ -1,8 +1,11 @@
-name: Demo app deployment on GitHub pages
+name: Deploy demo app on GitHub pages
 
 on:
     push:
         branches: [ master ]
+
+permissions:
+    contents: write
 
 jobs:
     deploy:

@@ -81,7 +81,7 @@ export class ObjectType extends RawObjectType {
 		return this._members;
 	}
 
-	public static override create(members: Member[]): ObjectType {
-		return new ObjectType(members);
+	public static override create(members?: Member[]): ObjectType {
+		return new ObjectType(members ?? []);
 	}
 }

@@ -12,10 +12,16 @@
 		"module": "ES2022",
 		"moduleResolution": "node",
 		"noFallthroughCasesInSwitch": true,
+		"noImplicitAny": false,
 		"noImplicitOverride": true,
 		"noImplicitReturns": true,
 		"noPropertyAccessFromIndexSignature": true,
 		"outDir": "./dist/out-romaints-demo",
+		"paths": {
+			"chalk": ["../polyfills/chalk.cjs"],
+			"commander": ["../polyfills/commander.cjs"],
+			"typescript": ["../node_modules/typescript/lib/typescript.js"]
+		},
 		"rootDir": "..",
 		"sourceMap": true,
 		"strict": true,
