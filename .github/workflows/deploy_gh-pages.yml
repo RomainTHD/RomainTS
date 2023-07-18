@@ -2,7 +2,7 @@ name: Deploy demo app on GitHub pages
 
 on:
     push:
-        branches: [ master ]
+        branches: [master]
 
 permissions:
     contents: write
@@ -17,26 +17,26 @@ jobs:
 
         strategy:
             matrix:
-                node-version: [ 16.x ]
+                node-version: [16.x]
 
         steps:
-            -   uses: actions/checkout@v3
+            - uses: actions/checkout@v3
 
-            -   name: Use NodeJS ${{ matrix.node-version }}
-                uses: actions/setup-node@v3
-                with:
-                    node-version: ${{ matrix.node-version }}
-                    cache: "npm"
+            - name: Use NodeJS ${{ matrix.node-version }}
+              uses: actions/setup-node@v3
+              with:
+                  node-version: ${{ matrix.node-version }}
+                  cache: "npm"
 
-            -   name: Set git user
-                run: |
-                    git config --global user.email "romain-thd+github@protonmail.com"
-                    git config --global user.name "RomainTHD"
+            - name: Set git user
+              run: |
+                  git config --global user.email "romain-thd+github@protonmail.com"
+                  git config --global user.name "RomainTHD"
 
-            -   name: Install dependencies
-                run: npm ci
+            - name: Install dependencies
+              run: npm ci
 
-            -   name: Run deployment script
-                run: npm run deploy:gh-pages
-                env:
-                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            - name: Run deployment script
+              run: npm run deploy:gh-pages
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
