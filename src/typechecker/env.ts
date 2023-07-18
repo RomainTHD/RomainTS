@@ -1,4 +1,4 @@
-import { NumberType, Type, UndefinedType } from "../types";
+import { NumberType, ObjectType, Type, UndefinedType } from "../types";
 import { assert } from "../utils";
 import { LoggerFactory } from "../utils/Logger";
 
@@ -24,6 +24,7 @@ export enum ValueSide {
 
 export class Env {
 	private static logger = LoggerFactory.get("Env");
+	private static readonly hideBuiltins = true;
 
 	private readonly globals: Map<string, Value> = new Map();
 	private readonly scopes: Scope[] = [new Map()];
@@ -37,7 +38,7 @@ export class Env {
 		this.populateEnv();
 	}
 
-	public static get(config?: Partial<EnvConfig>): Env {
+	public static create(config?: Partial<EnvConfig>): Env {
 		return new Env({
 			allowUnreachableCode: config?.allowUnreachableCode ?? true,
 			noImplicitAny: config?.noImplicitAny ?? false,
@@ -53,7 +54,7 @@ export class Env {
 		this.scopes.pop();
 	}
 
-	public get(name: string): Value | null {
+	public lookup(name: string): Value | null {
 		assert(name, `Name is unset, value is '${name}'`);
 		if (this.globals.has(name)) {
 			return this.globals.get(name)!;
@@ -103,7 +104,7 @@ export class Env {
 		Env.logger.debug("Globals:");
 		Env.logger.indent();
 		for (const [name, value] of this.globals) {
-			if (!value.builtin) {
+			if (Env.hideBuiltins && !value.builtin) {
 				Env.logger.debug(`${name}(${value.isMutable ? "L" : "C"}): ${value.vType}`);
 			}
 		}
@@ -148,5 +149,14 @@ export class Env {
 		this.add("undefined", { vType: UndefinedType.create(), isLocal: false, isMutable: false, builtin: true });
 		this.add("NaN", { vType: NumberType.create(), isLocal: false, isMutable: false, builtin: true });
 		this.add("Infinity", { vType: NumberType.create(), isLocal: false, isMutable: false, builtin: true });
+
+		const windowType = ObjectType.create(
+			Array.from(this.globals.entries()).map(([k, v]) => ({
+				name: k,
+				mType: v.vType,
+			})),
+		);
+		this.add("window", { vType: windowType, isLocal: false, isMutable: false, builtin: true });
+		windowType.add({ mType: windowType, name: "window" });
 	}
 }
