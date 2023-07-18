@@ -17,7 +17,7 @@ export class BigIntType implements Type {
 		return "bigint";
 	}
 
-	public static get(): BigIntType {
+	public static create(): BigIntType {
 		return this.instance;
 	}
 }

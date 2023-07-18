@@ -8,15 +8,15 @@ import { TypecheckingFailure } from "../../TypecheckingFailure";
 describe("FunctionTypeVisitor", () => {
 	it("should work for function types", async () => {
 		const content = "let f: (a: number, b: string) => number;";
-		const env = Env.get();
+		const env = Env.create();
 		await TypeChecker.accept(AST.parse(content), env);
-		expect(env.get("f")?.vType).toEqual(
-			FunctionType.get(
+		expect(env.lookup("f")?.vType).toEqual(
+			FunctionType.create(
 				[
-					{ name: "a", pType: NumberType.get() },
-					{ name: "b", pType: StringType.get() },
+					{ name: "a", pType: NumberType.create() },
+					{ name: "b", pType: StringType.create() },
 				],
-				NumberType.get(),
+				NumberType.create(),
 			),
 		);
 	});
@@ -29,7 +29,7 @@ describe("FunctionTypeVisitor", () => {
 		}
 		f = g;
 		`;
-		await TypeChecker.accept(AST.parse(content), Env.get());
+		await TypeChecker.accept(AST.parse(content), Env.create());
 	});
 
 	it("should not work for mismatching function arguments type", async () => {
@@ -40,7 +40,7 @@ describe("FunctionTypeVisitor", () => {
 		}
 		f = g;
 		`;
-		await expect(TypeChecker.accept(AST.parse(content), Env.get())).rejects.toThrowError(TypecheckingFailure);
+		await expect(TypeChecker.accept(AST.parse(content), Env.create())).rejects.toThrowError(TypecheckingFailure);
 	});
 
 	it("should not work for mismatching function arguments count", async () => {
@@ -51,7 +51,7 @@ describe("FunctionTypeVisitor", () => {
 		}
 		f = g;
 		`;
-		await expect(TypeChecker.accept(AST.parse(content), Env.get())).rejects.toThrowError(TypecheckingFailure);
+		await expect(TypeChecker.accept(AST.parse(content), Env.create())).rejects.toThrowError(TypecheckingFailure);
 	});
 
 	it("should not work for mismatching function return type", async () => {
@@ -62,6 +62,6 @@ describe("FunctionTypeVisitor", () => {
 		}
 		f = g;
 		`;
-		await expect(TypeChecker.accept(AST.parse(content), Env.get())).rejects.toThrowError(TypecheckingFailure);
+		await expect(TypeChecker.accept(AST.parse(content), Env.create())).rejects.toThrowError(TypecheckingFailure);
 	});
 });

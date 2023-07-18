@@ -1,21 +1,19 @@
 import { describe, expect, it } from "vitest";
-import { NumberType } from "./NumberType";
-import { ObjectType } from "./ObjectType";
-import { StringType } from "./StringType";
+import { NumberType, ObjectType, StringType } from ".";
 
-describe("main", () => {
+describe("ObjectType", () => {
 	it("should be equal", () => {
 		expect(
-			ObjectType.get([
+			ObjectType.create([
 				{
 					name: "a",
-					mType: NumberType.get(),
+					mType: NumberType.create(),
 				},
 			]).equals(
-				ObjectType.get([
+				ObjectType.create([
 					{
 						name: "a",
-						mType: NumberType.get(),
+						mType: NumberType.create(),
 					},
 				]),
 			),
@@ -24,16 +22,16 @@ describe("main", () => {
 
 	it("should respect property name", () => {
 		expect(
-			ObjectType.get([
+			ObjectType.create([
 				{
 					name: "a",
-					mType: NumberType.get(),
+					mType: NumberType.create(),
 				},
 			]).equals(
-				ObjectType.get([
+				ObjectType.create([
 					{
 						name: "b",
-						mType: NumberType.get(),
+						mType: NumberType.create(),
 					},
 				]),
 			),
@@ -42,24 +40,24 @@ describe("main", () => {
 
 	it("should not have a key order", () => {
 		expect(
-			ObjectType.get([
+			ObjectType.create([
 				{
 					name: "a",
-					mType: NumberType.get(),
+					mType: NumberType.create(),
 				},
 				{
 					name: "b",
-					mType: StringType.get(),
+					mType: StringType.create(),
 				},
 			]).equals(
-				ObjectType.get([
+				ObjectType.create([
 					{
 						name: "b",
-						mType: StringType.get(),
+						mType: StringType.create(),
 					},
 					{
 						name: "a",
-						mType: NumberType.get(),
+						mType: NumberType.create(),
 					},
 				]),
 			),
@@ -68,16 +66,16 @@ describe("main", () => {
 
 	it("should respect property type", () => {
 		expect(
-			ObjectType.get([
+			ObjectType.create([
 				{
 					name: "a",
-					mType: NumberType.get(),
+					mType: NumberType.create(),
 				},
 			]).equals(
-				ObjectType.get([
+				ObjectType.create([
 					{
 						name: "a",
-						mType: StringType.get(),
+						mType: StringType.create(),
 					},
 				]),
 			),
@@ -86,20 +84,20 @@ describe("main", () => {
 
 	it("should contain smaller objects", () => {
 		expect(
-			ObjectType.get([
+			ObjectType.create([
 				{
 					name: "a",
-					mType: NumberType.get(),
+					mType: NumberType.create(),
 				},
 				{
 					name: "b",
-					mType: StringType.get(),
+					mType: StringType.create(),
 				},
 			]).contains(
-				ObjectType.get([
+				ObjectType.create([
 					{
 						name: "a",
-						mType: NumberType.get(),
+						mType: NumberType.create(),
 					},
 				]),
 			),
@@ -108,20 +106,20 @@ describe("main", () => {
 
 	it("should not contain bigger objects", () => {
 		expect(
-			ObjectType.get([
+			ObjectType.create([
 				{
 					name: "a",
-					mType: NumberType.get(),
+					mType: NumberType.create(),
 				},
 			]).contains(
-				ObjectType.get([
+				ObjectType.create([
 					{
 						name: "a",
-						mType: NumberType.get(),
+						mType: NumberType.create(),
 					},
 					{
 						name: "b",
-						mType: StringType.get(),
+						mType: StringType.create(),
 					},
 				]),
 			),
@@ -130,32 +128,32 @@ describe("main", () => {
 
 	it("should not contain different objects", () => {
 		expect(
-			ObjectType.get([
+			ObjectType.create([
 				{
 					name: "a",
-					mType: NumberType.get(),
+					mType: NumberType.create(),
 				},
 			]).contains(
-				ObjectType.get([
+				ObjectType.create([
 					{
 						name: "b",
-						mType: NumberType.get(),
+						mType: NumberType.create(),
 					},
 				]),
 			),
 		).toBe(false);
 
 		expect(
-			ObjectType.get([
+			ObjectType.create([
 				{
 					name: "a",
-					mType: NumberType.get(),
+					mType: NumberType.create(),
 				},
 			]).contains(
-				ObjectType.get([
+				ObjectType.create([
 					{
 						name: "a",
-						mType: StringType.get(),
+						mType: StringType.create(),
 					},
 				]),
 			),

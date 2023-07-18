@@ -7,7 +7,7 @@ import { Bool3 } from "../../../utils/Bool3";
 
 export const visit: StatementVisitor<ts.Block> = async (node, env) => {
 	let doesReturn = Bool3.False;
-	let inferredType = UnionType.get([]);
+	let inferredType = UnionType.create([]);
 
 	for (const stmt of node.statements) {
 		const res: StatementReturn = await TypeChecker.accept(stmt, env);

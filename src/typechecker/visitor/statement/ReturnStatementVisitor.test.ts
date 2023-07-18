@@ -11,7 +11,7 @@ describe("ReturnStatementVisitor", () => {
 			return 0;
 		}
 		`;
-		await TypeChecker.accept(AST.parse(content), Env.get());
+		await TypeChecker.accept(AST.parse(content), Env.create());
 	});
 
 	it("should not work for invalid return", async () => {
@@ -20,6 +20,6 @@ describe("ReturnStatementVisitor", () => {
 			return 0;
 		}
 		`;
-		await expect(TypeChecker.accept(AST.parse(content), Env.get())).rejects.toThrowError(TypecheckingFailure);
+		await expect(TypeChecker.accept(AST.parse(content), Env.create())).rejects.toThrowError(TypecheckingFailure);
 	});
 });

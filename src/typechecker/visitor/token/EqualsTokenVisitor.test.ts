@@ -11,9 +11,9 @@ describe("EqualsTokenVisitor", () => {
 		let x = 0;
 		x = 1;
 		`;
-		const env = Env.get();
+		const env = Env.create();
 		await TypeChecker.accept(AST.parse(content), env);
-		expect(env.get("x")?.vType).toEqual(NumberType.get());
+		expect(env.lookup("x")?.vType).toEqual(NumberType.create());
 	});
 
 	it("should work for expression assignment", async () => {
@@ -21,9 +21,9 @@ describe("EqualsTokenVisitor", () => {
 		let x = 0;
 		let y = x = 1;
 		`;
-		const env = Env.get();
+		const env = Env.create();
 		await TypeChecker.accept(AST.parse(content), env);
-		expect(env.get("x")?.vType).toEqual(NumberType.get());
+		expect(env.lookup("x")?.vType).toEqual(NumberType.create());
 	});
 
 	it("should not work for assignment to const", async () => {
@@ -31,7 +31,7 @@ describe("EqualsTokenVisitor", () => {
 		const x = 0;
 		x = 1;
 		`;
-		await expect(TypeChecker.accept(AST.parse(content), Env.get())).rejects.toThrowError(TypecheckingFailure);
+		await expect(TypeChecker.accept(AST.parse(content), Env.create())).rejects.toThrowError(TypecheckingFailure);
 	});
 
 	it("should not work for mismatching types", async () => {
@@ -39,16 +39,16 @@ describe("EqualsTokenVisitor", () => {
 		let x = 0;
 		x = "s";
 		`;
-		await expect(TypeChecker.accept(AST.parse(content), Env.get())).rejects.toThrowError(TypecheckingFailure);
+		await expect(TypeChecker.accept(AST.parse(content), Env.create())).rejects.toThrowError(TypecheckingFailure);
 	});
 
 	it("should not work for rvalue assignments", async () => {
 		const content = "0 = 1;";
-		await expect(TypeChecker.accept(AST.parse(content), Env.get())).rejects.toThrowError(TypecheckingFailure);
+		await expect(TypeChecker.accept(AST.parse(content), Env.create())).rejects.toThrowError(TypecheckingFailure);
 	});
 
 	it("should not work for assignments without expression", async () => {
 		const content = "let x = ;";
-		await expect(TypeChecker.accept(AST.parse(content), Env.get())).rejects.toThrowError(TypecheckingFailure);
+		await expect(TypeChecker.accept(AST.parse(content), Env.create())).rejects.toThrowError(TypecheckingFailure);
 	});
 });

@@ -38,7 +38,7 @@ export async function visit(
 	} else {
 		if (!vType) {
 			// `let x;` is equivalent to `let x: any;`
-			vType = AnyType.get();
+			vType = AnyType.create();
 		}
 	}
 

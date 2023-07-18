@@ -5,7 +5,7 @@ import { Env } from "../../env";
 
 describe("SourceFileVisitor", () => {
 	it("should work for empty programs", async () => {
-		await TypeChecker.accept(AST.parse(""), Env.get());
+		await TypeChecker.accept(AST.parse(""), Env.create());
 	});
 
 	it("should work for comment-only programs", async () => {
@@ -16,6 +16,6 @@ describe("SourceFileVisitor", () => {
 		 * A third comment
 		 */
 		`;
-		await TypeChecker.accept(AST.parse(content), Env.get());
+		await TypeChecker.accept(AST.parse(content), Env.create());
 	});
 });

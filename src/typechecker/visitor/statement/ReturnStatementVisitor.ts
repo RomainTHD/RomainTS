@@ -10,7 +10,7 @@ export const visit: StatementVisitor<ts.ReturnStatement> = async (node, env) => 
 	if (node.expression) {
 		t = await TypeChecker.accept(node.expression, env);
 	} else {
-		t = VoidType.get();
+		t = VoidType.create();
 	}
 
 	const retType = env.getReturnType();

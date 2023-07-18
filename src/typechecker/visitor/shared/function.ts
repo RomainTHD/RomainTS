@@ -19,7 +19,7 @@ export async function visitFunction(
 		if (param.type) {
 			pType = await accept(param.type, env);
 		} else {
-			pType = AnyType.get();
+			pType = AnyType.create();
 		}
 
 		params.push({
@@ -34,9 +34,9 @@ export async function visitFunction(
 		retType = await accept(nodeRetType, env);
 	} else {
 		// Function return type will be inferred later on
-		retType = AnyType.get();
+		retType = AnyType.create();
 		infer = true;
 	}
 
-	return { fType: FunctionType.get(params, retType), infer };
+	return { fType: FunctionType.create(params, retType), infer };
 }

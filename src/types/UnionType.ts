@@ -1,5 +1,5 @@
+import { Type } from ".";
 import { assert } from "../utils";
-import { Type } from "./Type";
 
 export class UnionType implements Type {
 	private readonly _types: Type[] = [];
@@ -67,7 +67,7 @@ export class UnionType implements Type {
 		return this._types;
 	}
 
-	public static get(types: Type[] = []): UnionType {
+	public static create(types: Type[] = []): UnionType {
 		return new UnionType(types);
 	}
 }

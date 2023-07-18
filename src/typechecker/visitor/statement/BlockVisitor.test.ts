@@ -7,7 +7,7 @@ import { TypecheckingFailure } from "../../TypecheckingFailure";
 describe("BlockVisitor", () => {
 	it("should work for blocks", async () => {
 		const content = "{}";
-		await TypeChecker.accept(AST.parse(content), Env.get());
+		await TypeChecker.accept(AST.parse(content), Env.create());
 	});
 
 	it("should not work with unreachable code", async () => {
@@ -17,7 +17,7 @@ describe("BlockVisitor", () => {
 			let x;
 		}`;
 		await expect(
-			TypeChecker.accept(AST.parse(content), Env.get({ allowUnreachableCode: false })),
+			TypeChecker.accept(AST.parse(content), Env.create({ allowUnreachableCode: false })),
 		).rejects.toThrowError(TypecheckingFailure);
 	});
 });

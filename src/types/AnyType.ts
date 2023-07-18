@@ -17,7 +17,7 @@ export class AnyType implements Type {
 		return "any";
 	}
 
-	public static get(): AnyType {
+	public static create(): AnyType {
 		return AnyType.instance;
 	}
 }

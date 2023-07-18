@@ -12,20 +12,20 @@ describe("VoidKeywordVisitor", () => {
 			return;
 		}
 		`;
-		const env = Env.get();
+		const env = Env.create();
 		await TypeChecker.accept(AST.parse(content), env);
-		expect(env.get("f")?.vType).toEqual(FunctionType.get([], VoidType.get()));
+		expect(env.lookup("f")?.vType).toEqual(FunctionType.create([], VoidType.create()));
 	});
 
 	it("should work for void variables", async () => {
 		const content = "let x: void;";
-		const env = Env.get();
+		const env = Env.create();
 		await TypeChecker.accept(AST.parse(content), env);
-		expect(env.get("x")?.vType).toEqual(VoidType.get());
+		expect(env.lookup("x")?.vType).toEqual(VoidType.create());
 	});
 
 	it("should not work for other types", async () => {
 		const content = "let x: void = 0;";
-		await expect(TypeChecker.accept(AST.parse(content), Env.get())).rejects.toThrowError(TypecheckingFailure);
+		await expect(TypeChecker.accept(AST.parse(content), Env.create())).rejects.toThrowError(TypecheckingFailure);
 	});
 });

@@ -7,8 +7,8 @@ import { Env } from "../../env";
 describe("TrueKeywordVisitor", () => {
 	it("should work for true literals", async () => {
 		const content = "let x = false;";
-		const env = Env.get();
+		const env = Env.create();
 		await TypeChecker.accept(AST.parse(content), env);
-		expect(env.get("x")?.vType).toEqual(BooleanType.get());
+		expect(env.lookup("x")?.vType).toEqual(BooleanType.create());
 	});
 });

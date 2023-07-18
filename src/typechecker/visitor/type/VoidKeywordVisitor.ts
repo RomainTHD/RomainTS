@@ -3,5 +3,5 @@ import { KeywordVisitor } from ".";
 import { VoidType } from "../../../types";
 
 export const visit: KeywordVisitor<ts.SyntaxKind.VoidKeyword> = () => {
-	return VoidType.get();
+	return VoidType.create();
 };

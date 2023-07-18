@@ -17,7 +17,7 @@ export class BooleanType implements Type {
 		return "boolean";
 	}
 
-	public static get(): BooleanType {
+	public static create(): BooleanType {
 		return this.instance;
 	}
 }

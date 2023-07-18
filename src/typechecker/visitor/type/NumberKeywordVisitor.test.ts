@@ -7,13 +7,13 @@ import { Env } from "../../env";
 describe("NumberKeywordVisitor", () => {
 	it("should work for number type", async () => {
 		const content = "let x: number;";
-		const env = Env.get();
+		const env = Env.create();
 		await TypeChecker.accept(AST.parse(content), env);
-		expect(env.get("x")?.vType).toEqual(NumberType.get());
+		expect(env.lookup("x")?.vType).toEqual(NumberType.create());
 	});
 
 	it("should not work for other types", async () => {
 		const content = "let x: number = 'a';";
-		await expect(TypeChecker.accept(AST.parse(content), Env.get())).rejects.toThrowError();
+		await expect(TypeChecker.accept(AST.parse(content), Env.create())).rejects.toThrowError();
 	});
 });

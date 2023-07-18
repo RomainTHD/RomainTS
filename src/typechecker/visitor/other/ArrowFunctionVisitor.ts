@@ -20,7 +20,7 @@ export async function visit(node: ts.ArrowFunction, env: Env): Promise<Type> {
 
 	if (
 		retData.doesReturn !== Bool3.True &&
-		![VoidType.get(), AnyType.get(), UndefinedType.get()].some((t) => t.equals(fType.retType))
+		![VoidType.create(), AnyType.create(), UndefinedType.create()].some((t) => t.equals(fType.retType))
 	) {
 		throw new TypecheckingFailure(`Arrow function must return a value of type '${fType.retType}'`, node);
 	}
@@ -28,7 +28,7 @@ export async function visit(node: ts.ArrowFunction, env: Env): Promise<Type> {
 	env.popReturnType();
 	env.exitScope();
 
-	if (infer && fType.retType.equals(AnyType.get()) && retData.inferredType) {
+	if (infer && fType.retType.equals(AnyType.create()) && retData.inferredType) {
 		fType.retType = retData.inferredType;
 	}
 

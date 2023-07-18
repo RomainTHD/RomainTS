@@ -17,13 +17,13 @@ export async function visit(node: ts.Identifier, env: Env): Promise<string | Typ
 		return node.text;
 	} else {
 		// `x + 0`: `x` is a RValue
-		const value = env.get(node.text);
+		const value = env.lookup(node.text);
 		if (!value) {
 			if (env.config.strictMode) {
 				throw new TypecheckingFailure(`Identifier '${node.text}' not found in scope`, node);
 			} else {
 				logger.warn(`Identifier '${node.text}' not found in scope`);
-				return UndefinedType.get();
+				return UndefinedType.create();
 			}
 		}
 		return value.vType;

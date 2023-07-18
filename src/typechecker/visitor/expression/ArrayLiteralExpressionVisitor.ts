@@ -9,8 +9,8 @@ export const visit: ExpressionVisitor<ts.ArrayLiteralExpression> = async (node, 
 		types.push(await TypeChecker.accept(element, env));
 	}
 	if (types.length === 0) {
-		return ArrayType.get(AnyType.get());
+		return ArrayType.create(AnyType.create());
 	} else {
-		return ArrayType.get(UnionType.get(types).simplify());
+		return ArrayType.create(UnionType.create(types).simplify());
 	}
 };

@@ -6,7 +6,7 @@ import { Env } from "../../env";
 describe("IdentifierVisitor", () => {
 	it("should work for lvalues", async () => {
 		const content = "let x;";
-		await TypeChecker.accept(AST.parse(content), Env.get());
+		await TypeChecker.accept(AST.parse(content), Env.create());
 	});
 
 	it("should work for rvalues", async () => {
@@ -14,6 +14,6 @@ describe("IdentifierVisitor", () => {
 		let x;
 		let y = x;
 		`;
-		await TypeChecker.accept(AST.parse(content), Env.get());
+		await TypeChecker.accept(AST.parse(content), Env.create());
 	});
 });

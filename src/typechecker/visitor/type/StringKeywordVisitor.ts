@@ -3,5 +3,5 @@ import { KeywordVisitor } from ".";
 import { StringType } from "../../../types";
 
 export const visit: KeywordVisitor<ts.SyntaxKind.StringKeyword> = () => {
-	return StringType.get();
+	return StringType.create();
 };

@@ -7,29 +7,29 @@ import { Env } from "../../env";
 describe("VariableDeclarationVisitor", () => {
 	it("should work for let", async () => {
 		const content = "let x = 0;";
-		const env = Env.get();
+		const env = Env.create();
 		await TypeChecker.accept(AST.parse(content), env);
-		expect(env.get("x")?.vType).toEqual(NumberType.get());
+		expect(env.lookup("x")?.vType).toEqual(NumberType.create());
 	});
 
 	it("should work for const", async () => {
 		const content = "const x = 0;";
-		const env = Env.get();
+		const env = Env.create();
 		await TypeChecker.accept(AST.parse(content), env);
-		expect(env.get("x")?.vType).toEqual(NumberType.get());
+		expect(env.lookup("x")?.vType).toEqual(NumberType.create());
 	});
 
 	it("should work for var", async () => {
 		const content = "var x = 0;";
-		const env = Env.get();
+		const env = Env.create();
 		await TypeChecker.accept(AST.parse(content), env);
-		expect(env.get("x")?.vType).toEqual(NumberType.get());
+		expect(env.lookup("x")?.vType).toEqual(NumberType.create());
 	});
 
 	it("should work for undeclared if not in strict mode", async () => {
 		const content = "x = 0;";
-		const env = Env.get({ strictMode: false });
+		const env = Env.create({ strictMode: false });
 		await TypeChecker.accept(AST.parse(content), env);
-		expect(env.get("x")?.vType).toEqual(NumberType.get());
+		expect(env.lookup("x")?.vType).toEqual(NumberType.create());
 	});
 });

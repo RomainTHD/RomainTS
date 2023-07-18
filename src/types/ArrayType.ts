@@ -1,10 +1,17 @@
-import { Type } from "./Type";
-import { UnionType } from ".";
+import type { Type } from ".";
+import { NumberType, UnionType } from ".";
+import { ObjectType } from "./ObjectType";
 
-export class ArrayType implements Type {
+export class ArrayType extends ObjectType {
 	private readonly _baseType: Type;
 
 	private constructor(baseType: Type) {
+		super([
+			{
+				name: "length",
+				mType: NumberType.create(),
+			},
+		]);
 		this._baseType = baseType;
 	}
 
@@ -12,7 +19,7 @@ export class ArrayType implements Type {
 		return this._baseType;
 	}
 
-	public equals<T extends Type>(other: T): boolean {
+	public override equals<T extends Type>(other: T): boolean {
 		if (!(other instanceof ArrayType)) {
 			return false;
 		}
@@ -20,7 +27,7 @@ export class ArrayType implements Type {
 		return this.baseType.equals(other.baseType);
 	}
 
-	public contains<T extends Type>(other: T): boolean {
+	public override contains<T extends Type>(other: T): boolean {
 		if (!(other instanceof ArrayType)) {
 			return false;
 		}
@@ -28,7 +35,7 @@ export class ArrayType implements Type {
 		return this.baseType.contains(other.baseType);
 	}
 
-	public toString(): string {
+	public override toString(): string {
 		if (this.baseType instanceof UnionType) {
 			return `(${this.baseType})[]`;
 		} else {
@@ -36,7 +43,7 @@ export class ArrayType implements Type {
 		}
 	}
 
-	public static get(baseType: Type): ArrayType {
+	public static override create(baseType: Type): ArrayType {
 		return new ArrayType(baseType);
 	}
 }

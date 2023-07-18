@@ -7,8 +7,8 @@ import { Env } from "../../env";
 describe("ExclamationEqualsTokenVisitor", () => {
 	it("should work for different", async () => {
 		const content = "let x = 1 != 2;";
-		const env = Env.get();
+		const env = Env.create();
 		await TypeChecker.accept(AST.parse(content), env);
-		expect(env.get("x")?.vType).toEqual(BooleanType.get());
+		expect(env.lookup("x")?.vType).toEqual(BooleanType.create());
 	});
 });

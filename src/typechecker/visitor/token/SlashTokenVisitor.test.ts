@@ -7,8 +7,8 @@ import { Env } from "../../env";
 describe("SlashTokenVisitor", () => {
 	it("should work for division", async () => {
 		const content = "let x = 1 / 2;";
-		const env = Env.get();
+		const env = Env.create();
 		await TypeChecker.accept(AST.parse(content), env);
-		expect(env.get("x")?.vType).toEqual(NumberType.get());
+		expect(env.lookup("x")?.vType).toEqual(NumberType.create());
 	});
 });

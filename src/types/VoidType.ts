@@ -17,7 +17,7 @@ export class VoidType implements Type {
 		return "void";
 	}
 
-	public static get(): VoidType {
+	public static create(): VoidType {
 		return VoidType.instance;
 	}
 }

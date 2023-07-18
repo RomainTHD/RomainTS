@@ -10,19 +10,19 @@ describe("FunctionDeclarationVisitor", () => {
 		function f(a: number, b: string): number {
 			return 0;
 		}`;
-		const env = Env.get();
+		const env = Env.create();
 		await TypeChecker.accept(AST.parse(content), env);
-		const v = env.get("f");
+		const v = env.lookup("f");
 		expect(v).not.toBeNull();
 		const t = v!.vType;
 		expect(t).not.toBeNull();
 		expect(t instanceof FunctionType).toBe(true);
 		const f = t as FunctionType;
-		expect(f.retType).toBe(NumberType.get());
+		expect(f.retType).toBe(NumberType.create());
 		expect(f.params.length).toBe(2);
 		expect(f.params[0].name).toBe("a");
-		expect(f.params[0].pType).toBe(NumberType.get());
+		expect(f.params[0].pType).toBe(NumberType.create());
 		expect(f.params[1].name).toBe("b");
-		expect(f.params[1].pType).toBe(StringType.get());
+		expect(f.params[1].pType).toBe(StringType.create());
 	});
 });

@@ -5,5 +5,5 @@ import { ArrayType, Type } from "../../../types";
 
 export const visit: TypeVisitor<ts.ArrayTypeNode> = async (node, env) => {
 	const elementType: Type = await TypeChecker.accept(node.elementType, env);
-	return ArrayType.get(elementType);
+	return ArrayType.create(elementType);
 };

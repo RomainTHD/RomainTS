@@ -1,4 +1,4 @@
-import { Type } from "./Type";
+import { Type } from ".";
 
 export class NumberType implements Type {
 	private static readonly instance: NumberType = new NumberType();
@@ -17,7 +17,7 @@ export class NumberType implements Type {
 		return "number";
 	}
 
-	public static get(): NumberType {
+	public static create(): NumberType {
 		return NumberType.instance;
 	}
 }

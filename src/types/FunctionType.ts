@@ -63,7 +63,7 @@ export class FunctionType implements Type {
 		this._retType = newType;
 	}
 
-	public static get(params: Param[], retType: Type): FunctionType {
+	public static create(params: Param[], retType: Type): FunctionType {
 		return new FunctionType(params, retType);
 	}
 }

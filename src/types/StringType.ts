@@ -17,7 +17,7 @@ export class StringType implements Type {
 		return "string";
 	}
 
-	public static get(): StringType {
+	public static create(): StringType {
 		return StringType.instance;
 	}
 }

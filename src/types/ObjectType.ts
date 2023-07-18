@@ -1,19 +1,19 @@
+import type { Member, Type } from ".";
 import { assert } from "../utils";
 import { LoggerFactory } from "../utils/Logger";
-import { Type } from "./Type";
+import { RawObjectType } from "./RawObjectType";
 
-type Member = { mType: Type; name: string };
-
-export class ObjectType implements Type {
+export class ObjectType extends RawObjectType {
 	private static readonly logger = LoggerFactory.get("ObjectType");
 
 	private readonly _members: Member[] = [];
 
-	private constructor(members: Member[]) {
+	protected constructor(members: Member[]) {
+		super();
 		members.forEach((member) => this.add(member));
 	}
 
-	public equals<T extends Type>(other: T): boolean {
+	public override equals<T extends Type>(other: T): boolean {
 		if (!(other instanceof ObjectType)) {
 			return false;
 		}
@@ -27,7 +27,7 @@ export class ObjectType implements Type {
 		);
 	}
 
-	public contains<T extends Type>(other: T): boolean {
+	public override contains<T extends Type>(other: T): boolean {
 		if (!(other instanceof ObjectType)) {
 			return false;
 		}
@@ -38,14 +38,17 @@ export class ObjectType implements Type {
 		});
 	}
 
-	public toString(): string {
+	public override toString(): string {
 		if (this.members.length === 0) {
 			return "{}";
 		}
-		return `{ ${this.members.map((member) => `${member.name}: ${member.mType}`).join(", ")} }`;
+		// TODO: Handle more complex cyclic references
+		return `{ ${this.members
+			.map((member) => `${member.name}: ${member.mType === this ? "*cyclic reference*" : member.mType}`)
+			.join(", ")} }`;
 	}
 
-	public add(member: Member): void {
+	public override add(member: Member): void {
 		assert(member, "Invalid member");
 		assert(member.name, `Invalid member name, is '${member.name}'`);
 		assert(member.mType, `Invalid member type, is '${member.mType}'`);
@@ -60,15 +63,25 @@ export class ObjectType implements Type {
 		}
 	}
 
-	public addAll(...members: Member[]): void {
+	public override addAll(...members: Member[]): void {
 		members.forEach((member) => this.add(member));
+	}
+
+	public override hasProperty(name: string): boolean {
+		return this.members.some((m) => m.name === name);
+	}
+
+	public override getProperty(name: string): Type {
+		const member = this.members.find((m) => m.name === name);
+		assert(member, `Member with name '${name}' does not exist in object type`);
+		return member!.mType;
 	}
 
 	public get members(): Member[] {
 		return this._members;
 	}
 
-	public static get(members: Member[]): ObjectType {
+	public static override create(members: Member[]): ObjectType {
 		return new ObjectType(members);
 	}
 }

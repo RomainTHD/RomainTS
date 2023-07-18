@@ -1,4 +1,4 @@
-import { Type } from "./Type";
+import { Type } from ".";
 
 export class UndefinedType implements Type {
 	private static readonly instance: UndefinedType = new UndefinedType();
@@ -17,7 +17,7 @@ export class UndefinedType implements Type {
 		return "undefined";
 	}
 
-	public static get(): UndefinedType {
+	public static create(): UndefinedType {
 		return UndefinedType.instance;
 	}
 }

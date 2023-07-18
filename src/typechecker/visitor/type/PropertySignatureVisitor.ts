@@ -7,12 +7,12 @@ export const visit = async (node: ts.PropertySignature, env: Env): Promise<Objec
 	if (node.type) {
 		mType = await TypeChecker.accept(node.type, env);
 	} else {
-		mType = AnyType.get();
+		mType = AnyType.create();
 	}
 
 	env.setValueSide(ValueSide.LValue);
 	let name: string = await TypeChecker.accept(node.name, env);
 	env.setValueSide(ValueSide.RValue);
 
-	return ObjectType.get([{ mType, name }]);
+	return ObjectType.create([{ mType, name }]);
 };

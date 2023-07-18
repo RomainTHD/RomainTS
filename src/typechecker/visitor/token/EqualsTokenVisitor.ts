@@ -11,7 +11,7 @@ export async function visit(
 	env: Env,
 	{ left, right }: { left: string; right: Type },
 ): Promise<Type> {
-	const variable = env.get(left);
+	const variable = env.lookup(left);
 	if (variable) {
 		if (variable.builtin) {
 			if (env.config.strictMode) {

@@ -145,8 +145,8 @@ export class Env {
 	}
 
 	private populateEnv(): void {
-		this.add("undefined", { vType: UndefinedType.get(), isLocal: false, isMutable: false, builtin: true });
-		this.add("NaN", { vType: NumberType.get(), isLocal: false, isMutable: false, builtin: true });
-		this.add("Infinity", { vType: NumberType.get(), isLocal: false, isMutable: false, builtin: true });
+		this.add("undefined", { vType: UndefinedType.create(), isLocal: false, isMutable: false, builtin: true });
+		this.add("NaN", { vType: NumberType.create(), isLocal: false, isMutable: false, builtin: true });
+		this.add("Infinity", { vType: NumberType.create(), isLocal: false, isMutable: false, builtin: true });
 	}
 }

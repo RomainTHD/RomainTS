@@ -3,5 +3,5 @@ import { KeywordVisitor } from ".";
 import { UndefinedType } from "../../../types";
 
 export const visit: KeywordVisitor<ts.SyntaxKind.UndefinedKeyword> = () => {
-	return UndefinedType.get();
+	return UndefinedType.create();
 };
