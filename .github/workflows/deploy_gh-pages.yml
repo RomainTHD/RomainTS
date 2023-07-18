@@ -1,0 +1,39 @@
+name: Demo app deployment on GitHub pages
+
+on:
+    push:
+        branches: [ master ]
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+
+        defaults:
+            run:
+                working-directory: demo/src
+
+        strategy:
+            matrix:
+                node-version: [ 16.x ]
+
+        steps:
+            -   uses: actions/checkout@v3
+
+            -   name: Use NodeJS ${{ matrix.node-version }}
+                uses: actions/setup-node@v3
+                with:
+                    node-version: ${{ matrix.node-version }}
+                    cache: "npm"
+
+            -   name: Set git user
+                run: |
+                    git config --global user.email "romain-thd+github@protonmail.com"
+                    git config --global user.name "RomainTHD"
+
+            -   name: Install dependencies
+                run: npm ci
+
+            -   name: Run deployment script
+                run: npm run deploy:gh-pages
+                env:
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -3,7 +3,7 @@
 	"version": 1,
 	"newProjectRoot": "projects",
 	"projects": {
-		"RomainTS-demo": {
+		"romaints": {
 			"projectType": "application",
 			"schematics": {
 				"@schematics/angular:application": {
@@ -21,7 +21,7 @@
 					"builder": "@angular-builders/custom-webpack:browser",
 					"options": {
 						"optimization": false,
-						"outputPath": "dist/RomainTS-demo",
+						"outputPath": "dist/romaints",
 						"index": "src/index.html",
 						"main": "src/main.ts",
 						"polyfills": "src/polyfills.ts",
@@ -84,10 +84,10 @@
 					"builder": "@angular-builders/custom-webpack:dev-server",
 					"configurations": {
 						"production": {
-							"browserTarget": "RomainTS-demo:build:production"
+							"browserTarget": "romaints:build:production"
 						},
 						"development": {
-							"browserTarget": "RomainTS-demo:build:development"
+							"browserTarget": "romaints:build:development"
 						}
 					},
 					"defaultConfiguration": "development"
@@ -95,7 +95,7 @@
 				"extract-i18n": {
 					"builder": "@angular-devkit/build-angular:extract-i18n",
 					"options": {
-						"browserTarget": "RomainTS-demo:build"
+						"browserTarget": "romaints:build"
 					}
 				},
 				"test": {
@@ -113,7 +113,7 @@
 				"deploy": {
 					"builder": "angular-cli-ghpages:deploy",
 					"options": {
-						"baseHref": "/RomainTS-demo/",
+						"baseHref": "/RomainTS/",
 						"branch": "gh-pages",
 						"message": "ci: Auto-deploy to GitHub Pages"
 					}
