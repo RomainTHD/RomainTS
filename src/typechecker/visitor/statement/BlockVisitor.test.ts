@@ -20,4 +20,31 @@ describe("BlockVisitor", () => {
 			TypeChecker.accept(AST.parse(content), Env.create({ allowUnreachableCode: false })),
 		).rejects.toThrowError(TypecheckingFailure);
 	});
+
+	it("should work with unreachable code", async () => {
+		const content = `
+		function f(): number {
+			return 0;
+			let x;
+		}`;
+		await TypeChecker.accept(AST.parse(content), Env.create({ allowUnreachableCode: true }));
+	});
+
+	it("should allow redeclaration of let", async () => {
+		const content = `
+		let x;
+		{
+			let x;
+		}`;
+		await TypeChecker.accept(AST.parse(content), Env.create());
+	});
+
+	it("should correctly exit scope", async () => {
+		const content = `
+		{
+			let x;
+		}
+		let x;`;
+		await TypeChecker.accept(AST.parse(content), Env.create());
+	});
 });

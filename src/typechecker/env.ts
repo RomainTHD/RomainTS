@@ -6,7 +6,8 @@ type Value = {
 	vType: Type;
 	isLocal: boolean;
 	isMutable: boolean;
-	builtin?: boolean;
+	isFromCurrentScope: boolean;
+	builtin: boolean;
 };
 
 type Scope = Map<string, Value>;
@@ -62,23 +63,36 @@ export class Env {
 		for (let i = this.scopes.length - 1; i >= 0; i--) {
 			const scope = this.scopes[i];
 			if (scope.has(name)) {
-				return scope.get(name)!;
+				const v = scope.get(name)!;
+				v.isFromCurrentScope = i === this.scopes.length - 1;
+				return v;
 			}
 		}
 		return null;
 	}
 
-	public add(name: string, value: Value): void {
+	public add(name: string, value: Partial<Value>): void {
 		assert(this.scopes.length > 0, "No scope to add to");
 		const scope = this.scopes[this.scopes.length - 1];
 		assert(name, `Name is unset, value is '${name}'`);
 		assert(value, `Value is unset, value is '${value}'`);
 		assert(value.vType, `Type is unset, value is '${value.vType}'`);
 		assert(typeof value.vType === "object", `Type '${value.vType}' is not a Type`);
+		assert(value.isLocal !== undefined, `isLocal is unset, value is '${value.isLocal}'`);
+		assert(value.isMutable !== undefined, `isMutable is unset, value is '${value.isMutable}'`);
+
+		const valueSafe: Value = {
+			vType: value.vType!,
+			isLocal: value.isLocal!,
+			isMutable: value.isMutable!,
+			builtin: value.builtin ?? false,
+			isFromCurrentScope: value.isFromCurrentScope ?? false,
+		};
+
 		if (value.isLocal) {
-			scope.set(name, value);
+			scope.set(name, valueSafe);
 		} else {
-			this.globals.set(name, value);
+			this.globals.set(name, valueSafe);
 		}
 	}
 

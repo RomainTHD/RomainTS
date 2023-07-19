@@ -9,6 +9,8 @@ export const visit: StatementVisitor<ts.Block> = async (node, env) => {
 	let doesReturn = Bool3.False;
 	let inferredType = UnionType.create([]);
 
+	env.enterScope();
+
 	for (const stmt of node.statements) {
 		const res: StatementReturn = await TypeChecker.accept(stmt, env);
 
@@ -31,6 +33,8 @@ export const visit: StatementVisitor<ts.Block> = async (node, env) => {
 			}
 		}
 	}
+
+	env.exitScope();
 
 	return {
 		doesReturn,
