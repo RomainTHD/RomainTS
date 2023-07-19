@@ -42,5 +42,18 @@ export async function visit(
 		}
 	}
 
+	const other = env.lookup(name);
+	if (other) {
+		if (other.isLocal) {
+			if (other.isMutable) {
+				throw new TypecheckingFailure(`Redeclaration of let '${name}'`, node);
+			} else {
+				throw new TypecheckingFailure(`Redeclaration of const '${name}'`, node);
+			}
+		} else if (isLocal) {
+			throw new TypecheckingFailure(`Redeclaration of var '${name}'`, node);
+		}
+	}
+
 	env.add(name, { vType, isLocal, isMutable });
 }
