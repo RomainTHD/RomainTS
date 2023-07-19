@@ -7,13 +7,13 @@ describe("ObjectType", () => {
 			ObjectType.create([
 				{
 					name: "a",
-					mType: NumberType.create(),
+					pType: NumberType.create(),
 				},
 			]).equals(
 				ObjectType.create([
 					{
 						name: "a",
-						mType: NumberType.create(),
+						pType: NumberType.create(),
 					},
 				]),
 			),
@@ -25,13 +25,13 @@ describe("ObjectType", () => {
 			ObjectType.create([
 				{
 					name: "a",
-					mType: NumberType.create(),
+					pType: NumberType.create(),
 				},
 			]).equals(
 				ObjectType.create([
 					{
 						name: "b",
-						mType: NumberType.create(),
+						pType: NumberType.create(),
 					},
 				]),
 			),
@@ -43,21 +43,21 @@ describe("ObjectType", () => {
 			ObjectType.create([
 				{
 					name: "a",
-					mType: NumberType.create(),
+					pType: NumberType.create(),
 				},
 				{
 					name: "b",
-					mType: StringType.create(),
+					pType: StringType.create(),
 				},
 			]).equals(
 				ObjectType.create([
 					{
 						name: "b",
-						mType: StringType.create(),
+						pType: StringType.create(),
 					},
 					{
 						name: "a",
-						mType: NumberType.create(),
+						pType: NumberType.create(),
 					},
 				]),
 			),
@@ -69,13 +69,13 @@ describe("ObjectType", () => {
 			ObjectType.create([
 				{
 					name: "a",
-					mType: NumberType.create(),
+					pType: NumberType.create(),
 				},
 			]).equals(
 				ObjectType.create([
 					{
 						name: "a",
-						mType: StringType.create(),
+						pType: StringType.create(),
 					},
 				]),
 			),
@@ -87,17 +87,17 @@ describe("ObjectType", () => {
 			ObjectType.create([
 				{
 					name: "a",
-					mType: NumberType.create(),
+					pType: NumberType.create(),
 				},
 				{
 					name: "b",
-					mType: StringType.create(),
+					pType: StringType.create(),
 				},
 			]).contains(
 				ObjectType.create([
 					{
 						name: "a",
-						mType: NumberType.create(),
+						pType: NumberType.create(),
 					},
 				]),
 			),
@@ -109,17 +109,17 @@ describe("ObjectType", () => {
 			ObjectType.create([
 				{
 					name: "a",
-					mType: NumberType.create(),
+					pType: NumberType.create(),
 				},
 			]).contains(
 				ObjectType.create([
 					{
 						name: "a",
-						mType: NumberType.create(),
+						pType: NumberType.create(),
 					},
 					{
 						name: "b",
-						mType: StringType.create(),
+						pType: StringType.create(),
 					},
 				]),
 			),
@@ -131,13 +131,13 @@ describe("ObjectType", () => {
 			ObjectType.create([
 				{
 					name: "a",
-					mType: NumberType.create(),
+					pType: NumberType.create(),
 				},
 			]).contains(
 				ObjectType.create([
 					{
 						name: "b",
-						mType: NumberType.create(),
+						pType: NumberType.create(),
 					},
 				]),
 			),
@@ -147,13 +147,13 @@ describe("ObjectType", () => {
 			ObjectType.create([
 				{
 					name: "a",
-					mType: NumberType.create(),
+					pType: NumberType.create(),
 				},
 			]).contains(
 				ObjectType.create([
 					{
 						name: "a",
-						mType: StringType.create(),
+						pType: StringType.create(),
 					},
 				]),
 			),

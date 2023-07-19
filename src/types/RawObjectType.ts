@@ -1,34 +1,34 @@
-import type { Type } from ".";
-import { UndefinedType } from ".";
+import type { Property, Type } from ".";
+import { PropertyAccessor, UndefinedType } from ".";
 
-export type Member = { mType: Type; name: string };
-
-export class RawObjectType implements Type {
+export class RawObjectType extends PropertyAccessor {
 	private static readonly instance: RawObjectType = new RawObjectType();
 
-	protected constructor() {}
+	private constructor() {
+		super([]);
+	}
 
-	public equals<T extends Type>(other: T): boolean {
+	public override equals<T extends Type>(other: T): boolean {
 		return other instanceof RawObjectType;
 	}
 
-	public contains<T extends Type>(other: T): boolean {
+	public override contains<T extends Type>(other: T): boolean {
 		return other instanceof RawObjectType;
 	}
 
-	public toString(): string {
+	public override toString(): string {
 		return "object";
 	}
 
-	public add(member: Member): void {}
+	public override add(member: Property): void {}
 
-	public addAll(...members: Member[]): void {}
+	public override addAll(...members: Property[]): void {}
 
-	public hasProperty(name: string): boolean {
+	public override hasProperty(name: string): boolean {
 		return false;
 	}
 
-	public getProperty(name: string): Type {
+	public override getProperty(name: string): Type {
 		return UndefinedType.create();
 	}
 

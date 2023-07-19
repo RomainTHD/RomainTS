@@ -1,9 +1,11 @@
-import { Type } from "./Type";
+import { Property, PropertyAccessor, Type } from ".";
 
-export class AnyType implements Type {
+export class AnyType extends PropertyAccessor {
 	private static readonly instance: AnyType = new AnyType();
 
-	private constructor() {}
+	private constructor() {
+		super([]);
+	}
 
 	public equals<T extends Type>(other: T): boolean {
 		return other instanceof AnyType;
@@ -13,8 +15,20 @@ export class AnyType implements Type {
 		return true;
 	}
 
-	public toString(): string {
+	public override toString(): string {
 		return "any";
+	}
+
+	public override add(property: Property): void {}
+
+	public override addAll(...props: Property[]): void {}
+
+	public override hasProperty(name: string): boolean {
+		return true;
+	}
+
+	public override getProperty(name: string): Type {
+		return AnyType.create();
 	}
 
 	public static create(): AnyType {

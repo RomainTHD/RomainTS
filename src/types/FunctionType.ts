@@ -1,12 +1,13 @@
-import { Type } from "./Type";
+import { PropertyAccessor, Type } from ".";
 
 type Param = { name: string; pType: Type };
 
-export class FunctionType implements Type {
+export class FunctionType extends PropertyAccessor {
 	private readonly _params: Param[];
 	private _retType: Type;
 
 	private constructor(params: Param[], retType: Type) {
+		super([]);
 		this._params = params;
 		this._retType = retType;
 	}
@@ -47,7 +48,7 @@ export class FunctionType implements Type {
 		return this.retType.contains(other.retType);
 	}
 
-	public toString(): string {
+	public override toString(): string {
 		return "(" + this.params.map((param) => param.pType.toString()).join(", ") + ") => " + this.retType.toString();
 	}
 

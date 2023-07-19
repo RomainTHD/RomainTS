@@ -1,9 +1,11 @@
-import { Type } from "./Type";
+import { PropertyAccessor, Type } from ".";
 
-export class BigIntType implements Type {
+export class BigIntType extends PropertyAccessor {
 	private static readonly instance: BigIntType = new BigIntType();
 
-	private constructor() {}
+	private constructor() {
+		super([]);
+	}
 
 	public contains<T extends Type>(other: T): boolean {
 		return other instanceof BigIntType;
@@ -13,7 +15,7 @@ export class BigIntType implements Type {
 		return other instanceof BigIntType;
 	}
 
-	public toString(): string {
+	public override toString(): string {
 		return "bigint";
 	}
 

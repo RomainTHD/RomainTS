@@ -1,9 +1,11 @@
-import { Type } from "./Type";
+import { PropertyAccessor, Type } from ".";
 
-export class BooleanType implements Type {
+export class BooleanType extends PropertyAccessor {
 	private static readonly instance: BooleanType = new BooleanType();
 
-	private constructor() {}
+	private constructor() {
+		super([]);
+	}
 
 	public equals<T extends Type>(other: T): boolean {
 		return other instanceof BooleanType;
@@ -13,7 +15,7 @@ export class BooleanType implements Type {
 		return other instanceof BooleanType;
 	}
 
-	public toString(): string {
+	public override toString(): string {
 		return "boolean";
 	}
 

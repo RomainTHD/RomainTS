@@ -1,7 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { NumberType } from "./NumberType";
-import { StringType } from "./StringType";
-import { UnionType } from "./UnionType";
+import { NumberType, StringType, UnionType } from ".";
 
 describe("UnionType", () => {
 	it("should be equal for basic types", () => {

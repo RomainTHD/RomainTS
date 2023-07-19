@@ -1,9 +1,11 @@
-import { Type } from ".";
+import { PropertyAccessor, Type } from ".";
 
-export class NumberType implements Type {
+export class NumberType extends PropertyAccessor {
 	private static readonly instance: NumberType = new NumberType();
 
-	private constructor() {}
+	private constructor() {
+		super([]);
+	}
 
 	public equals<T extends Type>(other: T): boolean {
 		return other instanceof NumberType;
@@ -13,7 +15,7 @@ export class NumberType implements Type {
 		return other instanceof NumberType;
 	}
 
-	public toString(): string {
+	public override toString(): string {
 		return "number";
 	}
 

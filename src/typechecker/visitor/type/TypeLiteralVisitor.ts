@@ -9,7 +9,7 @@ export const visit: TypeVisitor<ts.TypeLiteralNode> = async (node, env) => {
 	for (const m of node.members) {
 		const item: ObjectType = await TypeChecker.accept(m, env);
 		assert(item instanceof ObjectType, `Expected ObjectType, got '${item}'`);
-		res.addAll(...item.members);
+		res.addAll(...item.properties);
 	}
 
 	return res;

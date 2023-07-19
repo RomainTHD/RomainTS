@@ -1,6 +1,6 @@
 import type ts from "typescript";
 import { ExpressionVisitor } from ".";
-import { ObjectType, Type, UndefinedType } from "../../../types";
+import { PropertyAccessor, Type, UndefinedType } from "../../../types";
 import { LoggerFactory } from "../../../utils/Logger";
 import { TypeChecker } from "../../accept";
 import { ValueSide } from "../../env";
@@ -15,7 +15,7 @@ export const visit: ExpressionVisitor<ts.PropertyAccessExpression> = async (node
 	const prop: string = await TypeChecker.accept(node.name, env);
 	env.setValueSide(ValueSide.RValue);
 
-	if (!(expr instanceof ObjectType)) {
+	if (!(expr instanceof PropertyAccessor)) {
 		throw new TypecheckingFailure(`Property access on non-object type '${expr}'`, node);
 	}
 

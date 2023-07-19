@@ -153,10 +153,10 @@ export class Env {
 		const windowType = ObjectType.create(
 			Array.from(this.globals.entries()).map(([k, v]) => ({
 				name: k,
-				mType: v.vType,
+				pType: v.vType,
 			})),
 		);
 		this.add("window", { vType: windowType, isLocal: false, isMutable: false, builtin: true });
-		windowType.add({ mType: windowType, name: "window" });
+		windowType.add({ pType: windowType, name: "window" });
 	}
 }

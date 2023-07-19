@@ -1,16 +1,14 @@
-import type { Member, Type } from ".";
-import { NumberType, UnionType } from ".";
-import { NotImplementedException } from "../utils/NotImplementedException";
-import { ObjectType } from "./ObjectType";
+import type { Type } from ".";
+import { NumberType, PropertyAccessor, UnionType } from ".";
 
-export class ArrayType extends ObjectType {
+export class ArrayType extends PropertyAccessor {
 	private readonly _baseType: Type;
 
 	private constructor(baseType: Type) {
 		super([
 			{
 				name: "length",
-				mType: NumberType.create(),
+				pType: NumberType.create(),
 			},
 		]);
 		this._baseType = baseType;
@@ -20,7 +18,7 @@ export class ArrayType extends ObjectType {
 		return this._baseType;
 	}
 
-	public override equals<T extends Type>(other: T): boolean {
+	public equals<T extends Type>(other: T): boolean {
 		if (!(other instanceof ArrayType)) {
 			return false;
 		}
@@ -28,7 +26,7 @@ export class ArrayType extends ObjectType {
 		return this.baseType.equals(other.baseType);
 	}
 
-	public override contains<T extends Type>(other: T): boolean {
+	public contains<T extends Type>(other: T): boolean {
 		if (!(other instanceof ArrayType)) {
 			return false;
 		}
@@ -44,13 +42,7 @@ export class ArrayType extends ObjectType {
 		}
 	}
 
-	public static override create(baseTypeOrMembers?: Type | Member[]): ArrayType {
-		if (baseTypeOrMembers === undefined) {
-			throw new NotImplementedException("ArrayType.create() with no arguments");
-		}
-		if (Array.isArray(baseTypeOrMembers)) {
-			throw new NotImplementedException("ArrayType.create() with members");
-		}
-		return new ArrayType(baseTypeOrMembers);
+	public static create(baseType: Type): ArrayType {
+		return new ArrayType(baseType);
 	}
 }

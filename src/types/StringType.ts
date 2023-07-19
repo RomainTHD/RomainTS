@@ -1,19 +1,26 @@
-import { Type } from "./Type";
+import { NumberType, PropertyAccessor, Type } from ".";
 
-export class StringType implements Type {
+export class StringType extends PropertyAccessor {
 	private static readonly instance: StringType = new StringType();
 
-	private constructor() {}
+	private constructor() {
+		super([
+			{
+				name: "length",
+				pType: NumberType.create(),
+			},
+		]);
+	}
 
-	public equals<T extends Type>(other: T): boolean {
+	public override equals<T extends Type>(other: T): boolean {
 		return other instanceof StringType;
 	}
 
-	public contains<T extends Type>(other: T): boolean {
+	public override contains<T extends Type>(other: T): boolean {
 		return other instanceof StringType;
 	}
 
-	public toString(): string {
+	public override toString(): string {
 		return "string";
 	}
 
