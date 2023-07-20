@@ -8,6 +8,7 @@ export * from "./BigIntType";
 export * from "./BooleanType";
 export * from "./FunctionType";
 export * from "./NeverType";
+export * from "./NullType";
 export * from "./NumberType";
 export * from "./ObjectType";
 export * from "./RawObjectType";

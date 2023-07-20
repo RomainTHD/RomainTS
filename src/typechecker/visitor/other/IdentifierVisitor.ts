@@ -6,6 +6,8 @@ import { TypecheckingFailure } from "../../TypecheckingFailure";
 
 const logger = LoggerFactory.create("Identifier");
 
+// Note that `undefined` is also an identifier
+
 export async function visit(node: ts.Identifier, env: Env): Promise<string | Type> {
 	if (node.text.trim() === "") {
 		// `x = ;`

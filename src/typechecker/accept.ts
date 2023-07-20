@@ -24,6 +24,7 @@ export namespace TypeChecker {
 			{ name: ts.SyntaxKind.Block, dir: "statement" },
 			{ name: ts.SyntaxKind.TrueKeyword, dir: "literal" },
 			{ name: ts.SyntaxKind.FalseKeyword, dir: "literal" },
+			{ name: ts.SyntaxKind.NullKeyword, dir: "literal" },
 
 			{ suffix: "Token", dir: "token" },
 			{ suffix: "Expression", dir: "expression" },
