@@ -27,8 +27,8 @@
 						"polyfills": "src/polyfills.ts",
 						"tsConfig": "tsconfig.json",
 						"assets": [
-							"src/favicon.ico",
 							"src/assets",
+							"src/site.webmanifest",
 							{
 								"glob": "**/*",
 								"input": "node_modules/monaco-editor",
