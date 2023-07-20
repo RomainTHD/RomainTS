@@ -11,8 +11,8 @@ describe("typeLiteralVisitor", () => {
 		await TypeChecker.accept(AST.parse(content), env);
 		expect(env.lookup("x")?.vType).toEqual(
 			ObjectType.create([
-				{ pType: NumberType.create(), name: "n" },
-				{ pType: StringType.create(), name: "s" },
+				{ name: "n", pType: NumberType.create() },
+				{ name: "s", pType: StringType.create() },
 			]),
 		);
 	});

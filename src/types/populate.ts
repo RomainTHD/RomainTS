@@ -11,28 +11,30 @@ import {
 	StringType,
 } from ".";
 
-const commonBuiltins: Property[] = [
-	{
-		name: "__proto__",
-		pType: AnyType.create(),
-	},
-	{
-		name: "constructor",
-		pType: AnyType.create(),
-	},
-	{
-		name: "hasOwnProperty",
-		pType: FunctionType.create([StringType.create()], BooleanType.create()),
-	},
-	{
-		name: "toString",
-		pType: FunctionType.create([], StringType.create()),
-	},
-];
+function getCommonBuiltins(): Property[] {
+	return [
+		{
+			name: "__proto__",
+			pType: AnyType.create(),
+		},
+		{
+			name: "constructor",
+			pType: AnyType.create(),
+		},
+		{
+			name: "hasOwnProperty",
+			pType: FunctionType.create([StringType.create()], BooleanType.create()),
+		},
+		{
+			name: "toString",
+			pType: FunctionType.create([], StringType.create()),
+		},
+	];
+}
 
 function populateArrayType(): void {
 	ArrayType.setBuiltins([
-		...commonBuiltins,
+		...getCommonBuiltins(),
 		{
 			name: "length",
 			pType: NumberType.create(),
@@ -41,31 +43,31 @@ function populateArrayType(): void {
 }
 
 function populateBigIntType(): void {
-	BigIntType.setBuiltins([...commonBuiltins]);
+	BigIntType.setBuiltins([...getCommonBuiltins()]);
 }
 
 function populateBooleanType(): void {
-	BooleanType.setBuiltins([...commonBuiltins]);
+	BooleanType.setBuiltins([...getCommonBuiltins()]);
 }
 
 function populateFunctionType(): void {
-	FunctionType.setBuiltins([...commonBuiltins]);
+	FunctionType.setBuiltins([...getCommonBuiltins()]);
 }
 
 function populateNumberType(): void {
-	NumberType.setBuiltins([...commonBuiltins]);
+	NumberType.setBuiltins([...getCommonBuiltins()]);
 }
 
 function populateObjectType(): void {
-	ObjectType.setBuiltins([...commonBuiltins]);
+	ObjectType.setBuiltins([...getCommonBuiltins()]);
 }
 
 function populateRawObjectType(): void {
-	RawObjectType.setBuiltins([...commonBuiltins]);
+	RawObjectType.setBuiltins([...getCommonBuiltins()]);
 }
 
 function populateStringType(): void {
-	StringType.setBuiltins([...commonBuiltins]);
+	StringType.setBuiltins([...getCommonBuiltins()]);
 }
 
 export function populate(): void {

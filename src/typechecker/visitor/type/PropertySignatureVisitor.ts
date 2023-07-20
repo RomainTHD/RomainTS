@@ -14,5 +14,5 @@ export const visit = async (node: ts.PropertySignature, env: Env): Promise<Objec
 	let name: string = await TypeChecker.accept(node.name, env);
 	env.setValueSide(ValueSide.RValue);
 
-	return ObjectType.create([{ pType, name }]);
+	return ObjectType.create([{ name, pType }]);
 };

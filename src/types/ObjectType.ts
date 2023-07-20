@@ -14,9 +14,9 @@ export class ObjectType extends PropertyAccessor {
 		}
 
 		return (
-			this.properties.length === other.properties.length &&
-			this.properties.every((member) => {
-				const thisMember = other.properties.find((m) => m.name === member.name);
+			this.ownProperties.length === other.ownProperties.length &&
+			this.ownProperties.every((member) => {
+				const thisMember = other.ownProperties.find((m) => m.name === member.name);
 				return thisMember !== undefined && thisMember.pType.equals(member.pType);
 			})
 		);
@@ -34,11 +34,11 @@ export class ObjectType extends PropertyAccessor {
 	}
 
 	public override toString(): string {
-		if (this.properties.length === 0) {
+		if (this.ownProperties.length === 0) {
 			return "{}";
 		}
 		// TODO: Handle more complex cyclic references
-		return `{ ${this.properties
+		return `{ ${this.ownProperties
 			.map((member) => `${member.name}: ${member.pType === this ? "*cyclic reference*" : member.pType}`)
 			.join(", ")} }`;
 	}

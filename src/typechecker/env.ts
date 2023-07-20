@@ -171,6 +171,6 @@ export class Env {
 			})),
 		);
 		this.add("window", { vType: windowType, isLocal: false, isMutable: false, builtin: true });
-		windowType.add({ pType: windowType, name: "window" });
+		windowType.add({ name: "window", pType: windowType });
 	}
 }

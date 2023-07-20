@@ -8,7 +8,7 @@ export type Property = { pType: Type; name: string };
 export abstract class PropertyAccessor implements Type {
 	private static readonly logger = LoggerFactory.create("PropertyAccessor");
 
-	private readonly _properties: Property[] = [];
+	private readonly _ownProperties: Property[] = [];
 
 	protected constructor(props: Property[] = []) {
 		props.forEach((prop) => this.add(prop));
@@ -23,10 +23,14 @@ export abstract class PropertyAccessor implements Type {
 			PropertyAccessor.logger.warn(
 				`Property with name '${property.name}' already exists in object type, will be overwritten.`,
 			);
-			this.properties[this.properties.findIndex((m) => m.name === property.name)] = property;
-		} else {
-			this.properties.push(property);
+			if (this.ownProperties.some((m) => m.name === property.name)) {
+				this._ownProperties.splice(
+					this._ownProperties.findIndex((m) => m.name === property.name),
+					1,
+				);
+			}
 		}
+		this.ownProperties.push(property);
 	}
 
 	public addAll(...properties: Property[]): void {
@@ -44,7 +48,11 @@ export abstract class PropertyAccessor implements Type {
 	}
 
 	public get properties(): Property[] {
-		return [...this.getBuiltins(), ...this._properties];
+		return [...this._ownProperties, ...this.getBuiltins()];
+	}
+
+	public get ownProperties(): Property[] {
+		return this._ownProperties;
 	}
 
 	public abstract equals<T extends Type>(other: T): boolean;
