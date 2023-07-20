@@ -1,6 +1,6 @@
 import type ts from "typescript";
 import { Env, TypeChecker, TypecheckingFailure, ValueSide } from "../..";
-import { AnyType, Type, UndefinedType, VoidType } from "../../../types";
+import { AnyType, Type, UndefinedType, UnionType, VoidType } from "../../../types";
 import { Bool3 } from "../../../utils/Bool3";
 import { NotImplementedException } from "../../../utils/NotImplementedException";
 import { visitFunction } from "../shared/function";
@@ -44,10 +44,16 @@ export async function visit(node: ts.FunctionDeclaration, env: Env): Promise<Typ
 	}
 
 	env.popReturnType();
-	env.exitScope();
+	env.leaveScope();
 
 	if (infer && fType.retType.equals(AnyType.create()) && retData.inferredType) {
-		fType.retType = retData.inferredType;
+		if (retData.doesReturn === Bool3.False) {
+			fType.retType = VoidType.create();
+		} else if (retData.doesReturn === Bool3.Sometimes) {
+			fType.retType = UnionType.create([retData.inferredType, UndefinedType.create()]).simplify();
+		} else {
+			fType.retType = retData.inferredType;
+		}
 	}
 
 	return fType;
