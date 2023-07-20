@@ -1,10 +1,11 @@
-import { PropertyAccessor, Type } from ".";
+import { Property, PropertyAccessor, Type } from ".";
 
 export class BooleanType extends PropertyAccessor {
 	private static readonly instance: BooleanType = new BooleanType();
+	private static builtins: Property[] = [];
 
 	private constructor() {
-		super([]);
+		super();
 	}
 
 	public equals<T extends Type>(other: T): boolean {
@@ -21,5 +22,13 @@ export class BooleanType extends PropertyAccessor {
 
 	public static create(): BooleanType {
 		return this.instance;
+	}
+
+	public getBuiltins(): Property[] {
+		return BooleanType.builtins;
+	}
+
+	public static override setBuiltins(properties: Property[]): void {
+		this.builtins = properties;
 	}
 }

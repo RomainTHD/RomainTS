@@ -1,13 +1,15 @@
-import { PropertyAccessor, Type } from ".";
+import { Property, PropertyAccessor, Type } from ".";
 
 type Param = { name: string; pType: Type };
 
 export class FunctionType extends PropertyAccessor {
+	private static builtins: Property[] = [];
+
 	private readonly _params: Param[];
 	private _retType: Type;
 
 	private constructor(params: Param[], retType: Type) {
-		super([]);
+		super();
 		this._params = params;
 		this._retType = retType;
 	}
@@ -64,7 +66,28 @@ export class FunctionType extends PropertyAccessor {
 		this._retType = newType;
 	}
 
-	public static create(params: Param[], retType: Type): FunctionType {
-		return new FunctionType(params, retType);
+	public static create(params: (Param | Type)[], retType: Type): FunctionType {
+		return new FunctionType(
+			params.map((p) => {
+				if (p.hasOwnProperty("name") && p.hasOwnProperty("pType")) {
+					return p as Param;
+				} else {
+					return {
+						// FIXME: Ugly
+						name: "<anonymous>",
+						pType: p as Type,
+					};
+				}
+			}),
+			retType,
+		);
+	}
+
+	public getBuiltins(): Property[] {
+		return FunctionType.builtins;
+	}
+
+	public static override setBuiltins(properties: Property[]): void {
+		this.builtins = properties;
 	}
 }

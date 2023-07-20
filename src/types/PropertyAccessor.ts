@@ -1,6 +1,7 @@
 import { Type } from ".";
 import { assert } from "../utils";
 import { LoggerFactory } from "../utils/Logger";
+import { NotImplementedException } from "../utils/NotImplementedException";
 
 export type Property = { pType: Type; name: string };
 
@@ -9,7 +10,7 @@ export abstract class PropertyAccessor implements Type {
 
 	private readonly _properties: Property[] = [];
 
-	protected constructor(props: Property[]) {
+	protected constructor(props: Property[] = []) {
 		props.forEach((prop) => this.add(prop));
 	}
 
@@ -43,10 +44,17 @@ export abstract class PropertyAccessor implements Type {
 	}
 
 	public get properties(): Property[] {
-		return this._properties;
+		return [...this.getBuiltins(), ...this._properties];
 	}
 
 	public abstract equals<T extends Type>(other: T): boolean;
 
 	public abstract contains<T extends Type>(other: T): boolean;
+
+	public abstract getBuiltins(): Property[];
+
+	public static setBuiltins(properties: Property[]): void {
+		// Should be overridden by subclasses
+		throw new NotImplementedException();
+	}
 }

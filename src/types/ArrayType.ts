@@ -1,16 +1,13 @@
-import type { Type } from ".";
-import { NumberType, PropertyAccessor, UnionType } from ".";
+import type { Property, Type } from ".";
+import { PropertyAccessor, UnionType } from ".";
 
 export class ArrayType extends PropertyAccessor {
+	private static builtins: Property[] = [];
+
 	private readonly _baseType: Type;
 
 	private constructor(baseType: Type) {
-		super([
-			{
-				name: "length",
-				pType: NumberType.create(),
-			},
-		]);
+		super();
 		this._baseType = baseType;
 	}
 
@@ -44,5 +41,13 @@ export class ArrayType extends PropertyAccessor {
 
 	public static create(baseType: Type): ArrayType {
 		return new ArrayType(baseType);
+	}
+
+	public getBuiltins(): Property[] {
+		return ArrayType.builtins;
+	}
+
+	public static override setBuiltins(properties: Property[]): void {
+		this.builtins = properties;
 	}
 }

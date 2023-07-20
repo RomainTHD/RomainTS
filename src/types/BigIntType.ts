@@ -1,10 +1,11 @@
-import { PropertyAccessor, Type } from ".";
+import { Property, PropertyAccessor, Type } from ".";
 
 export class BigIntType extends PropertyAccessor {
 	private static readonly instance: BigIntType = new BigIntType();
+	private static builtins: Property[] = [];
 
 	private constructor() {
-		super([]);
+		super();
 	}
 
 	public contains<T extends Type>(other: T): boolean {
@@ -21,5 +22,13 @@ export class BigIntType extends PropertyAccessor {
 
 	public static create(): BigIntType {
 		return this.instance;
+	}
+
+	public getBuiltins(): Property[] {
+		return BigIntType.builtins;
+	}
+
+	public static override setBuiltins(properties: Property[]): void {
+		this.builtins = properties;
 	}
 }

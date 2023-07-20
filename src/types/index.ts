@@ -14,3 +14,9 @@ export * from "./StringType";
 export * from "./UndefinedType";
 export * from "./UnionType";
 export * from "./VoidType";
+
+import { isPopulated, populate } from "./populate";
+
+if (!isPopulated()) {
+	populate();
+}

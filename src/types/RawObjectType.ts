@@ -3,9 +3,10 @@ import { PropertyAccessor, UndefinedType } from ".";
 
 export class RawObjectType extends PropertyAccessor {
 	private static readonly instance: RawObjectType = new RawObjectType();
+	private static builtins: Property[] = [];
 
 	private constructor() {
-		super([]);
+		super();
 	}
 
 	public override equals<T extends Type>(other: T): boolean {
@@ -34,5 +35,13 @@ export class RawObjectType extends PropertyAccessor {
 
 	public static create(): RawObjectType {
 		return this.instance;
+	}
+
+	public getBuiltins(): Property[] {
+		return RawObjectType.builtins;
+	}
+
+	public static override setBuiltins(properties: Property[]): void {
+		this.builtins = properties;
 	}
 }

@@ -2,6 +2,8 @@ import type { Property, Type } from ".";
 import { PropertyAccessor } from ".";
 
 export class ObjectType extends PropertyAccessor {
+	private static builtins: Property[] = [];
+
 	private constructor(properties: Property[]) {
 		super(properties);
 	}
@@ -43,5 +45,13 @@ export class ObjectType extends PropertyAccessor {
 
 	public static create(properties: Property[] = []): ObjectType {
 		return new ObjectType(properties);
+	}
+
+	public getBuiltins(): Property[] {
+		return ObjectType.builtins;
+	}
+
+	public static override setBuiltins(properties: Property[]): void {
+		this.builtins = properties;
 	}
 }

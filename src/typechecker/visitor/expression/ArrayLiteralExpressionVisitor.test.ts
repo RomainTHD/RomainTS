@@ -38,4 +38,15 @@ describe("ArrayLiteralExpressionVisitor", () => {
 			),
 		);
 	});
+
+	it("should have a length", async () => {
+		const content = `
+		let t = [1, 2, 3];
+		let l = t.length;
+		`;
+		const env = Env.create();
+		await TypeChecker.accept(AST.parse(content), env);
+		expect(env.lookup("t")?.vType).toEqual(ArrayType.create(NumberType.create()));
+		expect(env.lookup("l")?.vType).toEqual(NumberType.create());
+	});
 });
