@@ -26,7 +26,7 @@ export async function visit(node: ts.ArrowFunction, env: Env): Promise<Type> {
 	}
 
 	env.popReturnType();
-	env.exitScope();
+	env.leaveScope();
 
 	if (infer && fType.retType.equals(AnyType.create()) && retData.inferredType) {
 		fType.retType = retData.inferredType;

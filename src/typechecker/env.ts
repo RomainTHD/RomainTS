@@ -51,7 +51,7 @@ export class Env {
 		this.scopes.push(new Map());
 	}
 
-	public exitScope(): void {
+	public leaveScope(): void {
 		this.scopes.pop();
 	}
 
