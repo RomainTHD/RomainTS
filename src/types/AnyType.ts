@@ -31,6 +31,10 @@ export class AnyType extends PropertyAccessor {
 		return AnyType.create();
 	}
 
+	public override getBuiltins(): Property[] {
+		return [];
+	}
+
 	public static create(): AnyType {
 		return AnyType.instance;
 	}
