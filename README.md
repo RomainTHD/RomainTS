@@ -15,4 +15,4 @@ tsx ./src/main.ts -i <file.ts>
 
 ### Project status
 
-See the "Wiki" tab in GitHub.
+[Supported features](https://github.com/RomainTHD/RomainTS/wiki/Supported-features)
