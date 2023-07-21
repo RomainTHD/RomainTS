@@ -1,10 +1,11 @@
 import { Type } from ".";
 import { assert } from "../utils";
 
-export class UnionType implements Type {
+export class UnionType extends Type {
 	private readonly _types: Type[] = [];
 
 	private constructor(types: Type[] = []) {
+		super();
 		for (const t of types) {
 			this.add(t);
 		}

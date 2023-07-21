@@ -5,12 +5,13 @@ import { NotImplementedException } from "../utils/NotImplementedException";
 
 export type Property = { pType: Type; name: string };
 
-export abstract class PropertyAccessor implements Type {
+export abstract class PropertyAccessor extends Type {
 	private static readonly logger = LoggerFactory.create("PropertyAccessor");
 
 	private readonly _ownProperties: Property[] = [];
 
 	protected constructor(props: Property[] = []) {
+		super();
 		props.forEach((prop) => this.add(prop));
 	}
 
@@ -54,10 +55,6 @@ export abstract class PropertyAccessor implements Type {
 	public get ownProperties(): Property[] {
 		return this._ownProperties;
 	}
-
-	public abstract equals<T extends Type>(other: T): boolean;
-
-	public abstract contains<T extends Type>(other: T): boolean;
 
 	public abstract getBuiltins(): Property[];
 

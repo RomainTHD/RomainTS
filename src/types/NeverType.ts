@@ -1,9 +1,11 @@
 import { Type } from ".";
 
-export class NeverType implements Type {
+export class NeverType extends Type {
 	private static readonly instance: NeverType = new NeverType();
 
-	private constructor() {}
+	private constructor() {
+		super();
+	}
 
 	public equals<T extends Type>(other: T): boolean {
 		return other instanceof NeverType;

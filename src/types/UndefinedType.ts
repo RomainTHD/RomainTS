@@ -1,9 +1,11 @@
 import { Type } from ".";
 
-export class UndefinedType implements Type {
+export class UndefinedType extends Type {
 	private static readonly instance: UndefinedType = new UndefinedType();
 
-	private constructor() {}
+	private constructor() {
+		super();
+	}
 
 	public equals<T extends Type>(other: T): boolean {
 		return other instanceof UndefinedType;

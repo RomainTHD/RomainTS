@@ -51,7 +51,12 @@ export class FunctionType extends PropertyAccessor {
 	}
 
 	public override toString(): string {
-		return "(" + this.params.map((param) => param.pType.toString()).join(", ") + ") => " + this.retType.toString();
+		return (
+			"(" +
+			this.params.map((param) => param.pType.toString()).join(", ") +
+			") => " +
+			(this.retType === this ? "self" : this.retType.toString())
+		);
 	}
 
 	public get params(): Param[] {
@@ -69,14 +74,14 @@ export class FunctionType extends PropertyAccessor {
 	public static create(params: (Param | Type)[], retType: Type): FunctionType {
 		return new FunctionType(
 			params.map((p) => {
-				if (p.hasOwnProperty("name") && p.hasOwnProperty("pType")) {
-					return p as Param;
-				} else {
+				if (p instanceof Type) {
 					return {
 						// FIXME: Ugly
 						name: "<anonymous>",
-						pType: p as Type,
+						pType: p,
 					};
+				} else {
+					return p;
 				}
 			}),
 			retType,

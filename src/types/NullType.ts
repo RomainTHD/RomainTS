@@ -2,10 +2,12 @@ import { Type } from ".";
 
 // TODO: Use more generic literal type
 
-export class NullType implements Type {
+export class NullType extends Type {
 	private static readonly instance: NullType = new NullType();
 
-	private constructor() {}
+	private constructor() {
+		super();
+	}
 
 	public equals<T extends Type>(other: T): boolean {
 		return other instanceof NullType;

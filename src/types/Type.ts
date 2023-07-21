@@ -1,13 +1,13 @@
-export interface Type {
+export abstract class Type {
 	/**
 	 * @example number.equals(number) // true
 	 */
-	equals<T extends Type>(other: T): boolean;
+	public abstract equals<T extends Type>(other: T): boolean;
 
 	/**
 	 * @example (number | string).contains(number) // true
 	 */
-	contains<T extends Type>(other: T): boolean;
+	public abstract contains<T extends Type>(other: T): boolean;
 
-	toString(): string;
+	public abstract toString(): string;
 }

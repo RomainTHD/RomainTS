@@ -1,9 +1,11 @@
 import { Type } from "./Type";
 
-export class VoidType implements Type {
+export class VoidType extends Type {
 	private static readonly instance: VoidType = new VoidType();
 
-	private constructor() {}
+	private constructor() {
+		super();
+	}
 
 	public equals<T extends Type>(other: T): boolean {
 		return other instanceof VoidType;
