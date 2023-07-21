@@ -4,11 +4,7 @@ import { xor } from "../../../utils";
 import { Env } from "../../env";
 import { TypecheckingFailure } from "../../TypecheckingFailure";
 
-export function visitMultiplicativeOperatorOrHigherToken<T extends ts.SyntaxKind>(
-	node: ts.Token<T>,
-	left: Type,
-	right: Type,
-): Type {
+export function visitBinaryOperatorToken<T extends ts.SyntaxKind>(node: ts.Token<T>, left: Type, right: Type): Type {
 	if (xor(left instanceof BigIntType, right instanceof BigIntType)) {
 		throw new TypecheckingFailure("Cannot convert BigInt to Number", node);
 	} else if (left instanceof BigIntType && right instanceof BigIntType) {
