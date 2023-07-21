@@ -35,7 +35,7 @@ describe("PropertyAccessExpressionVisitor", () => {
 
 	it("should work for absent properties in sloppy mode", async () => {
 		const content = "let x = globalThis.someProperty;";
-		const env = Env.create();
+		const env = Env.create({ strictMode: false });
 		await TypeChecker.accept(AST.parse(content), env);
 		expect(env.lookup("x")?.vType).toEqual(UndefinedType.create());
 	});
