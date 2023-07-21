@@ -4,7 +4,6 @@ import { AnyType, Type, UndefinedType, VoidType } from "../../../types";
 import { Bool3 } from "../../../utils/Bool3";
 import { visitFunction } from "../shared/function";
 import { StatementReturn } from "../statement";
-import accept = TypeChecker.accept;
 
 export async function visit(node: ts.ArrowFunction, env: Env): Promise<Type> {
 	const { fType, infer } = await visitFunction(env, node.parameters, node.type);
@@ -12,11 +11,24 @@ export async function visit(node: ts.ArrowFunction, env: Env): Promise<Type> {
 	env.enterScope();
 	env.pushReturnType(fType.retType);
 
+	const paramsAlreadyDeclared: Set<string> = new Set();
+
 	for (const param of fType.params) {
+		if (paramsAlreadyDeclared.has(param.name)) {
+			throw new TypecheckingFailure(`Duplicate parameter '${param.name}'`, node);
+		}
 		env.add(param.name, { vType: param.pType, isLocal: true, isMutable: true });
+		paramsAlreadyDeclared.add(param.name);
 	}
 
-	const retData: StatementReturn = await accept(node.body, env);
+	let retData: StatementReturn | Type = await TypeChecker.accept(node.body, env);
+
+	if (retData instanceof Type) {
+		retData = {
+			doesReturn: Bool3.True,
+			inferredType: retData,
+		};
+	}
 
 	if (
 		retData.doesReturn !== Bool3.True &&

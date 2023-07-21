@@ -108,7 +108,9 @@ export class Env {
 			Env.logger.debug("New scope:");
 			Env.logger.indent();
 			for (const [name, value] of scope) {
-				Env.logger.debug(`${name}(${value.isMutable ? "L" : "C"}): ${value.vType}`);
+				if (Env.hideBuiltins && !value.builtin) {
+					Env.logger.debug(`${name}(${value.isMutable ? "L" : "C"}): ${value.vType}`);
+				}
 			}
 		}
 		for (const scope of this.scopes) {
@@ -170,7 +172,11 @@ export class Env {
 				pType: v.vType,
 			})),
 		);
+
 		this.add("globalThis", { vType: globalThis, isLocal: false, isMutable: false, builtin: true });
 		globalThis.add({ name: "globalThis", pType: globalThis });
+
+		this.add("this", { vType: globalThis, isLocal: true, isMutable: true, builtin: true });
+		globalThis.add({ name: "this", pType: globalThis });
 	}
 }

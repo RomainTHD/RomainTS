@@ -28,7 +28,7 @@ export async function visit(node: ts.FunctionDeclaration, env: Env): Promise<Typ
 	env.pushReturnType(fType.retType);
 
 	// FIXME: Wrong signature
-	env.add("this", { vType: fType, isLocal: true, isMutable: false });
+	env.add("this", { vType: fType, isLocal: true, isMutable: true });
 
 	for (const param of fType.params) {
 		env.add(param.name, { vType: param.pType, isLocal: true, isMutable: true });

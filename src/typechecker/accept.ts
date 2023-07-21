@@ -22,9 +22,11 @@ export namespace TypeChecker {
 		const sorter: SorterInfo[] = [
 			{ name: ts.SyntaxKind.TypeLiteral, dir: "type" },
 			{ name: ts.SyntaxKind.Block, dir: "statement" },
+			{ name: ts.SyntaxKind.ArrowFunction, dir: "expression" },
 			{ name: ts.SyntaxKind.TrueKeyword, dir: "literal" },
 			{ name: ts.SyntaxKind.FalseKeyword, dir: "literal" },
 			{ name: ts.SyntaxKind.NullKeyword, dir: "literal" },
+			{ name: ts.SyntaxKind.ThisKeyword, dir: "literal" },
 
 			{ suffix: "Token", dir: "token" },
 			{ suffix: "Expression", dir: "expression" },
