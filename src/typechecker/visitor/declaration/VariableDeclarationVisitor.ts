@@ -20,7 +20,9 @@ export async function visit(
 	let vType: Type | null = null;
 	if (node.type) {
 		// `let x: number ...`
+		env.setTypeEvaluation(true);
 		vType = await TypeChecker.accept(node.type, env);
+		env.setTypeEvaluation(false);
 	}
 
 	if (node.initializer) {

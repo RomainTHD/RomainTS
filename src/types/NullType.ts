@@ -1,27 +1,13 @@
-import { Type } from ".";
+import { LiteralType } from ".";
 
-// TODO: Use more generic literal type
-
-export class NullType extends Type {
+export class NullType extends LiteralType {
 	private static readonly instance: NullType = new NullType();
 
 	private constructor() {
-		super();
+		super(null);
 	}
 
-	public equals<T extends Type>(other: T): boolean {
-		return other instanceof NullType;
-	}
-
-	public contains<T extends Type>(other: T): boolean {
-		return other instanceof NullType;
-	}
-
-	public toString(): string {
-		return "null";
-	}
-
-	public static create(): NullType {
+	public static override create(): NullType {
 		return NullType.instance;
 	}
 }

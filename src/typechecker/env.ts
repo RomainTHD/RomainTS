@@ -33,6 +33,7 @@ export class Env {
 	private readonly _config: EnvConfig;
 
 	private valueSide: ValueSide = ValueSide.RValue;
+	private typeEvaluation: boolean = false;
 
 	private constructor(config: EnvConfig) {
 		this._config = config;
@@ -136,6 +137,14 @@ export class Env {
 
 	public setValueSide(valueSide: ValueSide): void {
 		this.valueSide = valueSide;
+	}
+
+	public getTypeEvaluation(): boolean {
+		return this.typeEvaluation;
+	}
+
+	public setTypeEvaluation(typeEvaluation: boolean): void {
+		this.typeEvaluation = typeEvaluation;
 	}
 
 	public get config(): Readonly<EnvConfig> {

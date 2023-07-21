@@ -7,6 +7,7 @@ export * from "./ArrayType";
 export * from "./BigIntType";
 export * from "./BooleanType";
 export * from "./FunctionType";
+export * from "./LiteralType";
 export * from "./NeverType";
 export * from "./NullType";
 export * from "./NumberType";
