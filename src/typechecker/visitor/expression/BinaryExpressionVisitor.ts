@@ -4,6 +4,8 @@ import { TypeChecker, ValueSide } from "../..";
 import { Type } from "../../../types";
 import accept = TypeChecker.accept;
 
+// TODO: Forbid `0 += 1`
+
 export const visit: ExpressionVisitor<ts.BinaryExpression> = async (node, env) => {
 	let value = ValueSide.RValue;
 	switch (node.operatorToken.kind) {

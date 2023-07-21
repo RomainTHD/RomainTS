@@ -10,7 +10,7 @@ export function visitMultiplicativeOperatorOrHigherToken<T extends ts.SyntaxKind
 	right: Type,
 ): Type {
 	if (xor(left instanceof BigIntType, right instanceof BigIntType)) {
-		throw new TypecheckingFailure("Cannot mix bigint and other types", node);
+		throw new TypecheckingFailure("Cannot convert BigInt to Number", node);
 	} else if (left instanceof BigIntType && right instanceof BigIntType) {
 		return BigIntType.create();
 	} else {
