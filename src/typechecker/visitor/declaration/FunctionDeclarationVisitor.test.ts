@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { AST } from "../../../AST";
-import { FunctionType, NumberType, StringType, UndefinedType, UnionType, VoidType } from "../../../types";
+import { FunctionType, LiteralType, NumberType, StringType, UndefinedType, UnionType, VoidType } from "../../../types";
 import { TypeChecker } from "../../accept";
 import { Env } from "../../env";
 
@@ -58,7 +58,13 @@ describe("FunctionDeclarationVisitor", () => {
 		const env = Env.create();
 		await TypeChecker.accept(AST.parse(content), env);
 		expect((env.lookup("f")!.vType as FunctionType).retType).toEqual(
-			UnionType.create([NumberType.create(), StringType.create()]),
+			UnionType.create([
+				LiteralType.create({
+					vType: NumberType.create(),
+					value: 0,
+				}),
+				LiteralType.create({ vType: StringType.create(), value: "s" }),
+			]),
 		);
 	});
 
@@ -77,7 +83,14 @@ describe("FunctionDeclarationVisitor", () => {
 		const env = Env.create();
 		await TypeChecker.accept(AST.parse(content), env);
 		expect((env.lookup("f")!.vType as FunctionType).retType).toEqual(
-			UnionType.create([NumberType.create(), StringType.create(), UndefinedType.create()]),
+			UnionType.create([
+				LiteralType.create({
+					vType: NumberType.create(),
+					value: 0,
+				}),
+				LiteralType.create({ vType: StringType.create(), value: "s" }),
+				UndefinedType.create(),
+			]),
 		);
 	});
 });

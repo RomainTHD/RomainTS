@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { AST } from "../../../AST";
-import { LiteralType } from "../../../types";
+import { LiteralType, NumberType } from "../../../types";
 import { TypeChecker } from "../../accept";
 import { Env } from "../../env";
 import { TypecheckingFailure } from "../../TypecheckingFailure";
@@ -15,7 +15,12 @@ describe("NumericLiteralVisitor", () => {
 		const content = "let x: 1;";
 		const env = Env.create();
 		await TypeChecker.accept(AST.parse(content), env);
-		expect(env.lookup("x")?.vType).toEqual(LiteralType.create(1));
+		expect(env.lookup("x")?.vType).toEqual(
+			LiteralType.create({
+				vType: NumberType.create(),
+				value: 1,
+			}),
+		);
 	});
 
 	it("should not work with other number literals", async () => {

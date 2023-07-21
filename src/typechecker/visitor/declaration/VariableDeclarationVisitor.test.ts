@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { AST } from "../../../AST";
-import { NumberType, StringType } from "../../../types";
+import { LiteralType, NumberType, StringType } from "../../../types";
 import { TypeChecker } from "../../accept";
 import { Env } from "../../env";
 import { TypecheckingFailure } from "../../TypecheckingFailure";
@@ -17,7 +17,12 @@ describe("VariableDeclarationVisitor", () => {
 		const content = "const x = 0;";
 		const env = Env.create();
 		await TypeChecker.accept(AST.parse(content), env);
-		expect(env.lookup("x")?.vType).toEqual(NumberType.create());
+		expect(env.lookup("x")?.vType).toEqual(
+			LiteralType.create({
+				vType: NumberType.create(),
+				value: 0,
+			}),
+		);
 	});
 
 	it("should work for var", async () => {

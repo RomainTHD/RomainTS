@@ -1,16 +1,21 @@
-import { Type } from ".";
+import { StringType, Type } from ".";
+
+interface LiteralValue {
+	vType: Type;
+	value: unknown;
+}
 
 export class LiteralType extends Type {
-	private readonly _literal: unknown;
+	private readonly _literal: LiteralValue;
 
-	protected constructor(literal: unknown) {
+	protected constructor(literal: LiteralValue) {
 		super();
 		this._literal = literal;
 	}
 
 	public equals<T extends Type>(other: T): boolean {
 		if (other instanceof LiteralType) {
-			return this.literal === other.literal;
+			return this.literal.value === other.literal.value;
 		}
 		return false;
 	}
@@ -20,17 +25,17 @@ export class LiteralType extends Type {
 	}
 
 	public toString(): string {
-		if (typeof this.literal === "string") {
-			return JSON.stringify(this.literal);
+		if (this.literal.vType.equals(StringType.create())) {
+			return JSON.stringify(this.literal.value);
 		}
-		return String(this.literal);
+		return String(this.literal.value);
 	}
 
-	public get literal(): unknown {
+	public get literal(): LiteralValue {
 		return this._literal;
 	}
 
-	public static create(literal: unknown): LiteralType {
+	public static create(literal: LiteralValue): LiteralType {
 		return new LiteralType(literal);
 	}
 }

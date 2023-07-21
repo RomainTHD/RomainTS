@@ -1,4 +1,4 @@
-import { Property, PropertyAccessor, Type } from ".";
+import { LiteralType, Property, PropertyAccessor, Type } from ".";
 
 export class BooleanType extends PropertyAccessor {
 	private static readonly instance: BooleanType = new BooleanType();
@@ -13,7 +13,13 @@ export class BooleanType extends PropertyAccessor {
 	}
 
 	public contains<T extends Type>(other: T): boolean {
-		return other instanceof BooleanType;
+		if (other instanceof BooleanType) {
+			return true;
+		}
+		if (other instanceof LiteralType) {
+			return other.literal.vType.equals(this);
+		}
+		return false;
 	}
 
 	public override toString(): string {

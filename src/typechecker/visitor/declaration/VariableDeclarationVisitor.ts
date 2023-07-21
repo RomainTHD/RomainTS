@@ -1,6 +1,6 @@
 import type ts from "typescript";
 import { Env, TypeChecker, TypecheckingFailure, ValueSide } from "../..";
-import { AnyType, Type } from "../../../types";
+import { AnyType, LiteralType, Type } from "../../../types";
 
 export async function visit(
 	node: ts.VariableDeclaration,
@@ -20,9 +20,7 @@ export async function visit(
 	let vType: Type | null = null;
 	if (node.type) {
 		// `let x: number ...`
-		env.setTypeEvaluation(true);
 		vType = await TypeChecker.accept(node.type, env);
-		env.setTypeEvaluation(false);
 	}
 
 	if (node.initializer) {
@@ -34,8 +32,13 @@ export async function visit(
 				throw new TypecheckingFailure(`Type '${exprType}' is not assignable to type '${vType}'`, node);
 			}
 		} else {
-			// `let x = ...`
-			vType = exprType;
+			if (isMutable && exprType instanceof LiteralType) {
+				// `let x = 0`: `x` should be a `number`
+				vType = exprType.literal.vType;
+			} else {
+				// `let x = ...`
+				vType = exprType;
+			}
 		}
 	} else {
 		if (!vType) {

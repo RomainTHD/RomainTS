@@ -10,14 +10,19 @@ describe("FalseKeywordVisitor", () => {
 		const content = "let x = false;";
 		const env = Env.create();
 		await TypeChecker.accept(AST.parse(content), env);
-		expect(env.lookup("x")?.vType).toEqual(BooleanType.create());
+		expect(BooleanType.create().contains(env.lookup("x")!.vType)).toBe(true);
 	});
 
 	it("should work for false type literals", async () => {
 		const content = "let x: false;";
 		const env = Env.create();
 		await TypeChecker.accept(AST.parse(content), env);
-		expect(env.lookup("x")?.vType).toEqual(LiteralType.create(false));
+		expect(env.lookup("x")?.vType).toEqual(
+			LiteralType.create({
+				vType: BooleanType.create(),
+				value: false,
+			}),
+		);
 	});
 
 	it("should not work with true literals", async () => {

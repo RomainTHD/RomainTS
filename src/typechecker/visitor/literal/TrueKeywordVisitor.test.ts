@@ -17,7 +17,12 @@ describe("TrueKeywordVisitor", () => {
 		const content = "let x: true = true;";
 		const env = Env.create();
 		await TypeChecker.accept(AST.parse(content), env);
-		expect(env.lookup("x")?.vType).toEqual(LiteralType.create(true));
+		expect(env.lookup("x")?.vType).toEqual(
+			LiteralType.create({
+				vType: BooleanType.create(),
+				value: true,
+			}),
+		);
 	});
 
 	it("should not work with false literals", async () => {

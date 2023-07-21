@@ -139,14 +139,6 @@ export class Env {
 		this.valueSide = valueSide;
 	}
 
-	public getTypeEvaluation(): boolean {
-		return this.typeEvaluation;
-	}
-
-	public setTypeEvaluation(typeEvaluation: boolean): void {
-		this.typeEvaluation = typeEvaluation;
-	}
-
 	public get config(): Readonly<EnvConfig> {
 		return this._config;
 	}

@@ -1,4 +1,4 @@
-import { Property, PropertyAccessor, Type } from ".";
+import { LiteralType, Property, PropertyAccessor, Type } from ".";
 
 export class StringType extends PropertyAccessor {
 	private static readonly instance: StringType = new StringType();
@@ -13,7 +13,13 @@ export class StringType extends PropertyAccessor {
 	}
 
 	public override contains<T extends Type>(other: T): boolean {
-		return other instanceof StringType;
+		if (other instanceof StringType) {
+			return true;
+		}
+		if (other instanceof LiteralType) {
+			return other.literal.vType.equals(this);
+		}
+		return false;
 	}
 
 	public override toString(): string {
