@@ -7,14 +7,14 @@ import { TypecheckingFailure } from "../../TypecheckingFailure";
 
 describe("PropertyAccessExpressionVisitor", () => {
 	it("should work for basic access", async () => {
-		const content = "let x = window.NaN;";
+		const content = "let x = globalThis.NaN;";
 		const env = Env.create();
 		await TypeChecker.accept(AST.parse(content), env);
 		expect(env.lookup("x")?.vType).toEqual(NumberType.create());
 	});
 
 	it("should work for multiple access", async () => {
-		const content = "let x = window.window.NaN;";
+		const content = "let x = globalThis.globalThis.NaN;";
 		const env = Env.create();
 		await TypeChecker.accept(AST.parse(content), env);
 		expect(env.lookup("x")?.vType).toEqual(NumberType.create());
@@ -28,13 +28,13 @@ describe("PropertyAccessExpressionVisitor", () => {
 	it("should not work for absent properties", async () => {
 		const content = `
 		"use strict";
-		let x = window.someProperty;
+		let x = globalThis.someProperty;
 		`;
 		await expect(TypeChecker.accept(AST.parse(content), Env.create())).rejects.toThrowError(TypecheckingFailure);
 	});
 
 	it("should work for absent properties in sloppy mode", async () => {
-		const content = "let x = window.someProperty;";
+		const content = "let x = globalThis.someProperty;";
 		const env = Env.create();
 		await TypeChecker.accept(AST.parse(content), env);
 		expect(env.lookup("x")?.vType).toEqual(UndefinedType.create());

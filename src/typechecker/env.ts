@@ -164,13 +164,13 @@ export class Env {
 		this.add("NaN", { vType: NumberType.create(), isLocal: false, isMutable: false, builtin: true });
 		this.add("Infinity", { vType: NumberType.create(), isLocal: false, isMutable: false, builtin: true });
 
-		const windowType = ObjectType.create(
+		const globalThis = ObjectType.create(
 			Array.from(this.globals.entries()).map(([k, v]) => ({
 				name: k,
 				pType: v.vType,
 			})),
 		);
-		this.add("window", { vType: windowType, isLocal: false, isMutable: false, builtin: true });
-		windowType.add({ name: "window", pType: windowType });
+		this.add("globalThis", { vType: globalThis, isLocal: false, isMutable: false, builtin: true });
+		globalThis.add({ name: "globalThis", pType: globalThis });
 	}
 }
