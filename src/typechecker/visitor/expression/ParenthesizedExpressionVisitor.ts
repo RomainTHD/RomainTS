@@ -1,4 +1,4 @@
-import ts from "typescript";
+import type ts from "typescript";
 import { ExpressionVisitor } from ".";
 import { TypeChecker } from "../../accept";
 

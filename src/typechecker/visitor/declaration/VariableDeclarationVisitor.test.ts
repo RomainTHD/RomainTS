@@ -37,25 +37,25 @@ describe("VariableDeclarationVisitor", () => {
 	it("should not override existing let", async () => {
 		const content = "let x = 0; let x = 0;";
 		const env = Env.create();
-		await expect(TypeChecker.accept(AST.parse(content), env)).rejects.toThrow(TypecheckingFailure);
+		await expect(TypeChecker.accept(AST.parse(content), env)).rejects.toThrowError(TypecheckingFailure);
 	});
 
 	it("should not override existing const", async () => {
 		const content = "const x = 0; let x = 0;";
 		const env = Env.create();
-		await expect(TypeChecker.accept(AST.parse(content), env)).rejects.toThrow(TypecheckingFailure);
+		await expect(TypeChecker.accept(AST.parse(content), env)).rejects.toThrowError(TypecheckingFailure);
 	});
 
 	it("should not override existing var with let", async () => {
 		const content = "var x = 0; let x = 0;";
 		const env = Env.create();
-		await expect(TypeChecker.accept(AST.parse(content), env)).rejects.toThrow(TypecheckingFailure);
+		await expect(TypeChecker.accept(AST.parse(content), env)).rejects.toThrowError(TypecheckingFailure);
 	});
 
 	it("should not override existing var with const", async () => {
 		const content = "var x = 0; const x = 0;";
 		const env = Env.create();
-		await expect(TypeChecker.accept(AST.parse(content), env)).rejects.toThrow(TypecheckingFailure);
+		await expect(TypeChecker.accept(AST.parse(content), env)).rejects.toThrowError(TypecheckingFailure);
 	});
 
 	it("should override existing var with var", async () => {
