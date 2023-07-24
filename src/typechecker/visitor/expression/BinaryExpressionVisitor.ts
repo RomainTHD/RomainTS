@@ -2,9 +2,6 @@ import ts from "typescript";
 import { ExpressionVisitor } from ".";
 import { TypeChecker, ValueSide } from "../..";
 import { Type } from "../../../types";
-import accept = TypeChecker.accept;
-
-// TODO: Forbid `0 += 1`
 
 export const visit: ExpressionVisitor<ts.BinaryExpression> = async (node, env) => {
 	let value = ValueSide.RValue;
@@ -27,5 +24,5 @@ export const visit: ExpressionVisitor<ts.BinaryExpression> = async (node, env) =
 	env.setValueSide(ValueSide.RValue);
 	const right: Type = await TypeChecker.accept(node.right, env);
 
-	return await accept(node.operatorToken, env, { left, right });
+	return await TypeChecker.accept(node.operatorToken, env, { left, right });
 };
