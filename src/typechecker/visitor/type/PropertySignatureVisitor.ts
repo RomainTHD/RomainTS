@@ -1,5 +1,5 @@
 import type ts from "typescript";
-import { Env, TypeChecker, ValueSide } from "../..";
+import { Env, TypeChecker } from "../..";
 import { AnyType, Property, Type } from "../../../types";
 
 export const visit = async (node: ts.PropertySignature, env: Env): Promise<Property> => {
@@ -10,9 +10,10 @@ export const visit = async (node: ts.PropertySignature, env: Env): Promise<Prope
 		pType = AnyType.create();
 	}
 
-	env.setValueSide(ValueSide.LValue);
-	let name: string = await TypeChecker.accept(node.name, env);
-	env.setValueSide(ValueSide.RValue);
+	let name: string = await env.withChildData(
+		{ resolveIdentifier: false },
+		async () => await TypeChecker.accept(node.name, env),
+	);
 
 	return { name, pType };
 };

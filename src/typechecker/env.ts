@@ -1,6 +1,5 @@
 import { NumberType, ObjectType, Type, UndefinedType } from "../types";
 import { assert, throwError } from "../utils";
-import { IllegalStateException } from "../utils/IllegalStateException";
 import { LoggerFactory } from "../utils/Logger";
 
 type Value = {
@@ -11,6 +10,16 @@ type Value = {
 	builtin: boolean;
 };
 
+type ChildData = {
+	resolveIdentifier: boolean;
+	isPropertyAccess: boolean;
+	isFirstStatement: boolean;
+	left: Type | string;
+	right: Type;
+	isLocal: boolean;
+	isMutable: boolean;
+};
+
 type Scope = Map<string, Value>;
 
 export type EnvConfig = {
@@ -18,11 +27,6 @@ export type EnvConfig = {
 	noImplicitAny: boolean;
 	strictMode: boolean;
 };
-
-export enum ValueSide {
-	LValue,
-	RValue,
-}
 
 export class Env {
 	private static logger = LoggerFactory.create("Env");
@@ -34,9 +38,6 @@ export class Env {
 	private readonly returnTypes: Type[] = [];
 	private readonly _config: EnvConfig;
 	private readonly _data: Map<string, unknown> = new Map();
-
-	private valueSide: ValueSide = ValueSide.RValue;
-	private typeEvaluation: boolean = false;
 
 	private constructor(config: EnvConfig) {
 		this._config = config;
@@ -157,14 +158,6 @@ export class Env {
 		Env.logger.debug("Env end");
 	}
 
-	public getValueSide(): ValueSide {
-		return this.valueSide;
-	}
-
-	public setValueSide(valueSide: ValueSide): void {
-		this.valueSide = valueSide;
-	}
-
 	public get config(): Readonly<EnvConfig> {
 		return this._config;
 	}
@@ -188,16 +181,21 @@ export class Env {
 		return this.returnTypes[this.returnTypes.length - 1];
 	}
 
-	public async withChildData<T>(data: Record<string, unknown>, execute: () => T | Promise<T>): Promise<T> {
+	public async withChildData<T>(data: Partial<ChildData>, execute: () => T | Promise<T>): Promise<T> {
+		let previous: Map<string, unknown> = new Map();
 		Object.entries(data).forEach(([k, v]) => {
 			if (this._data.has(k)) {
-				throw new IllegalStateException(`Data already has key '${k}' with value '${this._data.get(k)}'`);
+				previous.set(k, this._data.get(k));
 			}
 			this._data.set(k, v);
 		});
 		const res = await execute();
 		Object.keys(data).forEach((k) => {
-			this._data.delete(k);
+			if (previous.has(k)) {
+				this._data.set(k, previous.get(k));
+			} else {
+				this._data.delete(k);
+			}
 		});
 		return res;
 	}

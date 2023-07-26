@@ -1,14 +1,15 @@
 import type ts from "typescript";
-import { Env, TypeChecker, TypecheckingFailure, ValueSide } from "../..";
+import { Env, TypeChecker, TypecheckingFailure } from "../..";
 import { AnyType, LiteralType, Type } from "../../../types";
 
 export async function visit(node: ts.VariableDeclaration, env: Env): Promise<void> {
 	const isLocal: boolean = env.getData("isLocal");
 	const isMutable: boolean = env.getData("isMutable");
 
-	env.setValueSide(ValueSide.LValue);
-	const name: string = await TypeChecker.accept(node.name, env);
-	env.setValueSide(ValueSide.RValue);
+	const name: string = await env.withChildData(
+		{ resolveIdentifier: false },
+		async () => await TypeChecker.accept(node.name, env),
+	);
 
 	let vType: Type | null = null;
 	if (node.type) {

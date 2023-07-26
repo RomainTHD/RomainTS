@@ -3,16 +3,17 @@ import { ObjectType, Property } from "../../../types";
 import { assert } from "../../../utils";
 import { NotImplementedException } from "../../../utils/NotImplementedException";
 import { TypeChecker } from "../../accept";
-import { Env, ValueSide } from "../../env";
+import { Env } from "../../env";
 
 export async function visit(node: ts.InterfaceDeclaration, env: Env): Promise<void> {
 	if (node.heritageClauses || node.modifiers) {
 		throw new NotImplementedException();
 	}
 
-	env.setValueSide(ValueSide.LValue);
-	const name: string = await TypeChecker.accept(node.name, env);
-	env.setValueSide(ValueSide.RValue);
+	const name: string = await env.withChildData(
+		{ resolveIdentifier: false },
+		async () => await TypeChecker.accept(node.name, env),
+	);
 
 	const resType = ObjectType.create([]);
 	for (const member of node.members) {

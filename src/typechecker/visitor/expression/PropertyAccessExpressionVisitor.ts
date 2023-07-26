@@ -1,22 +1,16 @@
 import type ts from "typescript";
 import { ExpressionVisitor } from ".";
 import { PropertyAccessor, Type, UndefinedType } from "../../../types";
-import { LoggerFactory } from "../../../utils/Logger";
 import { TypeChecker } from "../../accept";
-import { ValueSide } from "../../env";
 import { TypecheckingFailure } from "../../TypecheckingFailure";
-
-const logger = LoggerFactory.create("PropertyAccessExpressionVisitor");
 
 export const visit: ExpressionVisitor<ts.PropertyAccessExpression> = async (node, env) => {
 	const expr: Type = await TypeChecker.accept(node.expression, env);
 
-	env.setValueSide(ValueSide.LValue);
-	let prop = "";
-	await env.withChildData({ isPropertyAccess: true }, async () => {
-		prop = await TypeChecker.accept(node.name, env);
-	});
-	env.setValueSide(ValueSide.RValue);
+	const prop: string = await env.withChildData(
+		{ isPropertyAccess: true },
+		async () => await TypeChecker.accept(node.name, env),
+	);
 
 	if (!(expr instanceof PropertyAccessor)) {
 		throw new TypecheckingFailure(`Property access on non-object type '${expr}'`, node);
