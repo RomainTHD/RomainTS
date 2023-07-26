@@ -20,6 +20,7 @@ export namespace TypeChecker {
 		type SorterInfo = { dir: string; name?: ts.SyntaxKind; suffix?: string };
 
 		const sorter: SorterInfo[] = [
+			{ name: ts.SyntaxKind.TypeReference, dir: "type" },
 			{ name: ts.SyntaxKind.TypeLiteral, dir: "type" },
 			{ name: ts.SyntaxKind.Block, dir: "statement" },
 			{ name: ts.SyntaxKind.ArrowFunction, dir: "expression" },

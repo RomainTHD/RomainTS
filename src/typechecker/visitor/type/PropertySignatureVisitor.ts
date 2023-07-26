@@ -1,8 +1,8 @@
 import type ts from "typescript";
 import { Env, TypeChecker, ValueSide } from "../..";
-import { AnyType, ObjectType, Type } from "../../../types";
+import { AnyType, Property, Type } from "../../../types";
 
-export const visit = async (node: ts.PropertySignature, env: Env): Promise<ObjectType> => {
+export const visit = async (node: ts.PropertySignature, env: Env): Promise<Property> => {
 	let pType: Type;
 	if (node.type) {
 		pType = await TypeChecker.accept(node.type, env);
@@ -14,5 +14,5 @@ export const visit = async (node: ts.PropertySignature, env: Env): Promise<Objec
 	let name: string = await TypeChecker.accept(node.name, env);
 	env.setValueSide(ValueSide.RValue);
 
-	return ObjectType.create([{ name, pType }]);
+	return { name, pType };
 };

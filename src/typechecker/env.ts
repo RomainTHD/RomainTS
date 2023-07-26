@@ -29,6 +29,7 @@ export class Env {
 
 	private readonly globals: Map<string, Value> = new Map();
 	private readonly scopes: Scope[] = [new Map()];
+	private readonly types: Map<string, Type> = new Map();
 	private readonly returnTypes: Type[] = [];
 	private readonly _config: EnvConfig;
 
@@ -72,6 +73,14 @@ export class Env {
 		return null;
 	}
 
+	public lookupType(name: string): Type | null {
+		assert(name, `Name is unset, value is '${name}'`);
+		if (this.types.has(name)) {
+			return this.types.get(name)!;
+		}
+		return null;
+	}
+
 	public add(name: string, value: Partial<Value>): void {
 		assert(this.scopes.length > 0, "No scope to add to");
 		const scope = this.scopes[this.scopes.length - 1];
@@ -97,12 +106,24 @@ export class Env {
 		}
 	}
 
+	public addType(name: string, t: Type): void {
+		assert(name, `Name is unset, value is '${name}'`);
+		assert(t, `Type is unset, value is '${t}'`);
+		assert(typeof t === "object", `Type '${t}' is not a Type`);
+		if (this.types.has(name)) {
+			Env.logger.warn(`Type '${name}' already exists, overwriting`);
+		}
+		this.types.set(name, t);
+	}
+
 	public print(): void {
 		Env.logger.debug();
 
 		Env.logger.indent("Env start");
 
 		Env.logger.debug(`Config: ${JSON.stringify(this.config, null, 2)}`);
+
+		Env.logger.indent("Locals:");
 
 		for (const scope of this.scopes) {
 			Env.logger.indent("New scope:");
@@ -121,6 +142,12 @@ export class Env {
 			if (Env.hideBuiltins && !value.builtin) {
 				Env.logger.debug(`${name}(${value.isMutable ? "L" : "C"}): ${value.vType}`);
 			}
+		}
+		Env.logger.unindent();
+
+		Env.logger.indent("Types:");
+		for (const [name, type] of this.types) {
+			Env.logger.debug(`${name}: ${type}`);
 		}
 		Env.logger.unindent();
 
@@ -173,6 +200,9 @@ export class Env {
 
 		this.add("globalThis", { vType: globalThis, isLocal: false, isMutable: false, builtin: true });
 		globalThis.add({ name: "globalThis", pType: globalThis });
+
+		this.add("window", { vType: globalThis, isLocal: false, isMutable: false, builtin: true });
+		globalThis.add({ name: "window", pType: globalThis });
 
 		this.add("this", { vType: globalThis, isLocal: true, isMutable: true, builtin: true });
 		globalThis.add({ name: "this", pType: globalThis });

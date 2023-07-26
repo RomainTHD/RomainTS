@@ -29,6 +29,11 @@ export async function visit(
 		if (!value) {
 			if (data?.isPropertyAccess) {
 				return UndefinedType.create();
+			} else if (env.lookupType(node.text)) {
+				throw new TypecheckingFailure(
+					`Identifier '${node.text}' is a type but is incorrectly used as a value`,
+					node,
+				);
 			} else {
 				throw new TypecheckingFailure(`Identifier '${node.text}' not found in scope`, node);
 			}

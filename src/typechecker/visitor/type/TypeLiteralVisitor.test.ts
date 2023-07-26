@@ -4,7 +4,7 @@ import { NumberType, ObjectType, StringType } from "../../../types";
 import { TypeChecker } from "../../accept";
 import { Env } from "../../env";
 
-describe("typeLiteralVisitor", () => {
+describe("TypeLiteralVisitor", () => {
 	it("should work for object types", async () => {
 		const content = "let x: { n: number, s: string };";
 		const env = Env.create();
