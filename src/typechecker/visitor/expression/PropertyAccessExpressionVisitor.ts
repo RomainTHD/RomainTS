@@ -12,7 +12,7 @@ export const visit: ExpressionVisitor<ts.PropertyAccessExpression> = async (node
 	const expr: Type = await TypeChecker.accept(node.expression, env);
 
 	env.setValueSide(ValueSide.LValue);
-	const prop: string = await TypeChecker.accept(node.name, env);
+	const prop: string = await TypeChecker.accept(node.name, env, { isPropertyAccess: true });
 	env.setValueSide(ValueSide.RValue);
 
 	if (!(expr instanceof PropertyAccessor)) {
@@ -26,7 +26,6 @@ export const visit: ExpressionVisitor<ts.PropertyAccessExpression> = async (node
 	if (env.config.strictMode) {
 		throw new TypecheckingFailure(`Property '${prop}' does not exist on type '${expr}'`, node);
 	} else {
-		logger.warn(`Property '${prop}' does not exist on type '${expr}'`);
 		return UndefinedType.create();
 	}
 };

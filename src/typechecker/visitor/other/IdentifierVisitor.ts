@@ -8,7 +8,13 @@ const logger = LoggerFactory.create("Identifier");
 
 // Note that `undefined` is also an identifier
 
-export async function visit(node: ts.Identifier, env: Env): Promise<string | Type> {
+export async function visit(
+	node: ts.Identifier,
+	env: Env,
+	data?: {
+		isPropertyAccess: boolean;
+	},
+): Promise<string | Type> {
 	if (node.text.trim() === "") {
 		// `x = ;`
 		throw new TypecheckingFailure("Expected an expression", node);
@@ -21,11 +27,10 @@ export async function visit(node: ts.Identifier, env: Env): Promise<string | Typ
 		// `x + 0`: `x` is a RValue
 		const value = env.lookup(node.text);
 		if (!value) {
-			if (env.config.strictMode) {
-				throw new TypecheckingFailure(`Identifier '${node.text}' not found in scope`, node);
-			} else {
-				logger.warn(`Identifier '${node.text}' not found in scope`);
+			if (data?.isPropertyAccess) {
 				return UndefinedType.create();
+			} else {
+				throw new TypecheckingFailure(`Identifier '${node.text}' not found in scope`, node);
 			}
 		}
 		return value.vType;
