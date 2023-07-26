@@ -100,14 +100,12 @@ export class Env {
 	public print(): void {
 		Env.logger.debug();
 
-		Env.logger.debug("Env start");
-		Env.logger.indent();
+		Env.logger.indent("Env start");
 
 		Env.logger.debug(`Config: ${JSON.stringify(this.config, null, 2)}`);
 
 		for (const scope of this.scopes) {
-			Env.logger.debug("New scope:");
-			Env.logger.indent();
+			Env.logger.indent("New scope:");
 			for (const [name, value] of scope) {
 				if (Env.hideBuiltins && !value.builtin) {
 					Env.logger.debug(`${name}(${value.isMutable ? "L" : "C"}): ${value.vType}`);
@@ -118,8 +116,7 @@ export class Env {
 			Env.logger.unindent();
 		}
 
-		Env.logger.debug("Globals:");
-		Env.logger.indent();
+		Env.logger.indent("Globals:");
 		for (const [name, value] of this.globals) {
 			if (Env.hideBuiltins && !value.builtin) {
 				Env.logger.debug(`${name}(${value.isMutable ? "L" : "C"}): ${value.vType}`);

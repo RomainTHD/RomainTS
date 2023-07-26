@@ -54,10 +54,8 @@ export namespace TypeChecker {
 	const logger = LoggerFactory.create("TypeChecker");
 
 	export async function accept<T>(node: ts.Node, env: Env, data?: unknown): Promise<T> {
-		logger.indent();
-
 		const kind = SyntaxKindNoDuplicates[node.kind];
-		logger.debug(kind);
+		logger.indent(kind);
 
 		let visitorModule: { visit: (node: ts.Node, env: Env, data: unknown) => Promise<T> };
 		try {

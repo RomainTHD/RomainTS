@@ -13,13 +13,13 @@ export module LoggerFactory {
 			this.name = name;
 		}
 
-		public group(): void {
-			ownConsole.group();
+		public group(...labels: unknown[]): void {
+			ownConsole.group(chalk.gray(...labels));
 			Logger.totalIndent++;
 		}
 
-		public indent(): void {
-			this.group();
+		public indent(label?: string): void {
+			this.group(label);
 		}
 
 		public groupEnd(): void {
