@@ -7,6 +7,8 @@ import { LoggerFactory } from "../../../src/utils/Logger";
 	providedIn: "root",
 })
 export class AppService {
+	public static readonly TAB_SIZE = 2;
+
 	public constructor() {}
 
 	public async run(content: string): Promise<{ stdout: string; stderr: string; ok: boolean }> {
@@ -17,19 +19,19 @@ export class AppService {
 		const printFunction = (consoleFunction: (item: unknown) => void, error: boolean) => {
 			return (...items: unknown[]) => {
 				for (const item of items) {
-					if (typeof item === "string") {
-						if (error) {
-							stderr += "  ".repeat(indent) + item + "\n";
-						} else {
-							stdout += "  ".repeat(indent) + item + "\n";
-						}
-						consoleFunction(item);
+					const itemStr = typeof item === "string" ? item : JSON.stringify(item) ?? "";
+					const multiline =
+						itemStr
+							.split("\n")
+							.map((s) => " ".repeat(indent * AppService.TAB_SIZE) + s)
+							.join("\n") + "\n";
+					if (error) {
+						// FIXME: stderr will be really hard to read, use colors instead and mix both streams
+						stderr += multiline;
 					} else {
-						if (error) {
-							stderr += "  ".repeat(indent) + JSON.stringify(item) + "\n";
-						} else {
-							stdout += "  ".repeat(indent) + JSON.stringify(item) + "\n";
-						}
+						stdout += multiline;
+					}
+					if (item !== undefined) {
 						consoleFunction(item);
 					}
 				}
@@ -42,9 +44,10 @@ export class AppService {
 			info: printFunction(console.info, false),
 			warn: printFunction(console.warn, true),
 			error: printFunction(console.error, true),
-			group: () => {
+			group: (...items: unknown[]) => {
+				stdout += " ".repeat(indent * AppService.TAB_SIZE) + items.join(" ") + "\n";
 				++indent;
-				console.group();
+				console.group(...items);
 			},
 			groupEnd: () => {
 				--indent;
