@@ -33,6 +33,6 @@ export async function visit(node: ts.VariableDeclarationList, env: Env): Promise
 	})();
 
 	for (const varDecl of node.declarations) {
-		await TypeChecker.accept(varDecl, env, data);
+		await env.withChildData(data, async () => await TypeChecker.accept(varDecl, env));
 	}
 }

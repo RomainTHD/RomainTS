@@ -9,3 +9,7 @@ export function assert(condition: unknown, message?: string): void {
 export function xor(left: boolean, right: boolean): boolean {
 	return (left && !right) || (!left && right);
 }
+
+export function throwError(message: string): never {
+	throw new IllegalStateException(message);
+}

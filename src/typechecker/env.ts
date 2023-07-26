@@ -1,5 +1,6 @@
 import { NumberType, ObjectType, Type, UndefinedType } from "../types";
-import { assert } from "../utils";
+import { assert, throwError } from "../utils";
+import { IllegalStateException } from "../utils/IllegalStateException";
 import { LoggerFactory } from "../utils/Logger";
 
 type Value = {
@@ -32,6 +33,7 @@ export class Env {
 	private readonly types: Map<string, Type> = new Map();
 	private readonly returnTypes: Type[] = [];
 	private readonly _config: EnvConfig;
+	private readonly _data: Map<string, unknown> = new Map();
 
 	private valueSide: ValueSide = ValueSide.RValue;
 	private typeEvaluation: boolean = false;
@@ -184,6 +186,24 @@ export class Env {
 			return null;
 		}
 		return this.returnTypes[this.returnTypes.length - 1];
+	}
+
+	public async withChildData<T>(data: Record<string, unknown>, execute: () => T | Promise<T>): Promise<T> {
+		Object.entries(data).forEach(([k, v]) => {
+			if (this._data.has(k)) {
+				throw new IllegalStateException(`Data already has key '${k}' with value '${this._data.get(k)}'`);
+			}
+			this._data.set(k, v);
+		});
+		const res = await execute();
+		Object.keys(data).forEach((k) => {
+			this._data.delete(k);
+		});
+		return res;
+	}
+
+	public getData<T>(key: string, defaultValue?: T): T {
+		return (this._data.get(key) as T) ?? defaultValue ?? throwError(`Data does not have key '${key}'`);
 	}
 
 	private populateEnv(): void {

@@ -6,11 +6,10 @@ import { TypecheckingFailure } from "../../TypecheckingFailure";
 
 const logger = LoggerFactory.create("EqualsTokenVisitor");
 
-export async function visit(
-	node: ts.Token<ts.SyntaxKind.EqualsToken>,
-	env: Env,
-	{ left, right }: { left: unknown; right: Type },
-): Promise<Type> {
+export async function visit(node: ts.Token<ts.SyntaxKind.EqualsToken>, env: Env): Promise<Type> {
+	const left: string | unknown = env.getData("left");
+	const right: Type = env.getData("right");
+
 	if (typeof left !== "string") {
 		// `0 = ...;`
 

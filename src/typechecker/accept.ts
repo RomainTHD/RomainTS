@@ -54,18 +54,18 @@ export namespace TypeChecker {
 
 	const logger = LoggerFactory.create("TypeChecker");
 
-	export async function accept<T>(node: ts.Node, env: Env, data?: unknown): Promise<T> {
+	export async function accept<T>(node: ts.Node, env: Env): Promise<T> {
 		const kind = SyntaxKindNoDuplicates[node.kind];
 		logger.indent(kind);
 
-		let visitorModule: { visit: (node: ts.Node, env: Env, data: unknown) => Promise<T> };
+		let visitorModule: { visit: (node: ts.Node, env: Env) => Promise<T> };
 		try {
 			visitorModule = await import("./visitor/" + getVisitorPath(kind, node.kind) + "Visitor");
 		} catch (e: unknown) {
 			throw new NotImplementedException(`Couldn't find visitor for ${kind}: ${e}`);
 		}
 
-		const res = await visitorModule.visit(node, env, data);
+		const res = await visitorModule.visit(node, env);
 		logger.unindent();
 		return res;
 	}

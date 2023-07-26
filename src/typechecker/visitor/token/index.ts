@@ -4,7 +4,9 @@ import { xor } from "../../../utils";
 import { Env } from "../../env";
 import { TypecheckingFailure } from "../../TypecheckingFailure";
 
-export function visitBinaryOperatorToken<T extends ts.SyntaxKind>(node: ts.Token<T>, left: Type, right: Type): Type {
+export function visitBinaryOperatorToken<T extends ts.SyntaxKind>(node: ts.Token<T>, env: Env): Type {
+	const left = env.getData("left");
+	const right = env.getData("right");
 	if (xor(left instanceof BigIntType, right instanceof BigIntType)) {
 		throw new TypecheckingFailure("Cannot convert BigInt to Number", node);
 	} else if (left instanceof BigIntType && right instanceof BigIntType) {
@@ -14,14 +16,4 @@ export function visitBinaryOperatorToken<T extends ts.SyntaxKind>(node: ts.Token
 	}
 }
 
-export type TokenVisitor<T extends ts.SyntaxKind> = (
-	node: ts.Token<T>,
-	env: Env,
-	{
-		left,
-		right,
-	}: {
-		left: Type;
-		right: Type;
-	},
-) => Type | Promise<Type>;
+export type TokenVisitor<T extends ts.SyntaxKind> = (node: ts.Token<T>, env: Env) => Type | Promise<Type>;

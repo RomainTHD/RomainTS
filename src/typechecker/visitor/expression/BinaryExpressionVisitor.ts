@@ -24,5 +24,5 @@ export const visit: ExpressionVisitor<ts.BinaryExpression> = async (node, env) =
 	env.setValueSide(ValueSide.RValue);
 	const right: Type = await TypeChecker.accept(node.right, env);
 
-	return await TypeChecker.accept(node.operatorToken, env, { left, right });
+	return env.withChildData({ left, right }, async () => await TypeChecker.accept(node.operatorToken, env));
 };

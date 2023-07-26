@@ -12,7 +12,10 @@ export const visit: ExpressionVisitor<ts.PropertyAccessExpression> = async (node
 	const expr: Type = await TypeChecker.accept(node.expression, env);
 
 	env.setValueSide(ValueSide.LValue);
-	const prop: string = await TypeChecker.accept(node.name, env, { isPropertyAccess: true });
+	let prop = "";
+	await env.withChildData({ isPropertyAccess: true }, async () => {
+		prop = await TypeChecker.accept(node.name, env);
+	});
 	env.setValueSide(ValueSide.RValue);
 
 	if (!(expr instanceof PropertyAccessor)) {

@@ -2,17 +2,10 @@ import type ts from "typescript";
 import { Env, TypeChecker, TypecheckingFailure, ValueSide } from "../..";
 import { AnyType, LiteralType, Type } from "../../../types";
 
-export async function visit(
-	node: ts.VariableDeclaration,
-	env: Env,
-	{
-		isLocal,
-		isMutable,
-	}: {
-		isLocal: boolean;
-		isMutable: boolean;
-	},
-): Promise<void> {
+export async function visit(node: ts.VariableDeclaration, env: Env): Promise<void> {
+	const isLocal: boolean = env.getData("isLocal");
+	const isMutable: boolean = env.getData("isMutable");
+
 	env.setValueSide(ValueSide.LValue);
 	const name: string = await TypeChecker.accept(node.name, env);
 	env.setValueSide(ValueSide.RValue);

@@ -4,7 +4,9 @@ import { BigIntType, NumberType, StringType } from "../../../types";
 import { xor } from "../../../utils";
 import { TypecheckingFailure } from "../../TypecheckingFailure";
 
-export const visit: TokenVisitor<ts.SyntaxKind.PlusToken> = (node, env, { left, right }) => {
+export const visit: TokenVisitor<ts.SyntaxKind.PlusToken> = (node, env) => {
+	const left = env.getData("left");
+	const right = env.getData("right");
 	if (left instanceof StringType || right instanceof StringType) {
 		// `0 + "a"` => "0a"
 		return StringType.create();
