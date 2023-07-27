@@ -25,4 +25,18 @@ describe("PlusTokenVisitor", () => {
 		await TypeChecker.accept(AST.parse(content), env);
 		expect(env.lookup("x")?.vType).toEqual(StringType.create());
 	});
+
+	it("should work for boolean addition", async () => {
+		const content = "let x = true + false;";
+		const env = Env.create();
+		await TypeChecker.accept(AST.parse(content), env);
+		expect(env.lookup("x")?.vType).toEqual(NumberType.create());
+	});
+
+	it("should work for array addition", async () => {
+		const content = "let x = 0 + [];";
+		const env = Env.create();
+		await TypeChecker.accept(AST.parse(content), env);
+		expect(env.lookup("x")?.vType).toEqual(StringType.create());
+	});
 });
