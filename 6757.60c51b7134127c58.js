@@ -20,18 +20,21 @@ __webpack_require__.r(__webpack_exports__);
 const visit = (node, env) => {
   const left = env.getData("left");
   const right = env.getData("right");
-  if (left instanceof _types__WEBPACK_IMPORTED_MODULE_0__.StringType || right instanceof _types__WEBPACK_IMPORTED_MODULE_0__.StringType) {
-    // `0 + "a"` => "0a"
-    return _types__WEBPACK_IMPORTED_MODULE_0__.StringType.create();
-  } else if (left instanceof _types__WEBPACK_IMPORTED_MODULE_0__.BigIntType && right instanceof _types__WEBPACK_IMPORTED_MODULE_0__.BigIntType) {
+  if (left instanceof _types__WEBPACK_IMPORTED_MODULE_0__.BigIntType && right instanceof _types__WEBPACK_IMPORTED_MODULE_0__.BigIntType) {
     // `0n + 1n` => 1n
     return _types__WEBPACK_IMPORTED_MODULE_0__.BigIntType.create();
   } else if ((0,_utils__WEBPACK_IMPORTED_MODULE_1__.xor)(left instanceof _types__WEBPACK_IMPORTED_MODULE_0__.BigIntType, right instanceof _types__WEBPACK_IMPORTED_MODULE_0__.BigIntType)) {
     // `0 + 1n` => error
     throw new _TypecheckingFailure__WEBPACK_IMPORTED_MODULE_2__.TypecheckingFailure("Cannot mix BigInt and other types", node);
   } else {
-    // Anything else is a number
-    return _types__WEBPACK_IMPORTED_MODULE_0__.NumberType.create();
+    const numberLike = _types__WEBPACK_IMPORTED_MODULE_0__.UnionType.create([_types__WEBPACK_IMPORTED_MODULE_0__.NumberType.create(), _types__WEBPACK_IMPORTED_MODULE_0__.BooleanType.create()]);
+    if (numberLike.contains(left) && numberLike.contains(right)) {
+      // Anything else is a number
+      return _types__WEBPACK_IMPORTED_MODULE_0__.NumberType.create();
+    } else {
+      // `0 + []` => "0"`
+      return _types__WEBPACK_IMPORTED_MODULE_0__.StringType.create();
+    }
   }
 };
 
