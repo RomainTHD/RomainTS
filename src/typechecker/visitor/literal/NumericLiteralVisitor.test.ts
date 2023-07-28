@@ -27,4 +27,17 @@ describe("NumericLiteralVisitor", () => {
 		const content = "let x: 1 = 2;";
 		await expect(TypeChecker.accept(AST.parse(content), Env.create())).rejects.toThrowError(TypecheckingFailure);
 	});
+
+	it("should work with hexadecimal", async () => {
+		const content = "0x1";
+		await TypeChecker.accept(AST.parse(content), Env.create());
+	});
+
+	it("should not work with legacy octal in strict mode", async () => {
+		const content = `
+		"use strict";
+		01;
+		`;
+		await expect(TypeChecker.accept(AST.parse(content), Env.create())).rejects.toThrowError(TypecheckingFailure);
+	});
 });
