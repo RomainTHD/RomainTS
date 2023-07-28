@@ -1,10 +1,10 @@
 "use strict";
-(self["webpackChunkromaints"] = self["webpackChunkromaints"] || []).push([[1574],{
+(self["webpackChunkromaints"] = self["webpackChunkromaints"] || []).push([[2941],{
 
-/***/ 1574:
-/*!***********************************************************************!*\
-  !*** ../src/typechecker/visitor/token/AmpersandEqualsTokenVisitor.ts ***!
-  \***********************************************************************/
+/***/ 2941:
+/*!************************************************************************!*\
+  !*** ../src/typechecker/visitor/token/AsteriskAsteriskTokenVisitor.ts ***!
+  \************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -14,7 +14,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var ___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! . */ 8922);
 
 const visit = (node, env) => {
-  return (0,___WEBPACK_IMPORTED_MODULE_0__.visitBinaryOperatorToken)(node, env);
+  return (0,___WEBPACK_IMPORTED_MODULE_0__.visitBinaryOperatorToken)(node, env, false);
 };
 
 /***/ })

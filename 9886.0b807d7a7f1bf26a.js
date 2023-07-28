@@ -19,6 +19,9 @@ __webpack_require__.r(__webpack_exports__);
 
 const visit = (node, env) => {
   const left = env.getData("left");
+  if (left instanceof _types__WEBPACK_IMPORTED_MODULE_0__.LiteralType) {
+    throw new _TypecheckingFailure__WEBPACK_IMPORTED_MODULE_2__.TypecheckingFailure("TThe left-hand side of an assignment expression must be a variable or a property access", node);
+  }
   const right = env.getData("right");
   if (left instanceof _types__WEBPACK_IMPORTED_MODULE_0__.StringType || right instanceof _types__WEBPACK_IMPORTED_MODULE_0__.StringType) {
     // `0 + "a"` => "0a"

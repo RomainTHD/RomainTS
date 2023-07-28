@@ -1,9 +1,9 @@
 "use strict";
-(self["webpackChunkromaints"] = self["webpackChunkromaints"] || []).push([[6310],{
+(self["webpackChunkromaints"] = self["webpackChunkromaints"] || []).push([[4891],{
 
-/***/ 6310:
+/***/ 4891:
 /*!*******************************************************************!*\
-  !*** ../src/typechecker/visitor/literal/NumericLiteralVisitor.ts ***!
+  !*** ../src/typechecker/visitor/token/MinusEqualsTokenVisitor.ts ***!
   \*******************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -11,13 +11,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   visit: () => (/* binding */ visit)
 /* harmony export */ });
-/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../types */ 2122);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! . */ 8922);
 
 const visit = (node, env) => {
-  return _types__WEBPACK_IMPORTED_MODULE_0__.LiteralType.create({
-    vType: _types__WEBPACK_IMPORTED_MODULE_0__.NumberType.create(),
-    value: parseInt(node.text, 10)
-  });
+  return (0,___WEBPACK_IMPORTED_MODULE_0__.visitBinaryOperatorToken)(node, env, true);
 };
 
 /***/ })

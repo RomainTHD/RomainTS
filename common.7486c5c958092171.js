@@ -73,8 +73,11 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-function visitBinaryOperatorToken(node, env) {
+function visitBinaryOperatorToken(node, env, isAssignment) {
   const left = env.getData("left");
+  if (isAssignment && left instanceof _types__WEBPACK_IMPORTED_MODULE_0__.LiteralType) {
+    throw new _TypecheckingFailure__WEBPACK_IMPORTED_MODULE_2__.TypecheckingFailure("The left-hand side of an assignment expression must be a variable or a property access", node);
+  }
   const right = env.getData("right");
   if ((0,_utils__WEBPACK_IMPORTED_MODULE_1__.xor)(left instanceof _types__WEBPACK_IMPORTED_MODULE_0__.BigIntType, right instanceof _types__WEBPACK_IMPORTED_MODULE_0__.BigIntType)) {
     throw new _TypecheckingFailure__WEBPACK_IMPORTED_MODULE_2__.TypecheckingFailure("Cannot convert BigInt to Number", node);
