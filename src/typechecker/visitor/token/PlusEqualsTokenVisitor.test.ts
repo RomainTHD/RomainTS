@@ -3,6 +3,7 @@ import { AST } from "../../../AST";
 import { NumberType, StringType } from "../../../types";
 import { TypeChecker } from "../../accept";
 import { Env } from "../../env";
+import { TypecheckingFailure } from "../../TypecheckingFailure";
 
 describe("PlusEqualsTokenVisitor", () => {
 	it("should work for number addition", async () => {
@@ -34,5 +35,10 @@ describe("PlusEqualsTokenVisitor", () => {
 		const env = Env.create();
 		await TypeChecker.accept(AST.parse(content), env);
 		expect(env.lookup("x")?.vType).toEqual(NumberType.create());
+	});
+
+	it("shouldn't work for literal assignment", async () => {
+		const content = "0 += 1;";
+		await expect(TypeChecker.accept(AST.parse(content), Env.create())).rejects.toThrowError(TypecheckingFailure);
 	});
 });
