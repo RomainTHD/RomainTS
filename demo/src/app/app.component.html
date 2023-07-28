@@ -21,18 +21,10 @@
 		</mat-card>
 		<mat-card>
 			<mat-card-title>
-				<mat-card-header>stdout</mat-card-header>
+				<mat-card-header>Output:</mat-card-header>
 			</mat-card-title>
 			<mat-card-content>
-				<pre>{{ stdout }}</pre>
-			</mat-card-content>
-		</mat-card>
-		<mat-card>
-			<mat-card-title>
-				<mat-card-header>stderr</mat-card-header>
-			</mat-card-title>
-			<mat-card-content>
-				<pre>{{ stderr }}</pre>
+				<pre *ngFor="let entry of output" [ngClass]="entry.level">{{ entry.message }}</pre>
 			</mat-card-content>
 		</mat-card>
 	</mat-card-content>

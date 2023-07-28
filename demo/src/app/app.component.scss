@@ -1,3 +1,30 @@
 .editor-container {
 	height: 50vh;
 }
+
+pre {
+	padding-top: 0;
+	padding-bottom: 0;
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+.debug {
+	color: lightgray;
+}
+
+.log {
+	color: white;
+}
+
+.info {
+	color: cyan;
+}
+
+.warn {
+	color: orange;
+}
+
+.error {
+	color: red;
+}

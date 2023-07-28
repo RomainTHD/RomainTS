@@ -2,6 +2,8 @@ import { Injectable } from "@angular/core";
 import { AST } from "../../../src/AST";
 import { TypeChecker } from "../../../src/typechecker";
 import { LoggerFactory } from "../../../src/utils/Logger";
+import { LogEntry } from "./LogEntry";
+import { LogLevel } from "./LogLevel";
 
 @Injectable({
 	providedIn: "root",
@@ -11,13 +13,13 @@ export class AppService {
 
 	public constructor() {}
 
-	public async run(content: string): Promise<{ stdout: string; stderr: string; ok: boolean }> {
-		let stdout = "";
-		let stderr = "";
+	public async run(content: string): Promise<{ output: LogEntry[]; ok: boolean }> {
+		const entries: LogEntry[] = [];
 		let indent = 0;
 
-		const printFunction = (consoleFunction: (item: unknown) => void, error: boolean) => {
+		const printFunction = (consoleFunction: (item: unknown) => void, level: LogLevel) => {
 			return (...items: unknown[]) => {
+				let output = "";
 				for (const item of items) {
 					const itemStr = typeof item === "string" ? item : JSON.stringify(item) ?? "";
 					const multiline =
@@ -25,27 +27,29 @@ export class AppService {
 							.split("\n")
 							.map((s) => " ".repeat(indent * AppService.TAB_SIZE) + s)
 							.join("\n") + "\n";
-					if (error) {
-						// FIXME: stderr will be really hard to read, use colors instead and mix both streams
-						stderr += multiline;
-					} else {
-						stdout += multiline;
-					}
+					output += multiline;
 					if (item !== undefined) {
 						consoleFunction(item);
 					}
 				}
+				entries.push({
+					level,
+					message: output,
+				});
 			};
 		};
 
 		LoggerFactory.setConsole({
-			debug: printFunction(console.debug, false),
-			log: printFunction(console.log, false),
-			info: printFunction(console.info, false),
-			warn: printFunction(console.warn, true),
-			error: printFunction(console.error, true),
+			debug: printFunction(console.debug, LogLevel.Debug),
+			log: printFunction(console.log, LogLevel.Log),
+			info: printFunction(console.info, LogLevel.Info),
+			warn: printFunction(console.warn, LogLevel.Warn),
+			error: printFunction(console.error, LogLevel.Error),
 			group: (...items: unknown[]) => {
-				stdout += " ".repeat(indent * AppService.TAB_SIZE) + items.join(" ") + "\n";
+				entries.push({
+					level: LogLevel.Debug,
+					message: " ".repeat(indent * AppService.TAB_SIZE) + items.join(" ") + "\n",
+				});
 				++indent;
 				console.group(...items);
 			},
@@ -54,11 +58,12 @@ export class AppService {
 				console.groupEnd();
 			},
 		} as Console);
+
 		const node = AST.parse(content);
 		const res = await TypeChecker.typecheck(node);
+
 		return {
-			stdout,
-			stderr,
+			output: entries,
 			ok: res,
 		};
 	}

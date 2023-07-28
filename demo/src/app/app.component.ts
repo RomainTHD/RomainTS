@@ -1,6 +1,7 @@
 import { Component, HostListener } from "@angular/core";
 import { MonacoEditorConstructionOptions } from "@materia-ui/ngx-monaco-editor";
 import { AppService } from "./app.service";
+import { LogEntry } from "./LogEntry";
 
 @Component({
 	selector: "app-root",
@@ -20,8 +21,7 @@ export class AppComponent {
 
 	public code: string = "";
 
-	public stdout = "";
-	public stderr = "";
+	public output: LogEntry[] = [];
 	public status: "none" | "running" | "success" | "failure" = "none";
 
 	public constructor(private readonly appService: AppService) {}
@@ -36,9 +36,8 @@ export class AppComponent {
 
 	public onClick(): void {
 		this.status = "running";
-		this.appService.run(this.code).then(({ stdout, stderr, ok }) => {
-			this.stdout = stdout;
-			this.stderr = stderr;
+		this.appService.run(this.code).then(({ output, ok }) => {
+			this.output = output;
 			this.status = ok ? "success" : "failure";
 		});
 	}
