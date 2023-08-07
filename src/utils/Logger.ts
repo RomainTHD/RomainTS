@@ -2,20 +2,32 @@ import chalk from "chalk";
 import * as console from "console";
 
 export module LoggerFactory {
-	let ownConsole = console;
+	let _ownConsole = console;
+
+	export enum Level {
+		Debug,
+		Info,
+		Warn,
+		Error,
+		None,
+	}
+
+	let _minLevel: Level = Level.Debug;
 
 	export class Logger {
-		private static totalIndent = 0;
+		private static _totalIndent = 0;
 
-		private readonly name: string;
+		private readonly _name: string;
 
 		public constructor(name: string) {
-			this.name = name;
+			this._name = name;
 		}
 
 		public group(...labels: unknown[]): void {
-			ownConsole.group(chalk.gray(...labels));
-			Logger.totalIndent++;
+			if (_minLevel <= Level.Debug) {
+				_ownConsole.group(chalk.gray(...labels));
+			}
+			Logger._totalIndent++;
 		}
 
 		public indent(label?: string): void {
@@ -23,8 +35,8 @@ export module LoggerFactory {
 		}
 
 		public groupEnd(): void {
-			ownConsole.groupEnd();
-			Logger.totalIndent--;
+			_ownConsole.groupEnd();
+			Logger._totalIndent--;
 		}
 
 		public unindent(): void {
@@ -32,30 +44,40 @@ export module LoggerFactory {
 		}
 
 		public resetIndent(): void {
-			while (Logger.totalIndent > 0) {
+			while (Logger._totalIndent > 0) {
 				this.unindent();
 			}
 		}
 
 		public debug(...args: unknown[]): void {
-			ownConsole.debug(chalk.gray(...args));
+			if (_minLevel <= Level.Debug) {
+				_ownConsole.debug(chalk.gray(...args));
+			}
 		}
 
 		public success(...args: unknown[]): void {
-			ownConsole.info(chalk.green(...args));
+			if (_minLevel <= Level.Info) {
+				_ownConsole.info(chalk.green(...args));
+			}
 		}
 
 		public info(...args: unknown[]): void {
-			ownConsole.info(chalk.blue(...args));
+			if (_minLevel <= Level.Info) {
+				_ownConsole.info(chalk.blue(...args));
+			}
 		}
 
 		public warn(...args: unknown[]): void {
-			ownConsole.warn(chalk.yellow(...args));
+			if (_minLevel <= Level.Warn) {
+				_ownConsole.warn(chalk.yellow(...args));
+			}
 		}
 
 		public error(...args: unknown[]): void {
 			this.resetIndent();
-			ownConsole.error(chalk.red(...args));
+			if (_minLevel <= Level.Error) {
+				_ownConsole.error(chalk.red(...args));
+			}
 		}
 	}
 
@@ -68,6 +90,10 @@ export module LoggerFactory {
 	}
 
 	export function setConsole(newConsole: typeof console): void {
-		ownConsole = newConsole;
+		_ownConsole = newConsole;
+	}
+
+	export function setMinLevel(level: Level): void {
+		_minLevel = level;
 	}
 }
