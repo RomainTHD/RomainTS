@@ -16,10 +16,13 @@ export * from "./RawObjectType";
 export * from "./StringType";
 export * from "./UndefinedType";
 export * from "./UnionType";
+export * from "./UnknownType";
 export * from "./VoidType";
 
 import { isPopulated, populate } from "./populate";
 
-if (!isPopulated()) {
-	populate();
+export async function initTypes(): Promise<void> {
+	if (!isPopulated()) {
+		await populate();
+	}
 }
