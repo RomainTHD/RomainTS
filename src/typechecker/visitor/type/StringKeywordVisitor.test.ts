@@ -1,9 +1,7 @@
 import { describe, expect, it } from "vitest";
+import { Env, TypeChecker, TypecheckingFailure } from "../..";
 import { AST } from "../../../AST";
 import { StringType } from "../../../types";
-import { TypeChecker } from "../../accept";
-import { Env } from "../../env";
-import { TypecheckingFailure } from "../../TypecheckingFailure";
 
 describe("StringKeywordVisitor", () => {
 	it("should work for string type", async () => {

@@ -1,8 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { TypeChecker } from "../..";
+import { Env, TypeChecker } from "../..";
 import { AST } from "../../../AST";
 import { RawObjectType } from "../../../types";
-import { Env } from "../../env";
 
 describe("ObjectKeywordVisitor", () => {
 	it("should work for object type", async () => {

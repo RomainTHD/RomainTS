@@ -1,8 +1,7 @@
 import { describe, expect, it } from "vitest";
+import { Env, TypeChecker } from "../..";
 import { AST } from "../../../AST";
 import { FunctionType, LiteralType, NumberType, StringType, UndefinedType, UnionType, VoidType } from "../../../types";
-import { TypeChecker } from "../../accept";
-import { Env } from "../../env";
 
 describe("FunctionDeclarationVisitor", () => {
 	it("should work for more complex functions", async () => {

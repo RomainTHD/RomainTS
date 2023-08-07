@@ -1,8 +1,7 @@
 import type ts from "typescript";
+import { Env, TypecheckingFailure } from "../..";
 import { BigIntType, LiteralType, NumberType, Type } from "../../../types";
 import { xor } from "../../../utils";
-import { Env } from "../../env";
-import { TypecheckingFailure } from "../../TypecheckingFailure";
 
 export function visitBinaryOperatorToken<T extends ts.SyntaxKind>(
 	node: ts.Token<T>,

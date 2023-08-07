@@ -1,7 +1,6 @@
 import type ts from "typescript";
+import { Env, TypecheckingFailure } from "../..";
 import { Type, UndefinedType } from "../../../types";
-import { Env } from "../../env";
-import { TypecheckingFailure } from "../../TypecheckingFailure";
 
 export async function visit(node: ts.Identifier, env: Env): Promise<string | Type> {
 	// Note that `undefined` is also an identifier

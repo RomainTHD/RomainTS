@@ -1,8 +1,7 @@
 import ts from "typescript";
+import { Env, TypeChecker } from "../..";
 import { Type } from "../../../types";
 import { NotImplementedException } from "../../../utils/NotImplementedException";
-import { TypeChecker } from "../../accept";
-import { Env } from "../../env";
 
 export async function visit(node: ts.TypeAliasDeclaration, env: Env): Promise<void> {
 	if (node.modifiers) {

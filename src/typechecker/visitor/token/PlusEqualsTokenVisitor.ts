@@ -1,8 +1,8 @@
 import type ts from "typescript";
 import { TokenVisitor } from ".";
+import { TypecheckingFailure } from "../..";
 import { BigIntType, LiteralType, NumberType, StringType } from "../../../types";
 import { xor } from "../../../utils";
-import { TypecheckingFailure } from "../../TypecheckingFailure";
 
 export const visit: TokenVisitor<ts.SyntaxKind.PlusEqualsToken> = (node, env) => {
 	const left = env.getData("left");

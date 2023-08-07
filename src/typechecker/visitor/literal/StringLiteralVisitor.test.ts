@@ -1,9 +1,7 @@
 import { describe, expect, it } from "vitest";
+import { Env, TypeChecker, TypecheckingFailure } from "../..";
 import { AST } from "../../../AST";
 import { LiteralType, StringType } from "../../../types";
-import { TypeChecker } from "../../accept";
-import { Env } from "../../env";
-import { TypecheckingFailure } from "../../TypecheckingFailure";
 
 describe("StringLiteralVisitor", () => {
 	it("should work for string literals", async () => {

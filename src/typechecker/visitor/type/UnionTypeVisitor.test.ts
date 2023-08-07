@@ -1,8 +1,7 @@
 import { describe, expect, it } from "vitest";
+import { Env, TypeChecker } from "../..";
 import { AST } from "../../../AST";
 import { NumberType, StringType, UnionType } from "../../../types";
-import { TypeChecker } from "../../accept";
-import { Env } from "../../env";
 
 describe("UnionTypeVisitor", () => {
 	it("should work for union types", async () => {

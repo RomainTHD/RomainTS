@@ -1,6 +1,5 @@
 import ts from "typescript";
-import { TypeChecker } from "../../accept";
-import { TypecheckingFailure } from "../../TypecheckingFailure";
+import { TypeChecker, TypecheckingFailure } from "../..";
 import { TypeVisitor } from "./index";
 
 export const visit: TypeVisitor<ts.TypeReferenceNode> = async (node, env) => {

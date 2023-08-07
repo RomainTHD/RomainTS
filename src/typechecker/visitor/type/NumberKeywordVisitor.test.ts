@@ -1,8 +1,7 @@
 import { describe, expect, it } from "vitest";
+import { Env, TypeChecker, TypecheckingFailure } from "../..";
 import { AST } from "../../../AST";
 import { NumberType } from "../../../types";
-import { TypeChecker } from "../../accept";
-import { Env } from "../../env";
 
 describe("NumberKeywordVisitor", () => {
 	it("should work for number type", async () => {
@@ -14,6 +13,6 @@ describe("NumberKeywordVisitor", () => {
 
 	it("should not work for other types", async () => {
 		const content = "let x: number = 'a';";
-		await expect(TypeChecker.accept(AST.parse(content), Env.create())).rejects.toThrowError();
+		await expect(TypeChecker.accept(AST.parse(content), Env.create())).rejects.toThrowError(TypecheckingFailure);
 	});
 });

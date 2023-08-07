@@ -1,9 +1,8 @@
 import ts from "typescript";
+import { Env, TypeChecker } from "../..";
 import { ObjectType, Property } from "../../../types";
 import { assert } from "../../../utils";
 import { NotImplementedException } from "../../../utils/NotImplementedException";
-import { TypeChecker } from "../../accept";
-import { Env } from "../../env";
 
 export async function visit(node: ts.InterfaceDeclaration, env: Env): Promise<void> {
 	if (node.heritageClauses || node.modifiers) {

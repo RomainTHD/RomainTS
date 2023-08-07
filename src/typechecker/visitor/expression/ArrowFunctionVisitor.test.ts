@@ -1,9 +1,7 @@
 import { describe, expect, it } from "vitest";
+import { Env, TypeChecker, TypecheckingFailure } from "../..";
 import { AST } from "../../../AST";
 import { FunctionType, NumberType, StringType } from "../../../types";
-import { TypeChecker } from "../../accept";
-import { Env } from "../../env";
-import { TypecheckingFailure } from "../../TypecheckingFailure";
 
 describe("ArrowFunctionVisitor", () => {
 	it("should work for arrow functions", async () => {

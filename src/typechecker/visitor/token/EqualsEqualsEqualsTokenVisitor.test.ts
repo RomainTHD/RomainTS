@@ -1,8 +1,7 @@
 import { describe, expect, it } from "vitest";
+import { Env, TypeChecker } from "../..";
 import { AST } from "../../../AST";
 import { BooleanType } from "../../../types";
-import { TypeChecker } from "../../accept";
-import { Env } from "../../env";
 
 describe("EqualsEqualsEqualsTokenVisitor", () => {
 	it("should work for equal strict", async () => {

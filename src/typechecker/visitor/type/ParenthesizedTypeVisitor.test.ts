@@ -1,8 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { TypeChecker } from "../..";
+import { Env, TypeChecker } from "../..";
 import { AST } from "../../../AST";
 import { StringType } from "../../../types";
-import { Env } from "../../env";
 
 describe("ParenthesizedTypeVisitor", () => {
 	it("should work for parenthesized type", async () => {

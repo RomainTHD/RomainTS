@@ -1,8 +1,7 @@
 import { describe, expect, it } from "vitest";
+import { Env, TypeChecker, TypecheckingFailure } from "../..";
 import { AST } from "../../../AST";
 import { FunctionType, NumberType, StringType } from "../../../types";
-import { TypeChecker } from "../../accept";
-import { Env } from "../../env";
 
 describe("FunctionExpressionVisitor", () => {
 	it("should work for regular functions", async () => {
@@ -37,7 +36,7 @@ describe("FunctionExpressionVisitor", () => {
 			return a;
 		};
 		`;
-		await expect(TypeChecker.accept(AST.parse(content), Env.create())).rejects.toThrowError();
+		await expect(TypeChecker.accept(AST.parse(content), Env.create())).rejects.toThrowError(TypecheckingFailure);
 	});
 
 	it("should work for duplicated parameters in sloppy mode", async () => {

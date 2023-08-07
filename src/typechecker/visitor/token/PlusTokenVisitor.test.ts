@@ -1,8 +1,7 @@
 import { describe, expect, it } from "vitest";
+import { Env, TypeChecker } from "../..";
 import { AST } from "../../../AST";
 import { NumberType, StringType } from "../../../types";
-import { TypeChecker } from "../../accept";
-import { Env } from "../../env";
 
 describe("PlusTokenVisitor", () => {
 	it("should work for number addition", async () => {

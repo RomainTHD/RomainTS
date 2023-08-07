@@ -1,7 +1,6 @@
 import { describe, it } from "vitest";
+import { Env, TypeChecker } from "../..";
 import { AST } from "../../../AST";
-import { TypeChecker } from "../../accept";
-import { Env } from "../../env";
 
 describe("EmptyStatementVisitor", () => {
 	it("should work for empty statements", async () => {

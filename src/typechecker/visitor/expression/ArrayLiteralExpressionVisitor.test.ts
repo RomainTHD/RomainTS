@@ -1,8 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { TypeChecker } from "../..";
+import { Env, TypeChecker } from "../..";
 import { AST } from "../../../AST";
 import { AnyType, ArrayType, NumberType, StringType, UnionType } from "../../../types";
-import { Env } from "../../env";
 
 describe("ArrayLiteralExpressionVisitor", () => {
 	it("should work for empty arrays", async () => {

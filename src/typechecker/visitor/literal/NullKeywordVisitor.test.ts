@@ -1,8 +1,7 @@
 import { describe, expect, it } from "vitest";
+import { Env, TypeChecker } from "../..";
 import { AST } from "../../../AST";
 import { NullType } from "../../../types";
-import { TypeChecker } from "../../accept";
-import { Env } from "../../env";
 
 describe("NullKeywordVisitor", () => {
 	it("should work for null literals", async () => {

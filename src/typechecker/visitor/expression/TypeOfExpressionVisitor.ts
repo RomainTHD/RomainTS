@@ -1,7 +1,7 @@
 import type ts from "typescript";
 import { ExpressionVisitor } from ".";
+import { TypeChecker } from "../..";
 import { LiteralType, StringType, UnionType } from "../../../types";
-import { TypeChecker } from "../../accept";
 
 export const visit: ExpressionVisitor<ts.TypeOfExpression> = async (node, env) => {
 	await TypeChecker.accept(node.expression, env);

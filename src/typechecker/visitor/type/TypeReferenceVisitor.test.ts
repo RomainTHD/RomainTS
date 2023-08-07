@@ -1,9 +1,7 @@
 import { describe, expect, it } from "vitest";
+import { Env, TypeChecker, TypecheckingFailure } from "../..";
 import { AST } from "../../../AST";
 import { NumberType, ObjectType } from "../../../types";
-import { TypeChecker } from "../../accept";
-import { Env } from "../../env";
-import { TypecheckingFailure } from "../../TypecheckingFailure";
 
 describe("TypeReferenceVisitor", () => {
 	it("should work for interface types", async () => {

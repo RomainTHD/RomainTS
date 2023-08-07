@@ -1,8 +1,7 @@
 import type ts from "typescript";
+import { Env, TypecheckingFailure } from "../..";
 import { LiteralType, Type } from "../../../types";
 import { LoggerFactory } from "../../../utils/Logger";
-import { Env } from "../../env";
-import { TypecheckingFailure } from "../../TypecheckingFailure";
 
 const logger = LoggerFactory.create("EqualsTokenVisitor");
 

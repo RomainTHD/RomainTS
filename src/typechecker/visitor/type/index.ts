@@ -1,6 +1,6 @@
 import type ts from "typescript";
+import { Env } from "../..";
 import { Type } from "../../../types";
-import { Env } from "../../env";
 
 export type TypeVisitor<T extends ts.TypeNode> = (node: T, env: Env) => Type | Promise<Type>;
 

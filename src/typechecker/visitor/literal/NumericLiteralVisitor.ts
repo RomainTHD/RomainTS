@@ -1,8 +1,8 @@
 import ts from "typescript";
 import { LiteralVisitor } from ".";
+import { TypecheckingFailure } from "../..";
 import { LiteralType, NumberType } from "../../../types";
 import { LoggerFactory } from "../../../utils/Logger";
-import { TypecheckingFailure } from "../../TypecheckingFailure";
 
 const logger = LoggerFactory.create("NumericLiteralVisitor");
 

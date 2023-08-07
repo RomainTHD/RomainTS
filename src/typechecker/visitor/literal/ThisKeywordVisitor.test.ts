@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { Env, TypeChecker } from "../..";
 import { AST } from "../../../AST";
-import { TypeChecker } from "../../accept";
-import { Env } from "../../env";
 
 describe("ThisKeywordVisitor", () => {
 	it("should work for this literals", async () => {

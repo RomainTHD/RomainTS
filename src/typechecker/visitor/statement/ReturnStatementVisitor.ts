@@ -1,9 +1,8 @@
 import type ts from "typescript";
 import { StatementVisitor } from ".";
+import { TypeChecker, TypecheckingFailure } from "../..";
 import { Type, VoidType } from "../../../types";
 import { Bool3 } from "../../../utils/Bool3";
-import { TypeChecker } from "../../accept";
-import { TypecheckingFailure } from "../../TypecheckingFailure";
 
 export const visit: StatementVisitor<ts.ReturnStatement> = async (node, env) => {
 	let t: Type;

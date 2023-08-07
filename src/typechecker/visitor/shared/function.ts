@@ -1,7 +1,6 @@
 import type ts from "typescript";
+import { Env, TypeChecker } from "../..";
 import { AnyType, FunctionType, Type } from "../../../types";
-import { TypeChecker } from "../../accept";
-import { Env } from "../../env";
 
 export async function visitFunction(
 	env: Env,
