@@ -1,10 +1,17 @@
-import type ts from "typescript";
+import ts from "typescript";
 import { StatementReturn, StatementVisitor } from ".";
-import { TypeChecker } from "../..";
+import { TypeChecker, TypecheckingFailure } from "../..";
 import { UnionType, VoidType } from "../../../types";
 import { Bool3 } from "../../../utils/Bool3";
 
 export const visit: StatementVisitor<ts.TryStatement> = async (node, env) => {
+	if (
+		(!node.catchClause && !node.finallyBlock) ||
+		(node.finallyBlock && (node.finallyBlock!.flags & ts.NodeFlags.ThisNodeHasError) !== 0)
+	) {
+		throw new TypecheckingFailure("Try statement must have either a catch clause or a finally block", node);
+	}
+
 	let all: { doesReturn: Bool3; inferredType: UnionType } = {
 		doesReturn: Bool3.No,
 		inferredType: UnionType.create([]),

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { Env, TypeChecker } from "../..";
+import { Env, TypeChecker, TypecheckingFailure } from "../..";
 import { AST } from "../../../AST";
 import { FunctionType, NumberType, StringType, UnionType } from "../../../types";
 
@@ -33,5 +33,10 @@ describe("TryStatementVisitor", () => {
 				(env.lookup("f")?.vType as FunctionType).retType,
 			),
 		).toBeTruthy();
+	});
+
+	it("should not allow standalone try", async () => {
+		const content = "try {};";
+		await expect(TypeChecker.accept(AST.parse(content), Env.create())).rejects.toThrowError(TypecheckingFailure);
 	});
 });
