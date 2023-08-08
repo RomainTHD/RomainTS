@@ -24,12 +24,7 @@ export const visit: StatementVisitor<ts.IfStatement> = async (node, env) => {
 	env.leaveScope();
 
 	return {
-		doesReturn:
-			thenBlock.doesReturn === Bool3.False && elseBlock.doesReturn === Bool3.False
-				? Bool3.False
-				: thenBlock.doesReturn === Bool3.True && elseBlock.doesReturn === Bool3.True
-				? Bool3.True
-				: Bool3.Sometimes,
+		doesReturn: Bool3.and(thenBlock.doesReturn, elseBlock.doesReturn),
 		inferredType: UnionType.create([thenBlock.inferredType, elseBlock.inferredType]).simplify(),
 	};
 };
