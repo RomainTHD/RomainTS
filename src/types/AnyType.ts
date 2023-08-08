@@ -15,6 +15,10 @@ export class AnyType extends PropertyAccessor {
 		return true;
 	}
 
+	public override generalize(): Type {
+		return this;
+	}
+
 	public override toString(): string {
 		return "any";
 	}

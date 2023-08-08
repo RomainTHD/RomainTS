@@ -15,6 +15,10 @@ export class UnknownType extends Type {
 		return true;
 	}
 
+	public override generalize(): Type {
+		return this;
+	}
+
 	public toString(): string {
 		return "unknown";
 	}

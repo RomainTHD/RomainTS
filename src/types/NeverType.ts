@@ -15,6 +15,10 @@ export class NeverType extends Type {
 		return other instanceof NeverType;
 	}
 
+	public override generalize(): Type {
+		return this;
+	}
+
 	public toString(): string {
 		return "never";
 	}

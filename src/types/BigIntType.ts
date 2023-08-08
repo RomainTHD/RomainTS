@@ -16,6 +16,10 @@ export class BigIntType extends PropertyAccessor {
 		return other instanceof BigIntType;
 	}
 
+	public override generalize(): Type {
+		return this;
+	}
+
 	public override toString(): string {
 		return "bigint";
 	}

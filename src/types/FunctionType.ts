@@ -50,6 +50,16 @@ export class FunctionType extends PropertyAccessor {
 		return this.retType.contains(other.retType);
 	}
 
+	public override generalize(): Type {
+		return FunctionType.create(
+			this.params.map((param) => ({
+				name: param.name,
+				pType: param.pType.generalize(),
+			})),
+			this.retType.generalize(),
+		);
+	}
+
 	public override toString(): string {
 		return (
 			"(" +

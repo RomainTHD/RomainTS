@@ -46,7 +46,7 @@ export async function visit(node: ts.FunctionExpression, env: Env): Promise<Expr
 	env.leaveScope();
 
 	if (infer && fType.retType.equals(AnyType.create()) && retData.inferredType) {
-		fType.retType = retData.inferredType;
+		fType.retType = retData.inferredType.generalize();
 	}
 
 	return { eType: fType };

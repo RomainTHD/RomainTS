@@ -22,6 +22,10 @@ export class BooleanType extends PropertyAccessor {
 		return false;
 	}
 
+	public override generalize(): Type {
+		return this;
+	}
+
 	public override toString(): string {
 		return "boolean";
 	}

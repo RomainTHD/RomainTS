@@ -9,5 +9,7 @@ export abstract class Type {
 	 */
 	public abstract contains<T extends Type>(other: T): boolean;
 
+	public abstract generalize(): Type;
+
 	public abstract toString(): string;
 }

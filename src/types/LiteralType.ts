@@ -24,6 +24,10 @@ export class LiteralType extends Type {
 		return this.equals(other);
 	}
 
+	public override generalize(): Type {
+		return this.literal.vType.generalize();
+	}
+
 	public toString(): string {
 		if (this.literal.vType.equals(StringType.create())) {
 			return JSON.stringify(this.literal.value);

@@ -57,13 +57,7 @@ describe("FunctionDeclarationVisitor", () => {
 		const env = Env.create();
 		await TypeChecker.accept(AST.parse(content), env);
 		expect((env.lookup("f")!.vType as FunctionType).retType).toEqual(
-			UnionType.create([
-				LiteralType.create({
-					vType: NumberType.create(),
-					value: 0,
-				}),
-				LiteralType.create({ vType: StringType.create(), value: "s" }),
-			]),
+			UnionType.create([NumberType.create(), StringType.create()]),
 		);
 	});
 
@@ -71,6 +65,25 @@ describe("FunctionDeclarationVisitor", () => {
 		const content = `
 		let maybe: any;
 		function f() {
+			if (maybe) {
+				return 0;
+			}
+
+			if (maybe) {
+				return "s";
+			}
+		}`;
+		const env = Env.create();
+		await TypeChecker.accept(AST.parse(content), env);
+		expect((env.lookup("f")!.vType as FunctionType).retType).toEqual(
+			UnionType.create([NumberType.create(), StringType.create(), UndefinedType.create()]),
+		);
+	});
+
+	it("should not override inference", async () => {
+		const content = `
+		let maybe: any;
+		function f(): 0 | "s" | void {
 			if (maybe) {
 				return 0;
 			}

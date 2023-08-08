@@ -33,6 +33,10 @@ export class ObjectType extends PropertyAccessor {
 		});
 	}
 
+	public override generalize(): Type {
+		return this;
+	}
+
 	public override toString(): string {
 		if (this.ownProperties.length === 0) {
 			return "{}";

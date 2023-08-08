@@ -15,6 +15,10 @@ export class NullType extends Type {
 		return other instanceof NullType;
 	}
 
+	public override generalize(): Type {
+		return this;
+	}
+
 	public toString(): string {
 		return "null";
 	}

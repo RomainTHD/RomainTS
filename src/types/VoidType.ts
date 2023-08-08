@@ -15,6 +15,10 @@ export class VoidType extends Type {
 		return other instanceof VoidType;
 	}
 
+	public override generalize(): Type {
+		return this;
+	}
+
 	public toString(): string {
 		return "void";
 	}

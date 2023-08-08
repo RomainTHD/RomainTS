@@ -45,7 +45,7 @@ export async function visit(node: ts.ArrowFunction, env: Env): Promise<Expressio
 	env.leaveScope();
 
 	if (infer && fType.retType.equals(AnyType.create()) && retData.inferredType) {
-		fType.retType = retData.inferredType;
+		fType.retType = retData.inferredType.generalize();
 	}
 
 	return { eType: fType };

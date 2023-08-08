@@ -31,6 +31,10 @@ export class ArrayType extends PropertyAccessor {
 		return this.baseType.contains(other.baseType);
 	}
 
+	public override generalize(): Type {
+		return ArrayType.create(this.baseType.generalize());
+	}
+
 	public override toString(): string {
 		if (this.baseType instanceof UnionType) {
 			return `(${this.baseType})[]`;

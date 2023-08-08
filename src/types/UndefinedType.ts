@@ -15,6 +15,10 @@ export class UndefinedType extends Type {
 		return other instanceof UndefinedType;
 	}
 
+	public override generalize(): Type {
+		return this;
+	}
+
 	public toString(): string {
 		return "undefined";
 	}

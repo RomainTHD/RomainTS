@@ -56,6 +56,16 @@ export class UnionType extends Type {
 		return this;
 	}
 
+	public generalize(): Type {
+		const simplified = UnionType.create(this.types.map((t) => t.generalize()));
+
+		if (simplified.types.length === 1) {
+			return simplified.types[0];
+		} else {
+			return simplified;
+		}
+	}
+
 	public toString(): string {
 		return this.types.map((t) => t.toString()).join(" | ");
 	}

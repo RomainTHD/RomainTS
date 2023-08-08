@@ -1,6 +1,6 @@
 import type ts from "typescript";
 import { Env, TypeChecker, TypecheckingFailure } from "../..";
-import { AnyType, LiteralType, Type, UndefinedType, UnionType, VoidType } from "../../../types";
+import { AnyType, Type, UndefinedType, UnionType, VoidType } from "../../../types";
 import { assert } from "../../../utils";
 import { Bool3 } from "../../../utils/Bool3";
 import { NotImplementedException } from "../../../utils/NotImplementedException";
@@ -42,7 +42,7 @@ export async function visit(node: ts.FunctionDeclaration, env: Env): Promise<Typ
 
 	if (
 		retData.doesReturn !== Bool3.True &&
-		![VoidType.create(), AnyType.create(), UndefinedType.create()].some((t) => t.equals(fType.retType))
+		![VoidType.create(), AnyType.create(), UndefinedType.create()].some((t) => fType.retType.contains(t))
 	) {
 		throw new TypecheckingFailure(`Function '${name}' must return a value of type '${fType.retType}'`, node);
 	}
@@ -51,19 +51,16 @@ export async function visit(node: ts.FunctionDeclaration, env: Env): Promise<Typ
 	env.leaveScope();
 
 	if (infer && fType.retType.equals(AnyType.create())) {
-		let inferredType = retData.inferredType;
-		if (inferredType instanceof LiteralType) {
-			/*
-			For some reason, TypeScript infers
-			```
-			function f() {
-				return 0;
-			}
-			```
-			to be of type `() => number` instead of `() => 0`, which would be more precise
-			 */
-			inferredType = inferredType.literal.vType;
+		/*
+		TypeScript infers
+		```
+		function f() {
+			return 0;
 		}
+		```
+		to be of type `() => number` instead of `() => 0`
+		 */
+		const inferredType = retData.inferredType.generalize();
 
 		if (retData.doesReturn === Bool3.False) {
 			fType.retType = VoidType.create();
