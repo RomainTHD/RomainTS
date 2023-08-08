@@ -25,7 +25,6 @@ describe("TrueKeywordVisitor", () => {
 
 	it("should not work with false literals", async () => {
 		const content = "let x: true = false;";
-		const env = Env.create();
-		await expect(TypeChecker.accept(AST.parse(content), env)).rejects.toThrowError(TypecheckingFailure);
+		await expect(TypeChecker.accept(AST.parse(content), Env.create())).rejects.toThrowError(TypecheckingFailure);
 	});
 });

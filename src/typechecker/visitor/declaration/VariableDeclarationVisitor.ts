@@ -21,7 +21,16 @@ export async function visit(node: ts.VariableDeclaration, env: Env): Promise<voi
 		vType = await TypeChecker.accept(node.type, env);
 	}
 
-	if (node.initializer) {
+	if (!node.initializer) {
+		if (!isMutable) {
+			throw new TypecheckingFailure(`Missing initializer for const '${name}'`, node);
+		}
+
+		if (!vType) {
+			// `let x;` is equivalent to `let x: any;`
+			vType = AnyType.create();
+		}
+	} else {
 		let e: ExpressionReturn = await TypeChecker.accept(node.initializer, env);
 		const exprType = e.eType;
 
@@ -38,11 +47,6 @@ export async function visit(node: ts.VariableDeclaration, env: Env): Promise<voi
 				// `let x = ...`
 				vType = exprType;
 			}
-		}
-	} else {
-		if (!vType) {
-			// `let x;` is equivalent to `let x: any;`
-			vType = AnyType.create();
 		}
 	}
 
