@@ -1,12 +1,13 @@
 import ts from "typescript";
-import { ExpressionVisitor } from ".";
+import { ExpressionReturn, ExpressionVisitor } from ".";
 import { TypeChecker, TypecheckingFailure } from "../..";
-import { BigIntType, BooleanType, NumberType, Type } from "../../../types";
+import { BigIntType, BooleanType, NumberType } from "../../../types";
 import { IllegalStateException } from "../../../utils/IllegalStateException";
 import { NotImplementedException } from "../../../utils/NotImplementedException";
 
 export const visit: ExpressionVisitor<ts.PrefixUnaryExpression> = async (node, env) => {
-	const t: Type = await TypeChecker.accept(node.operand, env);
+	const e: ExpressionReturn = await TypeChecker.accept(node.operand, env);
+	const t = e.eType;
 
 	switch (node.operator) {
 		case ts.SyntaxKind.PlusPlusToken:
@@ -17,19 +18,19 @@ export const visit: ExpressionVisitor<ts.PrefixUnaryExpression> = async (node, e
 			if (BigIntType.create().equals(t)) {
 				throw new TypecheckingFailure(`Cannot use prefix unary operator on BigInt`, node);
 			} else {
-				return NumberType.create();
+				return { eType: NumberType.create() };
 			}
 
 		case ts.SyntaxKind.MinusToken:
 		case ts.SyntaxKind.TildeToken:
 			if (BigIntType.create().equals(t)) {
-				return BigIntType.create();
+				return { eType: BigIntType.create() };
 			} else {
-				return NumberType.create();
+				return { eType: NumberType.create() };
 			}
 
 		case ts.SyntaxKind.ExclamationToken:
-			return BooleanType.create();
+			return { eType: BooleanType.create() };
 
 		default:
 			throw new IllegalStateException(`Unexpected prefix unary operator ${ts.SyntaxKind[node.operator]}`);

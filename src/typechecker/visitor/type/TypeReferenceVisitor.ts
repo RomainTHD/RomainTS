@@ -1,12 +1,16 @@
 import ts from "typescript";
+import { TypeVisitor } from ".";
 import { TypeChecker, TypecheckingFailure } from "../..";
-import { TypeVisitor } from "./index";
+import { assert } from "../../../utils";
+import { ExpressionReturn } from "../expression";
 
 export const visit: TypeVisitor<ts.TypeReferenceNode> = async (node, env) => {
-	const name: string = await env.withChildData(
+	const e: ExpressionReturn = await env.withChildData(
 		{ resolveIdentifier: false },
 		async () => await TypeChecker.accept(node.typeName, env),
 	);
+	assert(e.identifier !== undefined, "identifier is undefined");
+	const name = e.identifier!;
 
 	const t = env.lookupType(name);
 	if (!t) {

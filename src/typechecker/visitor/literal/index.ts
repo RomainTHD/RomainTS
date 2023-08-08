@@ -1,5 +1,8 @@
 import type ts from "typescript";
 import { Env } from "../..";
-import { Type } from "../../../types";
+import { ExpressionReturn } from "../expression";
 
-export type LiteralVisitor<T extends ts.PrimaryExpression> = (node: T, env: Env) => Type | Promise<Type>;
+export type LiteralVisitor<T extends ts.PrimaryExpression> = (
+	node: T,
+	env: Env,
+) => ExpressionReturn | Promise<ExpressionReturn>;

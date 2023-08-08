@@ -1,15 +1,19 @@
 import type ts from "typescript";
 import { Env, TypeChecker, TypecheckingFailure } from "../..";
 import { AnyType, LiteralType, Type } from "../../../types";
+import { assert } from "../../../utils";
+import { ExpressionReturn } from "../expression";
 
 export async function visit(node: ts.VariableDeclaration, env: Env): Promise<void> {
 	const isLocal: boolean = env.getData("isLocal");
 	const isMutable: boolean = env.getData("isMutable");
 
-	const name: string = await env.withChildData(
+	const e: ExpressionReturn = await env.withChildData(
 		{ resolveIdentifier: false },
 		async () => await TypeChecker.accept(node.name, env),
 	);
+	assert(e.identifier !== undefined, "identifier is undefined");
+	const name = e.identifier!;
 
 	let vType: Type | null = null;
 	if (node.type) {
@@ -18,7 +22,8 @@ export async function visit(node: ts.VariableDeclaration, env: Env): Promise<voi
 	}
 
 	if (node.initializer) {
-		let exprType: Type = await TypeChecker.accept(node.initializer, env);
+		let e: ExpressionReturn = await TypeChecker.accept(node.initializer, env);
+		const exprType = e.eType;
 
 		if (vType) {
 			// `let x: number = ...`

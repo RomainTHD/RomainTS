@@ -11,6 +11,11 @@ describe("PlusEqualsTokenVisitor", () => {
 		expect(env.lookup("x")?.vType).toEqual(NumberType.create());
 	});
 
+	it("shouldn't work for const addition", async () => {
+		const content = "const x = 1; x += 2;";
+		await expect(TypeChecker.accept(AST.parse(content), Env.create())).rejects.toThrowError(TypecheckingFailure);
+	});
+
 	it("should work for string addition", async () => {
 		const content = "let x = '1'; x += '2';";
 		const env = Env.create();

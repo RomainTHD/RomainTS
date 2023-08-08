@@ -1,8 +1,10 @@
 import type ts from "typescript";
 import { Env, TypeChecker, TypecheckingFailure } from "../..";
 import { AnyType, LiteralType, Type, UndefinedType, UnionType, VoidType } from "../../../types";
+import { assert } from "../../../utils";
 import { Bool3 } from "../../../utils/Bool3";
 import { NotImplementedException } from "../../../utils/NotImplementedException";
+import { ExpressionReturn } from "../expression";
 import { visitFunction } from "../shared/function";
 import { StatementReturn } from "../statement";
 
@@ -11,10 +13,12 @@ export async function visit(node: ts.FunctionDeclaration, env: Env): Promise<Typ
 		throw new NotImplementedException("Anonymous functions aren't supported yet");
 	}
 
-	const name: string = await env.withChildData(
+	const e: ExpressionReturn = await env.withChildData(
 		{ resolveIdentifier: false },
 		async () => await TypeChecker.accept(node.name!, env),
 	);
+	assert(e.identifier !== undefined, "identifier is undefined");
+	const name = e.identifier!;
 
 	const { fType, infer } = await visitFunction(env, node.parameters, node.type);
 

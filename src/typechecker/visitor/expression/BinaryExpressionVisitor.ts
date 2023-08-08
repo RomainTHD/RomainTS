@@ -1,29 +1,18 @@
 import ts from "typescript";
-import { ExpressionVisitor } from ".";
+import { ExpressionReturn, ExpressionVisitor } from ".";
 import { TypeChecker } from "../..";
-import { Type } from "../../../types";
 
 export const visit: ExpressionVisitor<ts.BinaryExpression> = async (node, env) => {
-	let resolveIdentifier = true;
-	switch (node.operatorToken.kind) {
-		// TODO: Use a visitor instead
+	// A BinaryExpression left expression can be either a LValue or a RValue.
+	//  example: `x = 0` where `x` is a LValue, or `x + 1` where `x` is a RValue
 
-		case ts.SyntaxKind.EqualsToken:
-			resolveIdentifier = false;
-			break;
-
-		default:
-			break;
-	}
-
-	// A BinaryExpression left expression can be either a LValue or a RValue
-	// example: `x = 0` where `x` is a LValue, or `x + 1` where `x` is a RValue
-	const left: Type | string = await env.withChildData(
-		{ resolveIdentifier },
+	const left: ExpressionReturn = await env.withChildData(
+		// Identifier resolution is disabled to handle assignments, but will be re-enabled deeper on
+		{ resolveIdentifier: false },
 		async () => await TypeChecker.accept(node.left, env),
 	);
 
-	const right: Type = await TypeChecker.accept(node.right, env);
+	const right: ExpressionReturn = await TypeChecker.accept(node.right, env);
 
-	return env.withChildData({ left, right }, async () => await TypeChecker.accept(node.operatorToken, env));
+	return await env.withChildData({ left, right }, async () => await TypeChecker.accept(node.operatorToken, env));
 };

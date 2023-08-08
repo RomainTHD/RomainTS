@@ -1,11 +1,12 @@
 import type ts from "typescript";
+import { ExpressionReturn } from ".";
 import { Env, TypeChecker, TypecheckingFailure } from "../..";
-import { AnyType, Type, UndefinedType, VoidType } from "../../../types";
+import { AnyType, UndefinedType, VoidType } from "../../../types";
 import { Bool3 } from "../../../utils/Bool3";
 import { visitFunction } from "../shared/function";
 import { StatementReturn } from "../statement";
 
-export async function visit(node: ts.ArrowFunction, env: Env): Promise<Type> {
+export async function visit(node: ts.ArrowFunction, env: Env): Promise<ExpressionReturn> {
 	const { fType, infer } = await visitFunction(env, node.parameters, node.type);
 
 	env.enterScope();
@@ -21,13 +22,16 @@ export async function visit(node: ts.ArrowFunction, env: Env): Promise<Type> {
 		paramsAlreadyDeclared.add(param.name);
 	}
 
-	let retData: StatementReturn | Type = await TypeChecker.accept(node.body, env);
-
-	if (retData instanceof Type) {
+	let retData: StatementReturn;
+	let bodyData: StatementReturn | ExpressionReturn = await TypeChecker.accept(node.body, env);
+	if (bodyData.hasOwnProperty("eType")) {
+		// If the body is an expression, then it's an implicit return
 		retData = {
 			doesReturn: Bool3.True,
-			inferredType: retData,
+			inferredType: (bodyData as ExpressionReturn).eType,
 		};
+	} else {
+		retData = bodyData as StatementReturn;
 	}
 
 	if (
@@ -44,5 +48,5 @@ export async function visit(node: ts.ArrowFunction, env: Env): Promise<Type> {
 		fType.retType = retData.inferredType;
 	}
 
-	return fType;
+	return { eType: fType };
 }

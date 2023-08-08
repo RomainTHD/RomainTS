@@ -8,5 +8,5 @@ export const visit: LiteralVisitor<ts.ThisExpression> = (node, env) => {
 		// FIXME: Maybe it has been deleted?
 		throw new IllegalStateException("'this' is undefined");
 	}
-	return thisValue.vType;
+	return { eType: thisValue.vType };
 };

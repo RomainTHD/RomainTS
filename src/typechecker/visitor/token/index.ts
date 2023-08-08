@@ -1,29 +1,47 @@
 import type ts from "typescript";
 import { Env, TypecheckingFailure } from "../..";
 import { BigIntType, LiteralType, NumberType, Type } from "../../../types";
-import { xor } from "../../../utils";
+import { assert, xor } from "../../../utils";
+import { ExpressionReturn } from "../expression";
 
 export function visitBinaryOperatorToken<T extends ts.SyntaxKind>(
 	node: ts.Token<T>,
 	env: Env,
 	isAssignment: boolean,
-): Type {
-	const left = env.getData("left");
-	if (isAssignment && left instanceof LiteralType) {
-		throw new TypecheckingFailure(
-			"The left-hand side of an assignment expression must be a variable or a property access",
-			node,
-		);
+): ExpressionReturn {
+	const left: ExpressionReturn = env.getData("left");
+	if (isAssignment && !left.isMutable) {
+		if (left.eType instanceof LiteralType) {
+			throw new TypecheckingFailure(
+				"The left-hand side of an assignment expression must be a variable or a property access",
+				node,
+			);
+		} else {
+			throw new TypecheckingFailure("Cannot assign to a constant", node);
+		}
 	}
 
-	const right = env.getData("right");
-	if (xor(left instanceof BigIntType, right instanceof BigIntType)) {
-		throw new TypecheckingFailure("Cannot convert BigInt to Number", node);
-	} else if (left instanceof BigIntType && right instanceof BigIntType) {
-		return BigIntType.create();
+	let leftType: Type;
+	if (left.identifier) {
+		const v = env.lookup(left.identifier)!;
+		assert(v, `Left type cannot be found, identifier was '${left.identifier}'`);
+		leftType = v.vType;
 	} else {
-		return NumberType.create();
+		leftType = left.eType;
+	}
+
+	const right: ExpressionReturn = env.getData("right");
+
+	if (xor(leftType instanceof BigIntType, right.eType instanceof BigIntType)) {
+		throw new TypecheckingFailure("Cannot convert BigInt to Number", node);
+	} else if (leftType instanceof BigIntType && right.eType instanceof BigIntType) {
+		return { eType: BigIntType.create() };
+	} else {
+		return { eType: NumberType.create() };
 	}
 }
 
-export type TokenVisitor<T extends ts.SyntaxKind> = (node: ts.Token<T>, env: Env) => Type | Promise<Type>;
+export type TokenVisitor<T extends ts.SyntaxKind> = (
+	node: ts.Token<T>,
+	env: Env,
+) => ExpressionReturn | Promise<ExpressionReturn>;

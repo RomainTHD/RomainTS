@@ -1,5 +1,9 @@
 import type ts from "typescript";
-import { Env } from "../..";
-import { Type } from "../../../types";
+import { ChildData, Env } from "../..";
 
-export type ExpressionVisitor<T extends ts.Expression> = (node: T, env: Env) => Type | Promise<Type>;
+export type ExpressionReturn = ChildData["left"];
+
+export type ExpressionVisitor<T extends ts.Expression> = (
+	node: T,
+	env: Env,
+) => ExpressionReturn | Promise<ExpressionReturn>;

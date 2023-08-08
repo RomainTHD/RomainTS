@@ -2,25 +2,35 @@ import type ts from "typescript";
 import { TokenVisitor } from ".";
 import { TypecheckingFailure } from "../..";
 import { BigIntType, BooleanType, NumberType, StringType, Type, UnionType } from "../../../types";
-import { xor } from "../../../utils";
+import { assert, xor } from "../../../utils";
+import { ExpressionReturn } from "../expression";
 
 export const visit: TokenVisitor<ts.SyntaxKind.PlusToken> = (node, env) => {
-	const left: Type = env.getData("left");
-	const right: Type = env.getData("right");
-	if (left instanceof BigIntType && right instanceof BigIntType) {
+	const left: ExpressionReturn = env.getData("left");
+	let leftType: Type;
+	if (left.identifier) {
+		const v = env.lookup(left.identifier)!;
+		assert(v, `Left type cannot be found, identifier was '${left.identifier}'`);
+		leftType = v.vType;
+	} else {
+		leftType = left.eType;
+	}
+
+	const right: ExpressionReturn = env.getData("right");
+	if (leftType instanceof BigIntType && right.eType instanceof BigIntType) {
 		// `0n + 1n` => 1n
-		return BigIntType.create();
-	} else if (xor(left instanceof BigIntType, right instanceof BigIntType)) {
+		return { eType: BigIntType.create() };
+	} else if (xor(leftType instanceof BigIntType, right.eType instanceof BigIntType)) {
 		// `0 + 1n` => error
 		throw new TypecheckingFailure("Cannot mix BigInt and other types", node);
 	} else {
 		const numberLike = UnionType.create([NumberType.create(), BooleanType.create()]);
-		if (numberLike.contains(left) && numberLike.contains(right)) {
+		if (numberLike.contains(leftType) && numberLike.contains(right.eType)) {
 			// Anything else is a number
-			return NumberType.create();
+			return { eType: NumberType.create() };
 		} else {
 			// `0 + []` => "0"`
-			return StringType.create();
+			return { eType: StringType.create() };
 		}
 	}
 };

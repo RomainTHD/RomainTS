@@ -1,6 +1,7 @@
 import type ts from "typescript";
+import { ExpressionReturn } from ".";
 import { Env, TypeChecker, TypecheckingFailure } from "../..";
-import { AnyType, ArrayType, NumberType, Type, UndefinedType, VoidType } from "../../../types";
+import { AnyType, ArrayType, NumberType, UndefinedType, VoidType } from "../../../types";
 import { Bool3 } from "../../../utils/Bool3";
 import { LoggerFactory } from "../../../utils/Logger";
 import { visitFunction } from "../shared/function";
@@ -8,7 +9,7 @@ import { StatementReturn } from "../statement";
 
 const logger = LoggerFactory.create("FunctionExpressionVisitor");
 
-export async function visit(node: ts.FunctionExpression, env: Env): Promise<Type> {
+export async function visit(node: ts.FunctionExpression, env: Env): Promise<ExpressionReturn> {
 	const { fType, infer } = await visitFunction(env, node.parameters, node.type);
 
 	env.enterScope();
@@ -48,5 +49,5 @@ export async function visit(node: ts.FunctionExpression, env: Env): Promise<Type
 		fType.retType = retData.inferredType;
 	}
 
-	return fType;
+	return { eType: fType };
 }

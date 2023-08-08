@@ -15,8 +15,10 @@ export const visit: LiteralVisitor<ts.NumericLiteral> = (node: ts.NumericLiteral
 			logger.warn("Used a legacy octal literal");
 		}
 	}
-	return LiteralType.create({
-		vType: NumberType.create(),
-		value: parseInt(node.text, 10),
-	});
+	return {
+		eType: LiteralType.create({
+			vType: NumberType.create(),
+			value: parseInt(node.text, 10),
+		}),
+	};
 };

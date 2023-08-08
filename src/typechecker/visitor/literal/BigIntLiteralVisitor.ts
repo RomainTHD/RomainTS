@@ -3,5 +3,5 @@ import { LiteralVisitor } from ".";
 import { BigIntType } from "../../../types";
 
 export const visit: LiteralVisitor<ts.BigIntLiteral> = () => {
-	return BigIntType.create();
+	return { eType: BigIntType.create() };
 };

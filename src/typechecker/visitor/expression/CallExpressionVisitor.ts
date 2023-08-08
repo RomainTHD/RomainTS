@@ -1,18 +1,18 @@
 import type ts from "typescript";
-import { ExpressionVisitor } from ".";
+import { ExpressionReturn, ExpressionVisitor } from ".";
 import { TypeChecker, TypecheckingFailure } from "../..";
 import { FunctionType, Type } from "../../../types";
 
 export const visit: ExpressionVisitor<ts.CallExpression> = async (node, env) => {
-	const left: Type = await TypeChecker.accept(node.expression, env);
-	if (!(left instanceof FunctionType)) {
-		throw new TypecheckingFailure(`Cannot call non-function type '${left}'`, node);
+	const left: ExpressionReturn = await TypeChecker.accept(node.expression, env);
+	if (!(left.eType instanceof FunctionType)) {
+		throw new TypecheckingFailure(`Cannot call non-function type '${left.eType}'`, node);
 	}
-	const f = left as FunctionType;
+	const f = left.eType as FunctionType;
 
 	const args: Type[] = [];
 	for (const arg of node.arguments) {
-		args.push(await TypeChecker.accept(arg, env));
+		args.push(((await TypeChecker.accept(arg, env)) as ExpressionReturn).eType);
 	}
 
 	if (f.params.length !== args.length) {
@@ -28,5 +28,5 @@ export const visit: ExpressionVisitor<ts.CallExpression> = async (node, env) => 
 		}
 	}
 
-	return f.retType;
+	return { eType: f.retType };
 };

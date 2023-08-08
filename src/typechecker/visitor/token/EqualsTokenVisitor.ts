@@ -1,25 +1,25 @@
 import type ts from "typescript";
 import { Env, TypecheckingFailure } from "../..";
-import { LiteralType, Type } from "../../../types";
+import { LiteralType } from "../../../types";
 import { LoggerFactory } from "../../../utils/Logger";
+import { ExpressionReturn } from "../expression";
 
 const logger = LoggerFactory.create("EqualsTokenVisitor");
 
-export async function visit(node: ts.Token<ts.SyntaxKind.EqualsToken>, env: Env): Promise<Type> {
-	const left: string | unknown = env.getData("left");
-	const right: Type = env.getData("right");
+export async function visit(node: ts.Token<ts.SyntaxKind.EqualsToken>, env: Env): Promise<ExpressionReturn> {
+	const left: ExpressionReturn = env.getData("left");
+	const right: ExpressionReturn = env.getData("right");
 
-	if (typeof left !== "string") {
+	if (!left.identifier) {
 		// `0 = ...;`
 
-		// FIXME: Use a cleaner way to check if `left` is a LValue or a RValue
 		throw new TypecheckingFailure(
 			"The left-hand side of an assignment expression must be a variable or a property access",
 			node,
 		);
 	}
 
-	const variable = env.lookup(left);
+	const variable = env.lookup(left.identifier)!;
 	if (variable) {
 		if (variable.builtin) {
 			if (env.config.strictMode) {
@@ -29,7 +29,7 @@ export async function visit(node: ts.Token<ts.SyntaxKind.EqualsToken>, env: Env)
 			}
 		} else if (!variable.isMutable) {
 			throw new TypecheckingFailure(`Cannot assign to constant '${left}'`, node);
-		} else if (!variable.vType.contains(right)) {
+		} else if (!variable.vType.contains(right.eType)) {
 			throw new TypecheckingFailure(`Type '${right}' is not assignable to type '${variable.vType}'`, node);
 		}
 	} else {
@@ -38,15 +38,15 @@ export async function visit(node: ts.Token<ts.SyntaxKind.EqualsToken>, env: Env)
 			throw new TypecheckingFailure(`Variable ${left} not found`, node);
 		} else {
 			logger.warn(`Variable '${left}' not found, declaring it`);
-			if (right instanceof LiteralType) {
-				env.add(left, { vType: right.literal.vType, isLocal: false, isMutable: true });
+			if (right.eType instanceof LiteralType) {
+				env.add(left.identifier, { vType: right.eType.literal.vType, isLocal: false, isMutable: true });
 			} else {
-				env.add(left, { vType: right, isLocal: false, isMutable: true });
+				env.add(left.identifier, { vType: right.eType, isLocal: false, isMutable: true });
 			}
 		}
 	}
-	if (right instanceof LiteralType) {
-		return right.literal.vType;
+	if (right.eType instanceof LiteralType) {
+		return { eType: right.eType.literal.vType };
 	}
-	return right;
+	return { eType: right.eType };
 }

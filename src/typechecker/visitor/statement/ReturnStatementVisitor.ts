@@ -1,15 +1,16 @@
 import type ts from "typescript";
 import { StatementVisitor } from ".";
 import { TypeChecker, TypecheckingFailure } from "../..";
-import { Type, VoidType } from "../../../types";
+import { VoidType } from "../../../types";
 import { Bool3 } from "../../../utils/Bool3";
+import { ExpressionReturn } from "../expression";
 
 export const visit: StatementVisitor<ts.ReturnStatement> = async (node, env) => {
-	let t: Type;
+	let t: ExpressionReturn;
 	if (node.expression) {
 		t = await TypeChecker.accept(node.expression, env);
 	} else {
-		t = VoidType.create();
+		t = { eType: VoidType.create() };
 	}
 
 	const retType = env.getReturnType();
@@ -17,12 +18,12 @@ export const visit: StatementVisitor<ts.ReturnStatement> = async (node, env) => 
 		throw new TypecheckingFailure("Cannot return outside of a function", node);
 	}
 
-	if (!retType.contains(t)) {
+	if (!retType.contains(t.eType)) {
 		throw new TypecheckingFailure(`Cannot return type '${t}' from function with return type '${retType}'`, node);
 	}
 
 	return {
 		doesReturn: Bool3.True,
-		inferredType: t,
+		inferredType: t.eType,
 	};
 };

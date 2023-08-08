@@ -10,12 +10,19 @@ type Value = {
 	builtin: boolean;
 };
 
-type ChildData = {
+type LeftRightData = {
+	eType: Type;
+	isFromVariable?: boolean;
+	isMutable?: boolean;
+	identifier?: string;
+};
+
+export type ChildData = {
 	resolveIdentifier: boolean;
 	isPropertyAccess: boolean;
 	isFirstStatement: boolean;
-	left: Type | string;
-	right: Type;
+	left: LeftRightData;
+	right: LeftRightData;
 	isLocal: boolean;
 	isMutable: boolean;
 };
@@ -37,7 +44,7 @@ export class Env {
 	private readonly types: Map<string, Type> = new Map();
 	private readonly returnTypes: Type[] = [];
 	private readonly _config: EnvConfig;
-	private readonly _data: Map<string, unknown> = new Map();
+	private readonly _data: Map<keyof ChildData, unknown> = new Map();
 
 	private constructor(config: EnvConfig) {
 		this._config = config;
@@ -183,14 +190,16 @@ export class Env {
 
 	public async withChildData<T>(data: Partial<ChildData>, execute: () => T | Promise<T>): Promise<T> {
 		let previous: Map<string, unknown> = new Map();
-		Object.entries(data).forEach(([k, v]) => {
+		Object.entries(data).forEach(([k0, v]) => {
+			const k = k0 as keyof ChildData;
 			if (this._data.has(k)) {
 				previous.set(k, this._data.get(k));
 			}
 			this._data.set(k, v);
 		});
 		const res = await execute();
-		Object.keys(data).forEach((k) => {
+		Object.keys(data).forEach((k0) => {
+			const k = k0 as keyof ChildData;
 			if (previous.has(k)) {
 				this._data.set(k, previous.get(k));
 			} else {
@@ -200,7 +209,7 @@ export class Env {
 		return res;
 	}
 
-	public getData<T>(key: string, defaultValue?: T): T {
+	public getData<T>(key: keyof ChildData, defaultValue?: T): T {
 		return (this._data.get(key) as T) ?? defaultValue ?? throwError(`Data does not have key '${key}'`);
 	}
 

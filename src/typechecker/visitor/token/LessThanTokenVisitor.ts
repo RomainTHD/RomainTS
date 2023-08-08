@@ -3,5 +3,5 @@ import { TokenVisitor } from ".";
 import { BooleanType } from "../../../types";
 
 export const visit: TokenVisitor<ts.SyntaxKind.LessThanToken> = () => {
-	return BooleanType.create();
+	return { eType: BooleanType.create() };
 };
