@@ -1,15 +1,41 @@
 export enum Bool3 {
-	False = 0,
-	True = 1,
-	Sometimes = 2,
+	No,
+	Sometimes,
+	Yes,
 }
 
 export namespace Bool3 {
-	export function and(a: Bool3, b: Bool3): Bool3 {
-		return a === Bool3.False || b === Bool3.False
-			? Bool3.False
-			: a === Bool3.True && b === Bool3.True
-			? Bool3.True
-			: Bool3.Sometimes;
+	/**
+	 * Expected behavior:
+	 *
+	 * <table>
+	 * 	<tr>
+	 * 		<th></th>
+	 * 		<th>Y</th>
+	 * 		<th>S</th>
+	 * 		<th>N</th>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<th>Y</th>
+	 * 		<td>Y</td>
+	 * 		<td>S</td>
+	 * 		<td>S</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<th>S</th>
+	 * 		<td>S</td>
+	 * 		<td>S</td>
+	 * 		<td>S</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<th>N</th>
+	 * 		<td>S</td>
+	 * 		<td>S</td>
+	 * 		<td>N</td>
+	 * 	</tr>
+	 * </table>
+	 */
+	export function both(a: Bool3, b: Bool3): Bool3 {
+		return a === b ? a : Bool3.Sometimes;
 	}
 }

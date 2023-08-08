@@ -23,7 +23,7 @@ export const visit: StatementVisitor<ts.ReturnStatement> = async (node, env) => 
 	}
 
 	return {
-		doesReturn: Bool3.True,
+		returningStatement: Bool3.Yes,
 		inferredType: t.eType,
 	};
 };

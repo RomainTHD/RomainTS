@@ -41,7 +41,7 @@ export async function visit(node: ts.FunctionDeclaration, env: Env): Promise<Typ
 	const retData: StatementReturn = await TypeChecker.accept(node.body, env);
 
 	if (
-		retData.doesReturn !== Bool3.True &&
+		retData.returningStatement !== Bool3.Yes &&
 		![VoidType.create(), AnyType.create(), UndefinedType.create()].some((t) => fType.retType.contains(t))
 	) {
 		throw new TypecheckingFailure(`Function '${name}' must return a value of type '${fType.retType}'`, node);
@@ -62,9 +62,9 @@ export async function visit(node: ts.FunctionDeclaration, env: Env): Promise<Typ
 		 */
 		const inferredType = retData.inferredType.generalize();
 
-		if (retData.doesReturn === Bool3.False) {
+		if (retData.returningStatement === Bool3.No) {
 			fType.retType = VoidType.create();
-		} else if (retData.doesReturn === Bool3.Sometimes) {
+		} else if (retData.returningStatement === Bool3.Sometimes) {
 			fType.retType = UnionType.create([inferredType, UndefinedType.create()]).simplify();
 		} else {
 			fType.retType = inferredType;

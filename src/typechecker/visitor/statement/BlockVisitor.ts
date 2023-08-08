@@ -7,7 +7,7 @@ import { Bool3 } from "../../../utils/Bool3";
 
 export const visit: StatementVisitor<ts.Block> = async (node, env) => {
 	let all: { doesReturn: Bool3; inferredType: UnionType } = {
-		doesReturn: Bool3.False,
+		doesReturn: Bool3.No,
 		inferredType: UnionType.create([]),
 	};
 
@@ -19,11 +19,11 @@ export const visit: StatementVisitor<ts.Block> = async (node, env) => {
 		assert(current, "Statement return isn't defined");
 		assert(current.inferredType, "Inferred type isn't defined");
 
-		if (!env.config.allowUnreachableCode && all.doesReturn === Bool3.True) {
+		if (!env.config.allowUnreachableCode && all.doesReturn === Bool3.Yes) {
 			throw new TypecheckingFailure("Unreachable code detected", stmt);
 		}
 
-		if (current.doesReturn === Bool3.True) {
+		if (current.returningStatement === Bool3.Yes) {
 			/*
 			```
 			if (something) {
@@ -35,11 +35,11 @@ export const visit: StatementVisitor<ts.Block> = async (node, env) => {
 			Return type: string | number
 			Does return: yes
 			 */
-			all.doesReturn = Bool3.True;
+			all.doesReturn = Bool3.Yes;
 			all.inferredType.add(current.inferredType!);
 			// We coud just return here since we know that the rest of the statements are unreachable
-		} else if (current.doesReturn === Bool3.Sometimes) {
-			if (all.doesReturn === Bool3.False) {
+		} else if (current.returningStatement === Bool3.Sometimes) {
+			if (all.doesReturn === Bool3.No) {
 				/*
 				```
 				if (something) {
@@ -65,7 +65,7 @@ export const visit: StatementVisitor<ts.Block> = async (node, env) => {
 				Does return: sometimes
 				 */
 				all.inferredType.add(current.inferredType!);
-			} else if (all.doesReturn === Bool3.True) {
+			} else if (all.doesReturn === Bool3.Yes) {
 				/*
 				```
 				return 0;
@@ -83,7 +83,7 @@ export const visit: StatementVisitor<ts.Block> = async (node, env) => {
 	env.leaveScope();
 
 	return {
-		doesReturn: all.doesReturn,
+		returningStatement: all.doesReturn,
 		inferredType: all.inferredType.types.length === 0 ? VoidType.create() : all.inferredType.simplify(),
 	};
 };

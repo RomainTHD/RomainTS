@@ -7,7 +7,7 @@ import { Bool3 } from "../../../utils/Bool3";
 export const visit: StatementVisitor<ts.ThrowStatement> = async (node, env) => {
 	await TypeChecker.accept(node.expression, env);
 	return {
-		doesReturn: Bool3.True,
+		returningStatement: Bool3.Yes,
 		inferredType: NeverType.create(),
 	};
 };

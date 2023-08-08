@@ -6,7 +6,7 @@ import { Bool3 } from "../../../utils/Bool3";
 
 export const visit: StatementVisitor<ts.TryStatement> = async (node, env) => {
 	let all: { doesReturn: Bool3; inferredType: UnionType } = {
-		doesReturn: Bool3.False,
+		doesReturn: Bool3.No,
 		inferredType: UnionType.create([]),
 	};
 
@@ -14,7 +14,7 @@ export const visit: StatementVisitor<ts.TryStatement> = async (node, env) => {
 	const tryRet: StatementReturn = await TypeChecker.accept(node.tryBlock, env);
 	env.leaveScope();
 
-	all.doesReturn = tryRet.doesReturn;
+	all.doesReturn = tryRet.returningStatement;
 	all.inferredType.add(tryRet.inferredType);
 
 	if (node.catchClause) {
@@ -22,7 +22,7 @@ export const visit: StatementVisitor<ts.TryStatement> = async (node, env) => {
 		const catchRet: StatementReturn = await TypeChecker.accept(node.catchClause, env);
 		env.leaveScope();
 
-		all.doesReturn = Bool3.and(all.doesReturn, catchRet.doesReturn);
+		all.doesReturn = Bool3.both(all.doesReturn, catchRet.returningStatement);
 		all.inferredType.add(catchRet.inferredType);
 	}
 
@@ -47,12 +47,12 @@ export const visit: StatementVisitor<ts.TryStatement> = async (node, env) => {
 		const finallyRet: StatementReturn = await TypeChecker.accept(node.finallyBlock, env);
 		env.leaveScope();
 
-		all.doesReturn = Bool3.and(all.doesReturn, finallyRet.doesReturn);
+		all.doesReturn = Bool3.both(all.doesReturn, finallyRet.returningStatement);
 		all.inferredType.add(finallyRet.inferredType);
 	}
 
 	return {
-		doesReturn: all.doesReturn,
+		returningStatement: all.doesReturn,
 		inferredType: all.inferredType.types.length === 0 ? VoidType.create() : all.inferredType.simplify(),
 	};
 };

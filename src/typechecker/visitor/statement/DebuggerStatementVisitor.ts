@@ -6,7 +6,7 @@ import { Bool3 } from "../../../utils/Bool3";
 export const visit: StatementVisitor<ts.DebuggerStatement> = async (node, env) => {
 	env.print();
 	return {
-		doesReturn: Bool3.False,
+		returningStatement: Bool3.No,
 		inferredType: VoidType.create(),
 	};
 };

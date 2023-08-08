@@ -36,7 +36,7 @@ export async function visit(node: ts.FunctionExpression, env: Env): Promise<Expr
 	const retData: StatementReturn = await TypeChecker.accept(node.body, env);
 
 	if (
-		retData.doesReturn !== Bool3.True &&
+		retData.returningStatement !== Bool3.Yes &&
 		![VoidType.create(), AnyType.create(), UndefinedType.create()].some((t) => t.equals(fType.retType))
 	) {
 		throw new TypecheckingFailure(`Function must return a value of type '${fType.retType}'`, node);

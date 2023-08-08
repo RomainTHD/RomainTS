@@ -15,7 +15,7 @@ export const visit: StatementVisitor<ts.ExpressionStatement> = async (node, env)
 	}
 	await TypeChecker.accept(node.expression, env);
 	return {
-		doesReturn: Bool3.False,
+		returningStatement: Bool3.No,
 		inferredType: VoidType.create(),
 	};
 };

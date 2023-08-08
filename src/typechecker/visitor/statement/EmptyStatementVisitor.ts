@@ -4,6 +4,6 @@ import { VoidType } from "../../../types";
 import { Bool3 } from "../../../utils/Bool3";
 
 export const visit: StatementVisitor<ts.EmptyStatement> = () => ({
-	doesReturn: Bool3.False,
+	returningStatement: Bool3.No,
 	inferredType: VoidType.create(),
 });

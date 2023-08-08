@@ -27,7 +27,7 @@ export async function visit(node: ts.ArrowFunction, env: Env): Promise<Expressio
 	if (bodyData.hasOwnProperty("eType")) {
 		// If the body is an expression, then it's an implicit return
 		retData = {
-			doesReturn: Bool3.True,
+			returningStatement: Bool3.Yes,
 			inferredType: (bodyData as ExpressionReturn).eType,
 		};
 	} else {
@@ -35,7 +35,7 @@ export async function visit(node: ts.ArrowFunction, env: Env): Promise<Expressio
 	}
 
 	if (
-		retData.doesReturn !== Bool3.True &&
+		retData.returningStatement !== Bool3.Yes &&
 		![VoidType.create(), AnyType.create(), UndefinedType.create()].some((t) => t.equals(fType.retType))
 	) {
 		throw new TypecheckingFailure(`Arrow function must return a value of type '${fType.retType}'`, node);

@@ -3,7 +3,7 @@ import { Env } from "../..";
 import { Type } from "../../../types";
 import { Bool3 } from "../../../utils/Bool3";
 
-export type StatementReturn = { doesReturn: Bool3; inferredType: Type };
+export type StatementReturn = { returningStatement: Bool3; inferredType: Type };
 
 export type StatementVisitor<T extends ts.Statement> = (
 	node: T,
