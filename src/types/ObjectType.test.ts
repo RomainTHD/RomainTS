@@ -82,7 +82,8 @@ describe("ObjectType", () => {
 		).toBe(false);
 	});
 
-	it("should contain smaller objects", () => {
+	it("should not contain smaller objects", () => {
+		// May seem counter-intuitive, but `{ a: string, b: number }` should not accept `{ a: string }`
 		expect(
 			ObjectType.create([
 				{
@@ -101,7 +102,7 @@ describe("ObjectType", () => {
 					},
 				]),
 			),
-		).toBe(true);
+		).toBe(false);
 	});
 
 	it("should not contain bigger objects", () => {

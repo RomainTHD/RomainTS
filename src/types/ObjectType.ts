@@ -27,6 +27,10 @@ export class ObjectType extends PropertyAccessor {
 			return false;
 		}
 
+		if (other.ownProperties.length !== this.ownProperties.length) {
+			return false;
+		}
+
 		return other.properties.every((member) => {
 			const thisMember = this.properties.find((m) => m.name === member.name);
 			return thisMember !== undefined && thisMember.pType.contains(member.pType);
