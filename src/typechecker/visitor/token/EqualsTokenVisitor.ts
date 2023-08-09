@@ -7,8 +7,8 @@ import { ExpressionReturn } from "../expression";
 const logger = LoggerFactory.create("EqualsTokenVisitor");
 
 export async function visit(node: ts.Token<ts.SyntaxKind.EqualsToken>, env: Env): Promise<ExpressionReturn> {
-	const left: ExpressionReturn = env.getData("left");
-	const right: ExpressionReturn = env.getData("right");
+	const left: ExpressionReturn = env.getData("left", true);
+	const right: ExpressionReturn = env.getData("right", true);
 
 	if (!left.identifier) {
 		// `0 = ...;`

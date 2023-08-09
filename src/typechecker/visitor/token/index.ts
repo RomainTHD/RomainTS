@@ -9,7 +9,7 @@ export function visitBinaryOperatorToken<T extends ts.SyntaxKind>(
 	env: Env,
 	isAssignment: boolean,
 ): ExpressionReturn {
-	const left: ExpressionReturn = env.getData("left");
+	const left: ExpressionReturn = env.getData("left", true);
 	if (isAssignment && !left.isMutable) {
 		if (left.eType instanceof LiteralType) {
 			throw new TypecheckingFailure(
@@ -30,7 +30,7 @@ export function visitBinaryOperatorToken<T extends ts.SyntaxKind>(
 		leftType = left.eType;
 	}
 
-	const right: ExpressionReturn = env.getData("right");
+	const right: ExpressionReturn = env.getData("right", true);
 
 	if (xor(leftType instanceof BigIntType, right.eType instanceof BigIntType)) {
 		throw new TypecheckingFailure("Cannot convert BigInt to Number", node);

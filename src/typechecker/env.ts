@@ -209,8 +209,12 @@ export class Env {
 		return res;
 	}
 
-	public getData<T>(key: keyof ChildData, defaultValue?: T): T {
-		return (this._data.get(key) as T) ?? defaultValue ?? throwError(`Data does not have key '${key}'`);
+	public getData<T>(key: keyof ChildData, consume: boolean, defaultValue?: T): T {
+		const data = (this._data.get(key) as T) ?? defaultValue ?? throwError(`Data does not have key '${key}'`);
+		if (consume) {
+			this._data.delete(key);
+		}
+		return data;
 	}
 
 	private populateEnv(): void {

@@ -5,8 +5,8 @@ import { assert } from "../../../utils";
 import { ExpressionReturn } from "../expression";
 
 export async function visit(node: ts.VariableDeclaration, env: Env): Promise<void> {
-	const isLocal: boolean = env.getData("isLocal");
-	const isMutable: boolean = env.getData("isMutable");
+	const isLocal: boolean = env.getData("isLocal", true);
+	const isMutable: boolean = env.getData("isMutable", true);
 
 	const e: ExpressionReturn = await env.withChildData(
 		{ resolveIdentifier: false },

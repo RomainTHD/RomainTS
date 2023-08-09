@@ -6,7 +6,7 @@ import { assert, xor } from "../../../utils";
 import { ExpressionReturn } from "../expression";
 
 export const visit: TokenVisitor<ts.SyntaxKind.PlusEqualsToken> = (node, env) => {
-	const left: ExpressionReturn = env.getData("left");
+	const left: ExpressionReturn = env.getData("left", true);
 	let leftType: Type;
 	if (left.identifier) {
 		const v = env.lookup(left.identifier)!;
@@ -23,7 +23,7 @@ export const visit: TokenVisitor<ts.SyntaxKind.PlusEqualsToken> = (node, env) =>
 		);
 	}
 
-	const right: ExpressionReturn = env.getData("right");
+	const right: ExpressionReturn = env.getData("right", true);
 	if (leftType instanceof StringType || right.eType instanceof StringType) {
 		// `0 + "a"` => "0a"
 		return { eType: StringType.create() };

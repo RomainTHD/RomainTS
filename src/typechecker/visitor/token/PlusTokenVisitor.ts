@@ -6,7 +6,7 @@ import { assert, xor } from "../../../utils";
 import { ExpressionReturn } from "../expression";
 
 export const visit: TokenVisitor<ts.SyntaxKind.PlusToken> = (node, env) => {
-	const left: ExpressionReturn = env.getData("left");
+	const left: ExpressionReturn = env.getData("left", true);
 	let leftType: Type;
 	if (left.identifier) {
 		const v = env.lookup(left.identifier)!;
@@ -16,7 +16,7 @@ export const visit: TokenVisitor<ts.SyntaxKind.PlusToken> = (node, env) => {
 		leftType = left.eType;
 	}
 
-	const right: ExpressionReturn = env.getData("right");
+	const right: ExpressionReturn = env.getData("right", true);
 	if (leftType instanceof BigIntType && right.eType instanceof BigIntType) {
 		// `0n + 1n` => 1n
 		return { eType: BigIntType.create() };

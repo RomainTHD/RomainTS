@@ -11,8 +11,8 @@ export async function visit(node: ts.Identifier, env: Env): Promise<ExpressionRe
 		throw new TypecheckingFailure("Expected an expression", node);
 	}
 
-	const isPropertyAccess = env.getData("isPropertyAccess", false);
-	const resolveIdentifier = env.getData("resolveIdentifier", true) && !isPropertyAccess;
+	const isPropertyAccess = env.getData("isPropertyAccess", true, false);
+	const resolveIdentifier = env.getData("resolveIdentifier", true, true) && !isPropertyAccess;
 
 	let t: Type;
 
