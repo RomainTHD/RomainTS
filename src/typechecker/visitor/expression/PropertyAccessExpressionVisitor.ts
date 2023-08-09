@@ -19,7 +19,7 @@ export const visit: ExpressionVisitor<ts.PropertyAccessExpression> = async (node
 	}
 
 	if (expr.eType.hasProperty(prop)) {
-		return { eType: expr.eType.getProperty(prop), isFromVariable: true, isMutable: true };
+		return { eType: expr.eType.getProperty(prop).pType, isFromVariable: true, isMutable: true };
 	}
 
 	if (env.config.strictMode) {

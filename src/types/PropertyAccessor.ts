@@ -3,7 +3,11 @@ import { assert } from "../utils";
 import { LoggerFactory } from "../utils/Logger";
 import { NotImplementedException } from "../utils/NotImplementedException";
 
-export type Property = { pType: Type; name: string };
+export interface Property {
+	pType: Type;
+	name: string;
+	fromParent?: boolean;
+}
 
 export abstract class PropertyAccessor extends Type {
 	private static readonly logger = LoggerFactory.create("PropertyAccessor");
@@ -42,10 +46,21 @@ export abstract class PropertyAccessor extends Type {
 		return this.properties.some((m) => m.name === name);
 	}
 
-	public getProperty(name: string): Type {
+	public override hasOwnProperty(name: string): boolean {
+		// FIXME: Dubious method override, will be horrendous to trace related bugs (if any)
+		return this.ownProperties.some((m) => m.name === name);
+	}
+
+	public getOwnProperty(name: string): Property {
+		const prop = this.ownProperties.find((m) => m.name === name);
+		assert(prop, `Property with name '${name}' does not exist in object type`);
+		return prop!;
+	}
+
+	public getProperty(name: string): Property {
 		const prop = this.properties.find((m) => m.name === name);
 		assert(prop, `Property with name '${name}' does not exist in object type`);
-		return prop!.pType;
+		return prop!;
 	}
 
 	public get properties(): Property[] {
