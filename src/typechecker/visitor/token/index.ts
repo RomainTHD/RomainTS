@@ -2,7 +2,7 @@ import type ts from "typescript";
 import { Env, TypecheckingFailure } from "../..";
 import { BigIntType, LiteralType, NumberType, Type } from "../../../types";
 import { assert, xor } from "../../../utils";
-import { ExpressionReturn } from "../expression";
+import { ExpressionReturn } from "../shared/expression";
 
 export function visitBinaryOperatorToken<T extends ts.SyntaxKind>(
 	node: ts.Token<T>,

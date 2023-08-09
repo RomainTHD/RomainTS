@@ -2,7 +2,7 @@ import type ts from "typescript";
 import { Env, TypecheckingFailure } from "../..";
 import { LiteralType } from "../../../types";
 import { LoggerFactory } from "../../../utils/Logger";
-import { ExpressionReturn } from "../expression";
+import { ExpressionReturn } from "../shared/expression";
 
 const logger = LoggerFactory.create("EqualsTokenVisitor");
 

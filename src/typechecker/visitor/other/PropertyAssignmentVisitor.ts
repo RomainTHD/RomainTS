@@ -2,7 +2,7 @@ import type ts from "typescript";
 import { Env, TypeChecker } from "../..";
 import { Property } from "../../../types";
 import { assert } from "../../../utils";
-import { ExpressionReturn } from "../expression";
+import { ExpressionReturn } from "../shared/expression";
 
 export async function visit(node: ts.PropertyAssignment, env: Env): Promise<Property> {
 	let expr: ExpressionReturn = await TypeChecker.accept(node.initializer, env);

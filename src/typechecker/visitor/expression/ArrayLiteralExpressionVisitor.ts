@@ -1,7 +1,8 @@
 import type ts from "typescript";
-import { ExpressionReturn, ExpressionVisitor } from ".";
+import { ExpressionVisitor } from ".";
 import { TypeChecker } from "../..";
 import { AnyType, ArrayType, LiteralType, Type, UnionType } from "../../../types";
+import { ExpressionReturn } from "../shared/expression";
 
 export const visit: ExpressionVisitor<ts.ArrayLiteralExpression> = async (node, env) => {
 	const types: Type[] = [];

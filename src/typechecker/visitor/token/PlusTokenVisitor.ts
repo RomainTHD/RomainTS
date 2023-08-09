@@ -3,7 +3,7 @@ import { TokenVisitor } from ".";
 import { TypecheckingFailure } from "../..";
 import { BigIntType, BooleanType, NumberType, StringType, Type, UnionType } from "../../../types";
 import { assert, xor } from "../../../utils";
-import { ExpressionReturn } from "../expression";
+import { ExpressionReturn } from "../shared/expression";
 
 export const visit: TokenVisitor<ts.SyntaxKind.PlusToken> = (node, env) => {
 	const left: ExpressionReturn = env.getData("left", true);

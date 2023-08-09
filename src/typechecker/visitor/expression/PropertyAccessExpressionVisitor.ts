@@ -1,8 +1,9 @@
 import type ts from "typescript";
-import { ExpressionReturn, ExpressionVisitor } from ".";
+import { ExpressionVisitor } from ".";
 import { TypeChecker, TypecheckingFailure } from "../..";
 import { PropertyAccessor, UndefinedType } from "../../../types";
 import { assert } from "../../../utils";
+import { ExpressionReturn } from "../shared/expression";
 
 export const visit: ExpressionVisitor<ts.PropertyAccessExpression> = async (node, env) => {
 	const expr: ExpressionReturn = await TypeChecker.accept(node.expression, env);

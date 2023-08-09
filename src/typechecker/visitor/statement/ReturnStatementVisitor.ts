@@ -3,7 +3,7 @@ import { StatementVisitor } from ".";
 import { TypeChecker, TypecheckingFailure } from "../..";
 import { VoidType } from "../../../types";
 import { Bool3 } from "../../../utils/Bool3";
-import { ExpressionReturn } from "../expression";
+import { ExpressionReturn } from "../shared/expression";
 
 export const visit: StatementVisitor<ts.ReturnStatement> = async (node, env) => {
 	let t: ExpressionReturn;

@@ -2,10 +2,11 @@ import type ts from "typescript";
 import { Env, TypeChecker } from "../..";
 import { AnyType, FunctionType, Type } from "../../../types";
 import { assert } from "../../../utils";
-import { ExpressionReturn } from "../expression";
+import { ExpressionReturn } from "./expression";
 
 export async function visitFunction(
 	env: Env,
+	nodeGenerics: ts.NodeArray<ts.TypeParameterDeclaration> | undefined,
 	nodeParams: ts.NodeArray<ts.ParameterDeclaration>,
 	nodeRetType: ts.TypeNode | undefined,
 ): Promise<{ fType: FunctionType; infer: boolean }> {

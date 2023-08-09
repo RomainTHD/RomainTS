@@ -3,7 +3,7 @@ import { Env, TypeChecker, TypecheckingFailure } from "../..";
 import { ObjectType, Property, PropertyAccessor } from "../../../types";
 import { assert } from "../../../utils";
 import { NotImplementedException } from "../../../utils/NotImplementedException";
-import { ExpressionReturn } from "../expression";
+import { ExpressionReturn } from "../shared/expression";
 
 export async function visit(node: ts.InterfaceDeclaration, env: Env): Promise<void> {
 	if (node.modifiers) {

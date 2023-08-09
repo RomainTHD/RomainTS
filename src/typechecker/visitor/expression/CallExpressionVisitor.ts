@@ -1,7 +1,8 @@
 import type ts from "typescript";
-import { ExpressionReturn, ExpressionVisitor } from ".";
+import { ExpressionVisitor } from ".";
 import { TypeChecker, TypecheckingFailure } from "../..";
 import { FunctionType, Type } from "../../../types";
+import { ExpressionReturn } from "../shared/expression";
 
 export const visit: ExpressionVisitor<ts.CallExpression> = async (node, env) => {
 	const left: ExpressionReturn = await TypeChecker.accept(node.expression, env);

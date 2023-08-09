@@ -2,7 +2,7 @@ import type ts from "typescript";
 import { Env, TypeChecker } from "../..";
 import { AnyType, Property, Type } from "../../../types";
 import { assert } from "../../../utils";
-import { ExpressionReturn } from "../expression";
+import { ExpressionReturn } from "../shared/expression";
 
 export const visit = async (node: ts.PropertySignature, env: Env): Promise<Property> => {
 	let pType: Type;

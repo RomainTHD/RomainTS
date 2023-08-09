@@ -3,7 +3,7 @@ import { Env, TypeChecker } from "../..";
 import { Type } from "../../../types";
 import { assert } from "../../../utils";
 import { NotImplementedException } from "../../../utils/NotImplementedException";
-import { ExpressionReturn } from "../expression";
+import { ExpressionReturn } from "../shared/expression";
 
 export async function visit(node: ts.TypeAliasDeclaration, env: Env): Promise<void> {
 	if (node.modifiers) {

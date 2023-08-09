@@ -1,9 +1,10 @@
 import ts from "typescript";
-import { ExpressionReturn, ExpressionVisitor } from ".";
+import { ExpressionVisitor } from ".";
 import { TypeChecker, TypecheckingFailure } from "../..";
 import { BigIntType, BooleanType, NumberType } from "../../../types";
 import { IllegalStateException } from "../../../utils/IllegalStateException";
 import { NotImplementedException } from "../../../utils/NotImplementedException";
+import { ExpressionReturn } from "../shared/expression";
 
 export const visit: ExpressionVisitor<ts.PrefixUnaryExpression> = async (node, env) => {
 	const e: ExpressionReturn = await TypeChecker.accept(node.operand, env);

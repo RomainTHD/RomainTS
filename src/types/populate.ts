@@ -41,8 +41,8 @@ async function stringToType(t: string): Promise<Property> {
 	return { name, pType: value.vType };
 }
 
-async function stringsToTypes(ts: string[]): Promise<Property[]> {
-	return Promise.all(ts.map((t) => stringToType(t)));
+async function stringsToTypes(types: string[]): Promise<Property[]> {
+	return Promise.all(types.map((t) => stringToType(t)));
 }
 
 function getCommonBuiltins(): Property[] {
@@ -74,6 +74,7 @@ async function populateArrayType(): Promise<void> {
 			"length: number",
 			"toString: () => string",
 			"toLocaleString: () => string",
+			// "pop: <T> () => T | undefined",
 			"pop: () => unknown | undefined",
 			"push: (items: unknown[]) => number",
 			"concat: (items: unknown[]) => unknown[]",

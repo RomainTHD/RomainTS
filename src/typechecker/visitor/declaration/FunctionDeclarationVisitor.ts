@@ -4,7 +4,7 @@ import { AnyType, Type, UndefinedType, UnionType, VoidType } from "../../../type
 import { assert } from "../../../utils";
 import { Bool3 } from "../../../utils/Bool3";
 import { NotImplementedException } from "../../../utils/NotImplementedException";
-import { ExpressionReturn } from "../expression";
+import { ExpressionReturn } from "../shared/expression";
 import { visitFunction } from "../shared/function";
 import { StatementReturn } from "../statement";
 
@@ -20,7 +20,7 @@ export async function visit(node: ts.FunctionDeclaration, env: Env): Promise<Typ
 	assert(e.identifier !== undefined, "identifier is undefined");
 	const name = e.identifier!;
 
-	const { fType, infer } = await visitFunction(env, node.parameters, node.type);
+	const { fType, infer } = await visitFunction(env, node.typeParameters, node.parameters, node.type);
 
 	if (!node.body) {
 		throw new NotImplementedException("Functions without body aren't supported yet");

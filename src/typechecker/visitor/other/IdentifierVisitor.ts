@@ -1,7 +1,7 @@
 import type ts from "typescript";
 import { Env, TypecheckingFailure } from "../..";
 import { Type, UndefinedType } from "../../../types";
-import { ExpressionReturn } from "../expression";
+import { ExpressionReturn } from "../shared/expression";
 
 export async function visit(node: ts.Identifier, env: Env): Promise<ExpressionReturn> {
 	// Note that `undefined` is also an identifier

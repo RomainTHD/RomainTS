@@ -2,7 +2,7 @@ import type ts from "typescript";
 import { Env, TypeChecker, TypecheckingFailure } from "../..";
 import { AnyType, LiteralType, Type } from "../../../types";
 import { assert } from "../../../utils";
-import { ExpressionReturn } from "../expression";
+import { ExpressionReturn } from "../shared/expression";
 
 export async function visit(node: ts.VariableDeclaration, env: Env): Promise<void> {
 	const isLocal: boolean = env.getData("isLocal", true);
