@@ -7,11 +7,13 @@ export class FunctionType extends PropertyAccessor {
 
 	private readonly _params: Param[];
 	private _retType: Type;
+	private readonly _generics: string[];
 
-	private constructor(params: Param[], retType: Type) {
+	private constructor(params: Param[], retType: Type, generics: string[]) {
 		super();
 		this._params = params;
 		this._retType = retType;
+		this._generics = generics;
 	}
 
 	public equals<T extends Type>(other: T): boolean {
@@ -62,8 +64,9 @@ export class FunctionType extends PropertyAccessor {
 
 	public override toString(): string {
 		return (
+			(this._generics.length === 0 ? "" : "<" + this._generics.join(", ") + "> ") +
 			"(" +
-			this.params.map((param) => param.pType.toString()).join(", ") +
+			this.params.map((param) => `${param.name}: ${param.pType.toString()}`).join(", ") +
 			") => " +
 			(this.retType === this ? "self" : this.retType.toString())
 		);
@@ -81,7 +84,7 @@ export class FunctionType extends PropertyAccessor {
 		this._retType = newType;
 	}
 
-	public static create(params: (Param | Type)[], retType: Type): FunctionType {
+	public static create(params: (Param | Type)[], retType: Type, generics: string[] = []): FunctionType {
 		return new FunctionType(
 			params.map((p) => {
 				if (p instanceof Type) {
@@ -95,6 +98,7 @@ export class FunctionType extends PropertyAccessor {
 				}
 			}),
 			retType,
+			generics,
 		);
 	}
 

@@ -31,8 +31,8 @@ export class AnyType extends PropertyAccessor {
 		return true;
 	}
 
-	public override getProperty(name: string): Type {
-		return AnyType.create();
+	public override getProperty(name: string): Property {
+		return { name, pType: AnyType.create() };
 	}
 
 	public override getBuiltins(): Property[] {

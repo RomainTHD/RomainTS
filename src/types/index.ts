@@ -2,6 +2,7 @@ export * from "./Type";
 
 export * from "./PropertyAccessor";
 
+export * from "./AliasType";
 export * from "./AnyType";
 export * from "./ArrayType";
 export * from "./BigIntType";

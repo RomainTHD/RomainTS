@@ -41,7 +41,7 @@ export class Env {
 
 	private readonly globals: Map<string, Value> = new Map();
 	private readonly scopes: Scope[] = [new Map()];
-	private readonly types: Map<string, Type> = new Map();
+	private readonly types: Map<string, Type>[] = [new Map()];
 	private readonly returnTypes: Type[] = [];
 	private readonly _config: EnvConfig;
 	private readonly _data: Map<keyof ChildData, unknown> = new Map();
@@ -61,10 +61,12 @@ export class Env {
 
 	public enterScope(): void {
 		this.scopes.push(new Map());
+		this.types.push(new Map());
 	}
 
 	public leaveScope(): void {
 		this.scopes.pop();
+		this.types.pop();
 	}
 
 	public lookup(name: string): Value | null {
@@ -85,8 +87,11 @@ export class Env {
 
 	public lookupType(name: string): Type | null {
 		assert(name, `Name is unset, value is '${name}'`);
-		if (this.types.has(name)) {
-			return this.types.get(name)!;
+		for (let i = this.types.length - 1; i >= 0; i--) {
+			const scope = this.types[i];
+			if (scope.has(name)) {
+				return scope.get(name)!;
+			}
 		}
 		return null;
 	}
@@ -97,7 +102,7 @@ export class Env {
 		assert(name, `Name is unset, value is '${name}'`);
 		assert(value, `Value is unset, value is '${value}'`);
 		assert(value.vType, `Type is unset, value is '${value.vType}'`);
-		assert(typeof value.vType === "object", `Type '${value.vType}' is not a Type`);
+		assert(value.vType instanceof Type, `Type '${value.vType}' is not a Type`);
 		assert(value.isLocal !== undefined, `isLocal is unset, value is '${value.isLocal}'`);
 		assert(value.isMutable !== undefined, `isMutable is unset, value is '${value.isMutable}'`);
 
@@ -119,11 +124,10 @@ export class Env {
 	public addType(name: string, t: Type): void {
 		assert(name, `Name is unset, value is '${name}'`);
 		assert(t, `Type is unset, value is '${t}'`);
-		assert(typeof t === "object", `Type '${t}' is not a Type`);
-		if (this.types.has(name)) {
-			Env.logger.warn(`Type '${name}' already exists, overwriting`);
-		}
-		this.types.set(name, t);
+		assert(t instanceof Type, `Type '${t}' is not a Type`);
+		assert(this.types.length > 0, "No scope to add to");
+		const scope = this.types[this.types.length - 1];
+		scope.set(name, t);
 	}
 
 	public print(): void {
@@ -156,9 +160,14 @@ export class Env {
 		Env.logger.unindent();
 
 		Env.logger.indent("Types:");
-		for (const [name, type] of this.types) {
-			Env.logger.debug(`${name}: ${type}`);
+
+		for (const scope of this.types) {
+			Env.logger.indent("New type scope:");
+			for (const [name, value] of scope) {
+				Env.logger.debug(`${name}: ${value}`);
+			}
 		}
+
 		Env.logger.unindent();
 
 		Env.logger.unindent();

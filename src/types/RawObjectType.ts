@@ -33,8 +33,8 @@ export class RawObjectType extends PropertyAccessor {
 		return false;
 	}
 
-	public override getProperty(name: string): Type {
-		return UndefinedType.create();
+	public override getProperty(name: string): Property {
+		return { name, pType: UndefinedType.create() };
 	}
 
 	public static create(): RawObjectType {

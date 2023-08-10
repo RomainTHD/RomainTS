@@ -1,6 +1,6 @@
 import type ts from "typescript";
 import { Env, TypeChecker } from "../..";
-import { AnyType, FunctionType, Type } from "../../../types";
+import { AliasType, AnyType, FunctionType, Type, UnknownType } from "../../../types";
 import { assert } from "../../../utils";
 import { ExpressionReturn } from "./expression";
 
@@ -10,6 +10,23 @@ export async function visitFunction(
 	nodeParams: ts.NodeArray<ts.ParameterDeclaration>,
 	nodeRetType: ts.TypeNode | undefined,
 ): Promise<{ fType: FunctionType; infer: boolean }> {
+	env.enterScope();
+
+	const genericsStr: string[] = [];
+
+	if (nodeGenerics) {
+		for (const generic of nodeGenerics) {
+			// TODO: Handle default, constraint, etc
+			const e: ExpressionReturn = await env.withChildData(
+				{ resolveIdentifier: false },
+				async () => await TypeChecker.accept(generic.name, env),
+			);
+			assert(e.identifier, "identifier is undefined");
+			env.addType(e.identifier!, AliasType.create(e.identifier!, UnknownType.create()));
+			genericsStr.push(e.identifier!);
+		}
+	}
+
 	const params: { name: string; pType: Type }[] = [];
 	for (const param of nodeParams) {
 		const e: ExpressionReturn = await env.withChildData(
@@ -42,5 +59,7 @@ export async function visitFunction(
 		infer = true;
 	}
 
-	return { fType: FunctionType.create(params, retType), infer };
+	env.leaveScope();
+
+	return { fType: FunctionType.create(params, retType, genericsStr), infer };
 }
