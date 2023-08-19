@@ -1,3 +1,3 @@
-import { ChildData } from "../../env";
+import { ChildData } from "../..";
 
 export type ExpressionReturn = ChildData["left"];

@@ -19,6 +19,7 @@ const logger = LoggerFactory.create("populate");
 
 /**
  * Ugly af but avoids thousands of lines of code
+ * FIXME: Will break interpreter, needs to be moved around
  */
 async function stringToType(t: string): Promise<Property> {
 	const ast = ts.createSourceFile("file.ts", `let ${t}`, ts.ScriptTarget.Latest, true);
@@ -29,7 +30,7 @@ async function stringToType(t: string): Promise<Property> {
 		logger.error(`Failed to parse type: ${t}`);
 		throw e;
 	}
-	const lastScope = env["scopes"][env["scopes"].length - 1];
+	const lastScope = env["_scopes"][env["_scopes"].length - 1];
 	const name = Array.from(lastScope.keys()).find((k) => k !== "this");
 	if (!name) {
 		throw new IllegalStateException("Could not find variable name");

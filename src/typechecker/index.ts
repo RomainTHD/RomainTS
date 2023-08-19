@@ -1,3 +1,7 @@
 export * from "./accept";
-export * from "./env";
+export * from "./envTypecheck";
 export * from "./TypecheckingFailure";
+
+import { EnvTypecheck } from "./envTypecheck";
+
+export { EnvTypecheck as Env };

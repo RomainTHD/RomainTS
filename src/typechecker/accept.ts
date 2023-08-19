@@ -1,9 +1,8 @@
 import ts from "typescript";
+import { Env, TypecheckingFailure } from ".";
 import { IllegalStateException } from "../utils/IllegalStateException";
 import { LoggerFactory } from "../utils/Logger";
 import { NotImplementedException } from "../utils/NotImplementedException";
-import { Env } from "./env";
-import { TypecheckingFailure } from "./TypecheckingFailure";
 
 export namespace TypeChecker {
 	function removeSyntaxKindDuplicates(): Record<number, string> {
