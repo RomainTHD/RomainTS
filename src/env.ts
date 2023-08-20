@@ -80,7 +80,6 @@ export abstract class BaseEnv<Value extends BaseValue, ChildData extends BaseChi
 		BaseEnv.logger.debug(`Config: ${JSON.stringify(this.config, null, 2)}`);
 
 		BaseEnv.logger.indent("Locals:");
-
 		for (const scope of this._scopes) {
 			BaseEnv.logger.indent("New scope:");
 			for (const [name, value] of scope) {
@@ -92,6 +91,7 @@ export abstract class BaseEnv<Value extends BaseValue, ChildData extends BaseChi
 		for (const scope of this._scopes) {
 			BaseEnv.logger.unindent();
 		}
+		BaseEnv.logger.unindent();
 
 		BaseEnv.logger.indent("Globals:");
 		for (const [name, value] of this._globals) {
@@ -105,6 +105,8 @@ export abstract class BaseEnv<Value extends BaseValue, ChildData extends BaseChi
 	protected printEnd(): void {
 		BaseEnv.logger.unindent();
 		BaseEnv.logger.debug("Env end");
+		BaseEnv.logger.unindent();
+		BaseEnv.logger.debug();
 	}
 
 	public print(): void {

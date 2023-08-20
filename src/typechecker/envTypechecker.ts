@@ -95,14 +95,15 @@ export class EnvTypechecker extends BaseEnv<Value, ChildData> {
 		super.printStart();
 
 		EnvTypechecker.logger.indent("Types:");
-
 		for (const scope of this._types) {
 			EnvTypechecker.logger.indent("New type scope:");
 			for (const [name, value] of scope) {
 				EnvTypechecker.logger.debug(`${name}: ${value}`);
 			}
 		}
-
+		for (const scope of this._types) {
+			EnvTypechecker.logger.unindent();
+		}
 		EnvTypechecker.logger.unindent();
 
 		super.printEnd();
