@@ -23,7 +23,7 @@ export type ChildData = BaseChildData & {
 	isMutable: boolean;
 };
 
-export class EnvTypecheck extends BaseEnv<Value, ChildData> {
+export class EnvTypechecker extends BaseEnv<Value, ChildData> {
 	// private static override logger = LoggerFactory.create("EnvTypecheck");
 
 	private readonly _types: Map<string, Type>[] = [new Map()];
@@ -34,8 +34,8 @@ export class EnvTypecheck extends BaseEnv<Value, ChildData> {
 		this.populateEnv();
 	}
 
-	public static create(config?: Partial<EnvConfig>): EnvTypecheck {
-		return new EnvTypecheck({
+	public static create(config?: Partial<EnvConfig>): EnvTypechecker {
+		return new EnvTypechecker({
 			allowUnreachableCode: config?.allowUnreachableCode ?? true,
 			noImplicitAny: config?.noImplicitAny ?? false,
 			strictMode: config?.strictMode ?? false,
@@ -94,16 +94,16 @@ export class EnvTypecheck extends BaseEnv<Value, ChildData> {
 	public override print(): void {
 		super.printStart();
 
-		EnvTypecheck.logger.indent("Types:");
+		EnvTypechecker.logger.indent("Types:");
 
 		for (const scope of this._types) {
-			EnvTypecheck.logger.indent("New type scope:");
+			EnvTypechecker.logger.indent("New type scope:");
 			for (const [name, value] of scope) {
-				EnvTypecheck.logger.debug(`${name}: ${value}`);
+				EnvTypechecker.logger.debug(`${name}: ${value}`);
 			}
 		}
 
-		EnvTypecheck.logger.unindent();
+		EnvTypechecker.logger.unindent();
 
 		super.printEnd();
 	}
