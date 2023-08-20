@@ -1,4 +1,4 @@
-import { BaseChildData, BaseEnv, BaseValue, EnvConfig } from "../env";
+import { BaseChildData, BaseEnv, BaseValue, EnvConfig, Stage } from "../env";
 import { NumberType, ObjectType, Type, UndefinedType } from "../types";
 import { assert } from "../utils";
 
@@ -30,7 +30,7 @@ export class EnvTypecheck extends BaseEnv<Value, ChildData> {
 	private readonly returnTypes: Type[] = [];
 
 	protected constructor(config: EnvConfig) {
-		super(config);
+		super(config, Stage.Typechecker);
 		this.populateEnv();
 	}
 

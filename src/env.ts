@@ -16,6 +16,11 @@ export type BaseValue = {
 
 export type BaseChildData = {};
 
+export enum Stage {
+	Typechecker,
+	Interpreter,
+}
+
 export abstract class BaseEnv<Value extends BaseValue, ChildData extends BaseChildData> {
 	private static readonly hideBuiltins = true;
 
@@ -24,10 +29,12 @@ export abstract class BaseEnv<Value extends BaseValue, ChildData extends BaseChi
 	private readonly _globals: Map<string, Value> = new Map();
 	private readonly _scopes: Map<string, Value>[] = [new Map()];
 	private readonly _config: EnvConfig;
+	private readonly _stage: Stage;
 	private readonly _data: Map<keyof ChildData, unknown> = new Map();
 
-	protected constructor(config: EnvConfig) {
+	protected constructor(config: EnvConfig, stage: Stage) {
 		this._config = config;
+		this._stage = stage;
 	}
 
 	public enterScope(): void {
@@ -68,7 +75,7 @@ export abstract class BaseEnv<Value extends BaseValue, ChildData extends BaseChi
 	protected printStart(): void {
 		BaseEnv.logger.debug();
 
-		BaseEnv.logger.indent("Env start");
+		BaseEnv.logger.indent(`Env start: ${Stage[this._stage]}`);
 
 		BaseEnv.logger.debug(`Config: ${JSON.stringify(this.config, null, 2)}`);
 
@@ -103,6 +110,10 @@ export abstract class BaseEnv<Value extends BaseValue, ChildData extends BaseChi
 	public print(): void {
 		this.printStart();
 		this.printEnd();
+	}
+
+	public get stage(): Stage {
+		return this._stage;
 	}
 
 	public get config(): Readonly<EnvConfig> {
