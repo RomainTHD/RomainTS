@@ -1,9 +1,10 @@
 import type ts from "typescript";
-import { StatementVisitor } from ".";
+import { type StatementVisitor } from ".";
 import { TypeChecker, TypecheckingFailure } from "../..";
 import { VoidType } from "../../../types";
+import { stringify } from "../../../utils";
 import { Bool3 } from "../../../utils/Bool3";
-import { ExpressionReturn } from "../shared/expression";
+import { type ExpressionReturn } from "../shared/expression";
 
 export const visit: StatementVisitor<ts.ReturnStatement> = async (node, env) => {
 	let t: ExpressionReturn;
@@ -19,7 +20,10 @@ export const visit: StatementVisitor<ts.ReturnStatement> = async (node, env) => 
 	}
 
 	if (!retType.contains(t.eType)) {
-		throw new TypecheckingFailure(`Cannot return type '${t}' from function with return type '${retType}'`, node);
+		throw new TypecheckingFailure(
+			`Cannot return type '${stringify(t)}' from function with return type '${retType}'`,
+			node,
+		);
 	}
 
 	return {

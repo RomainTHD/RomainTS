@@ -1,5 +1,5 @@
 import type ts from "typescript";
-import { TypeVisitor } from ".";
+import { type TypeVisitor } from ".";
 import { TypeChecker } from "../..";
 import { Type, UnionType } from "../../../types";
 

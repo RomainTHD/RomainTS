@@ -46,21 +46,20 @@ export abstract class PropertyAccessor extends Type {
 		return this.properties.some((m) => m.name === name);
 	}
 
-	public override hasOwnProperty(name: string): boolean {
-		// FIXME: Dubious method override, will be horrendous to trace related bugs (if any)
+	public hasItsOwnProperty(name: string): boolean {
 		return this.ownProperties.some((m) => m.name === name);
 	}
 
 	public getOwnProperty(name: string): Property {
 		const prop = this.ownProperties.find((m) => m.name === name);
 		assert(prop, `Property with name '${name}' does not exist in object type`);
-		return prop!;
+		return prop;
 	}
 
 	public getProperty(name: string): Property {
 		const prop = this.properties.find((m) => m.name === name);
 		assert(prop, `Property with name '${name}' does not exist in object type`);
-		return prop!;
+		return prop;
 	}
 
 	public get properties(): Property[] {
@@ -73,7 +72,7 @@ export abstract class PropertyAccessor extends Type {
 
 	public abstract getBuiltins(): Property[];
 
-	public static setBuiltins(properties: Property[]): void {
+	public static setBuiltins(_properties: Property[]): void {
 		// Should be overridden by subclasses
 		throw new NotImplementedException();
 	}

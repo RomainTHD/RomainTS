@@ -2,7 +2,7 @@ import type ts from "typescript";
 import { Env, TypeChecker } from "../..";
 import { AnyType, Property, Type } from "../../../types";
 import { assert } from "../../../utils";
-import { ExpressionReturn } from "../shared/expression";
+import { type ExpressionReturn } from "../shared/expression";
 
 export const visit = async (node: ts.PropertySignature, env: Env): Promise<Property> => {
 	let pType: Type;
@@ -17,7 +17,7 @@ export const visit = async (node: ts.PropertySignature, env: Env): Promise<Prope
 		async () => await TypeChecker.accept(node.name, env),
 	);
 	assert(e.identifier !== undefined, "identifier is undefined");
-	const name = e.identifier!;
+	const name = e.identifier;
 
 	return { name, pType };
 };

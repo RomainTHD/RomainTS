@@ -1,6 +1,6 @@
 import type ts from "typescript";
-import { Env } from "../..";
-import { ExpressionReturn } from "../shared/expression";
+import { type Env } from "../..";
+import { type ExpressionReturn } from "../shared/expression";
 
 export type LiteralVisitor<T extends ts.PrimaryExpression> = (
 	node: T,

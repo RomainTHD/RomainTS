@@ -1,6 +1,9 @@
-import { Property, PropertyAccessor, Type } from ".";
+import { type Property, PropertyAccessor, Type } from ".";
 
-type Param = { name: string; pType: Type };
+interface Param {
+	name: string;
+	pType: Type;
+}
 
 export class FunctionType extends PropertyAccessor {
 	private static builtins: Property[] = [];
@@ -16,7 +19,7 @@ export class FunctionType extends PropertyAccessor {
 		this._generics = generics;
 	}
 
-	public equals<T extends Type>(other: T): boolean {
+	public override equals<T extends Type>(other: T): boolean {
 		if (!(other instanceof FunctionType)) {
 			return false;
 		}
@@ -34,7 +37,7 @@ export class FunctionType extends PropertyAccessor {
 		return this.retType.equals(other.retType);
 	}
 
-	public contains<T extends Type>(other: T): boolean {
+	public override contains<T extends Type>(other: T): boolean {
 		if (!(other instanceof FunctionType)) {
 			return false;
 		}
@@ -63,13 +66,10 @@ export class FunctionType extends PropertyAccessor {
 	}
 
 	public override toString(): string {
-		return (
-			(this._generics.length === 0 ? "" : "<" + this._generics.join(", ") + "> ") +
-			"(" +
-			this.params.map((param) => `${param.name}: ${param.pType.toString()}`).join(", ") +
-			") => " +
-			(this.retType === this ? "self" : this.retType.toString())
-		);
+		const generics = this._generics.length === 0 ? "" : `<${this._generics.join(", ")}> `;
+		const params = this.params.map((param) => `${param.name}: ${param.pType.toString()}`).join(", ");
+		const ret = this.retType === this ? "self" : this.retType.toString();
+		return `${generics}(${params}) => ${ret}`;
 	}
 
 	public get params(): Param[] {

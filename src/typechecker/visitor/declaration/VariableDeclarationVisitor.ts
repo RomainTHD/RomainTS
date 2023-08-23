@@ -1,19 +1,19 @@
 import type ts from "typescript";
-import { Env, TypeChecker, TypecheckingFailure } from "../..";
-import { AnyType, LiteralType, Type } from "../../../types";
+import { type Env, TypeChecker, TypecheckingFailure } from "../..";
+import { AnyType, LiteralType, type Type } from "../../../types";
 import { assert } from "../../../utils";
-import { ExpressionReturn } from "../shared/expression";
+import { type ExpressionReturn } from "../shared/expression";
 
 export async function visit(node: ts.VariableDeclaration, env: Env): Promise<void> {
 	const isLocal: boolean = env.getData("isLocal", true);
 	const isMutable: boolean = env.getData("isMutable", true);
 
-	const e: ExpressionReturn = await env.withChildData(
+	const eId: ExpressionReturn = await env.withChildData(
 		{ resolveIdentifier: false },
 		async () => await TypeChecker.accept(node.name, env),
 	);
-	assert(e.identifier !== undefined, "identifier is undefined");
-	const name = e.identifier!;
+	assert(eId.identifier !== undefined, "identifier is undefined");
+	const name = eId.identifier;
 
 	let vType: Type | null = null;
 	if (node.type) {
@@ -31,7 +31,7 @@ export async function visit(node: ts.VariableDeclaration, env: Env): Promise<voi
 			vType = AnyType.create();
 		}
 	} else {
-		let e: ExpressionReturn = await TypeChecker.accept(node.initializer, env);
+		const e: ExpressionReturn = await TypeChecker.accept(node.initializer, env);
 		const exprType = e.eType;
 
 		if (vType) {
@@ -39,14 +39,12 @@ export async function visit(node: ts.VariableDeclaration, env: Env): Promise<voi
 			if (!vType.contains(exprType)) {
 				throw new TypecheckingFailure(`Type '${exprType}' is not assignable to type '${vType}'`, node);
 			}
+		} else if (isMutable && exprType instanceof LiteralType) {
+			// `let x = 0`: `x` should be a `number`
+			vType = exprType.literal.vType;
 		} else {
-			if (isMutable && exprType instanceof LiteralType) {
-				// `let x = 0`: `x` should be a `number`
-				vType = exprType.literal.vType;
-			} else {
-				// `let x = ...`
-				vType = exprType;
-			}
+			// `let x = ...`
+			vType = exprType;
 		}
 	}
 

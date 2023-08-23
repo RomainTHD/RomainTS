@@ -1,5 +1,5 @@
 import type ts from "typescript";
-import { Env, Interpreter } from "../..";
+import { type Env, Interpreter } from "../..";
 
 export async function visit(node: ts.SourceFile, env: Env): Promise<void> {
 	for (const [i, stmt] of node.statements.entries()) {

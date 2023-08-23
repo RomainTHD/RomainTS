@@ -1,20 +1,20 @@
 import { assert, throwError } from "./utils";
 import { LoggerFactory } from "./utils/Logger";
 
-export type EnvConfig = {
+export interface EnvConfig {
 	allowUnreachableCode: boolean;
 	noImplicitAny: boolean;
 	strictMode: boolean;
-};
+}
 
-export type BaseValue = {
+export interface BaseValue {
 	isLocal: boolean;
 	isMutable: boolean;
 	isFromCurrentScope: boolean;
 	builtin: boolean;
-};
+}
 
-export type BaseChildData = {};
+export interface BaseChildData {}
 
 export enum Stage {
 	Typechecker,
@@ -26,11 +26,11 @@ export abstract class BaseEnv<Value extends BaseValue, ChildData extends BaseChi
 
 	protected static logger = LoggerFactory.create("Env");
 
-	private readonly _globals: Map<string, Value> = new Map();
-	private readonly _scopes: Map<string, Value>[] = [new Map()];
+	private readonly _globals: Map<string, Value> = new Map<string, Value>();
+	private readonly _scopes: Map<string, Value>[] = [new Map<string, Value>()];
 	private readonly _config: EnvConfig;
 	private readonly _stage: Stage;
-	private readonly _data: Map<keyof ChildData, unknown> = new Map();
+	private readonly _data: Map<keyof ChildData, unknown> = new Map<keyof ChildData, unknown>();
 
 	protected constructor(config: EnvConfig, stage: Stage) {
 		this._config = config;
@@ -48,12 +48,12 @@ export abstract class BaseEnv<Value extends BaseValue, ChildData extends BaseChi
 	public lookup(name: string): Value | null {
 		assert(name, `Name is unset, value is '${name}'`);
 		if (this._globals.has(name)) {
-			return this._globals.get(name)!;
+			return this._globals.get(name) ?? null;
 		}
 		for (let i = this._scopes.length - 1; i >= 0; i--) {
 			const scope = this._scopes[i];
 			if (scope.has(name)) {
-				const v = scope.get(name)!;
+				const v = scope.get(name) ?? throwError(`Scope has name '${name}' but value is null`);
 				v.isFromCurrentScope = i === this._scopes.length - 1;
 				return v;
 			}
@@ -88,9 +88,9 @@ export abstract class BaseEnv<Value extends BaseValue, ChildData extends BaseChi
 				}
 			}
 		}
-		for (const scope of this._scopes) {
+		this._scopes.forEach(() => {
 			BaseEnv.logger.unindent();
-		}
+		});
 		BaseEnv.logger.unindent();
 
 		BaseEnv.logger.indent("Globals:");
@@ -127,7 +127,7 @@ export abstract class BaseEnv<Value extends BaseValue, ChildData extends BaseChi
 	}
 
 	public async withChildData<T>(data: Partial<ChildData>, execute: () => T | Promise<T>): Promise<T> {
-		let previous: Map<string, unknown> = new Map();
+		const previous: Map<string, unknown> = new Map<string, unknown>();
 		Object.entries(data).forEach(([k0, v]) => {
 			const k = k0 as keyof ChildData;
 			if (this._data.has(k)) {

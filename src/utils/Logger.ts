@@ -1,7 +1,7 @@
 import chalk from "chalk";
 import * as console from "console";
 
-export module LoggerFactory {
+export namespace LoggerFactory {
 	let _ownConsole = console;
 
 	export enum Level {

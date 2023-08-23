@@ -1,5 +1,4 @@
-import type { Property, Type } from ".";
-import { PropertyAccessor, UnionType } from ".";
+import { type Property, PropertyAccessor, type Type, UnionType } from ".";
 
 export class ArrayType extends PropertyAccessor {
 	private static builtins: Property[] = [];
@@ -15,7 +14,7 @@ export class ArrayType extends PropertyAccessor {
 		return this._baseType;
 	}
 
-	public equals<T extends Type>(other: T): boolean {
+	public override equals<T extends Type>(other: T): boolean {
 		if (!(other instanceof ArrayType)) {
 			return false;
 		}
@@ -23,7 +22,7 @@ export class ArrayType extends PropertyAccessor {
 		return this.baseType.equals(other.baseType);
 	}
 
-	public contains<T extends Type>(other: T): boolean {
+	public override contains<T extends Type>(other: T): boolean {
 		if (!(other instanceof ArrayType)) {
 			return false;
 		}

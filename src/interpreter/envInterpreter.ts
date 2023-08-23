@@ -1,8 +1,8 @@
-import { BaseChildData, BaseEnv, BaseValue, EnvConfig, Stage } from "../env";
+import { type BaseChildData, BaseEnv, type BaseValue, type EnvConfig, Stage } from "../env";
 
-type Value = BaseValue;
+interface Value extends BaseValue {}
 
-type ChildData = BaseChildData;
+interface ChildData extends BaseChildData {}
 
 export class EnvInterpreter extends BaseEnv<Value, ChildData> {
 	protected constructor(config: EnvConfig) {

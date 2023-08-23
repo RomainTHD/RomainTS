@@ -1,7 +1,7 @@
-import ts from "typescript";
-import { ExpressionVisitor } from ".";
+import type ts from "typescript";
+import { type ExpressionVisitor } from ".";
 import { TypeChecker } from "../..";
-import { ExpressionReturn } from "../shared/expression";
+import { type ExpressionReturn } from "../shared/expression";
 
 export const visit: ExpressionVisitor<ts.BinaryExpression> = async (node, env) => {
 	// A BinaryExpression left expression can be either a LValue or a RValue.

@@ -1,5 +1,4 @@
-import type { Property, Type } from ".";
-import { PropertyAccessor, UndefinedType } from ".";
+import { type Property, PropertyAccessor, type Type, UndefinedType } from ".";
 
 export class RawObjectType extends PropertyAccessor {
 	private static readonly instance: RawObjectType = new RawObjectType();
@@ -25,11 +24,11 @@ export class RawObjectType extends PropertyAccessor {
 		return "object";
 	}
 
-	public override add(member: Property): void {}
+	public override add(_member: Property): void {}
 
-	public override addAll(...members: Property[]): void {}
+	public override addAll(..._members: Property[]): void {}
 
-	public override hasProperty(name: string): boolean {
+	public override hasProperty(_name: string): boolean {
 		return false;
 	}
 

@@ -13,14 +13,14 @@ export class LiteralType extends Type {
 		this._literal = literal;
 	}
 
-	public equals<T extends Type>(other: T): boolean {
+	public override equals<T extends Type>(other: T): boolean {
 		if (other instanceof LiteralType) {
 			return this.literal.value === other.literal.value;
 		}
 		return false;
 	}
 
-	public contains<T extends Type>(other: T): boolean {
+	public override contains<T extends Type>(other: T): boolean {
 		return this.equals(other);
 	}
 

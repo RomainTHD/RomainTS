@@ -1,7 +1,7 @@
 import type ts from "typescript";
-import { Env, TypecheckingFailure } from "../..";
-import { Type, UndefinedType } from "../../../types";
-import { ExpressionReturn } from "../shared/expression";
+import { type Env, TypecheckingFailure } from "../..";
+import { type Type, UndefinedType } from "../../../types";
+import { type ExpressionReturn } from "../shared/expression";
 
 export async function visit(node: ts.Identifier, env: Env): Promise<ExpressionReturn> {
 	// Note that `undefined` is also an identifier
@@ -16,7 +16,7 @@ export async function visit(node: ts.Identifier, env: Env): Promise<ExpressionRe
 
 	let t: Type;
 
-	let isMutable: boolean | undefined = undefined;
+	let isMutable: boolean | undefined;
 	const value = env.lookup(node.text);
 
 	if (!resolveIdentifier) {
@@ -25,26 +25,18 @@ export async function visit(node: ts.Identifier, env: Env): Promise<ExpressionRe
 		if (value) {
 			isMutable = value.isMutable;
 		}
+	} else if (value) {
+		// The identifier exists in the scope
+		t = value.vType;
+	} else if (isPropertyAccess) {
+		// `x.y`, where `y` doesn't exist in `x`
+		t = UndefinedType.create();
+	} else if (env.lookupType(node.text)) {
+		// `I + 0`, where `I` is a type
+		throw new TypecheckingFailure(`Identifier '${node.text}' is a type but is incorrectly used as a value`, node);
 	} else {
-		// `x + 0`, where `x` is a RValue
-		if (value) {
-			// The identifier exists in the scope
-			t = value.vType;
-		} else {
-			if (isPropertyAccess) {
-				// `x.y`, where `y` doesn't exist in `x`
-				t = UndefinedType.create();
-			} else if (env.lookupType(node.text)) {
-				// `I + 0`, where `I` is a type
-				throw new TypecheckingFailure(
-					`Identifier '${node.text}' is a type but is incorrectly used as a value`,
-					node,
-				);
-			} else {
-				// `x + 0`, where `x` doesn't exist
-				throw new TypecheckingFailure(`Identifier '${node.text}' not found in scope`, node);
-			}
-		}
+		// `x + 0`, where `x` doesn't exist
+		throw new TypecheckingFailure(`Identifier '${node.text}' not found in scope`, node);
 	}
 
 	return {

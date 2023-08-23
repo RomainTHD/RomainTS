@@ -1,6 +1,17 @@
 import ts from "typescript";
-import { Env, TypeChecker, TypecheckingFailure } from "../..";
+import { type Env, TypeChecker, TypecheckingFailure } from "../..";
 import { IllegalStateException } from "../../../utils/IllegalStateException";
+
+function flagsToString(flags: ts.NodeFlags): string {
+	return flags
+		.toString(2)
+		.split("")
+		.reverse()
+		.map((x, i) => (x === "1" ? i : -1))
+		.filter((b) => b !== -1)
+		.map((b) => ts.NodeFlags[2 ** b])
+		.join(", ");
+}
 
 export async function visit(node: ts.VariableDeclarationList, env: Env): Promise<void> {
 	const data = (() => {
@@ -30,16 +41,9 @@ export async function visit(node: ts.VariableDeclarationList, env: Env): Promise
 					throw new TypecheckingFailure("Expression expected", node);
 				}
 
-				const flags = node.flags
-					.toString(2)
-					.split("")
-					.reverse()
-					.map((x, i) => (x === "1" ? i : -1))
-					.filter((b) => b !== -1)
-					.map((b) => ts.NodeFlags[2 ** b])
-					.join(", ");
-
-				throw new IllegalStateException(`Unexpected variable declaration list flags: ${flags}`);
+				throw new IllegalStateException(
+					`Unexpected variable declaration list flags: ${flagsToString(node.flags)}`,
+				);
 		}
 	})();
 

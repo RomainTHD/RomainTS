@@ -1,10 +1,10 @@
 import ts from "typescript";
-import { ExpressionVisitor } from ".";
+import { type ExpressionVisitor } from ".";
 import { TypeChecker, TypecheckingFailure } from "../..";
 import { BigIntType, BooleanType, NumberType } from "../../../types";
 import { IllegalStateException } from "../../../utils/IllegalStateException";
 import { NotImplementedException } from "../../../utils/NotImplementedException";
-import { ExpressionReturn } from "../shared/expression";
+import { type ExpressionReturn } from "../shared/expression";
 
 export const visit: ExpressionVisitor<ts.PrefixUnaryExpression> = async (node, env) => {
 	const e: ExpressionReturn = await TypeChecker.accept(node.operand, env);
@@ -17,7 +17,7 @@ export const visit: ExpressionVisitor<ts.PrefixUnaryExpression> = async (node, e
 
 		case ts.SyntaxKind.PlusToken:
 			if (BigIntType.create().equals(t)) {
-				throw new TypecheckingFailure(`Cannot use prefix unary operator on BigInt`, node);
+				throw new TypecheckingFailure("Cannot use prefix unary operator on BigInt", node);
 			} else {
 				return { eType: NumberType.create() };
 			}

@@ -7,11 +7,11 @@ program.option("--typecheck-only", "Only typecheck the program", false);
 program.option("--execute-only", "Only execute the program", false);
 program.parse();
 
-export module CLI {
+export namespace CLI {
 	const options = program.opts();
 	const logger = LoggerFactory.create("CLI");
 
-	export function getInputContent(): string {
+	export function getInputContent(): string | never {
 		try {
 			return fs.readFileSync(options["input"], "utf8");
 		} catch (e: unknown) {

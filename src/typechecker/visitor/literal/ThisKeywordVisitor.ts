@@ -1,5 +1,5 @@
-import ts from "typescript";
-import { LiteralVisitor } from ".";
+import type ts from "typescript";
+import { type LiteralVisitor } from ".";
 import { IllegalStateException } from "../../../utils/IllegalStateException";
 
 export const visit: LiteralVisitor<ts.ThisExpression> = (node, env) => {

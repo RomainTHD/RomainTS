@@ -1,5 +1,5 @@
 import type ts from "typescript";
-import { ExpressionVisitor } from ".";
+import { type ExpressionVisitor } from ".";
 import { TypeChecker } from "../..";
 
 export const visit: ExpressionVisitor<ts.ParenthesizedExpression> = async (node, env) => {

@@ -1,3 +1,5 @@
+import { isPopulated, populate } from "./populate";
+
 export * from "./Type";
 
 export * from "./PropertyAccessor";
@@ -19,8 +21,6 @@ export * from "./UndefinedType";
 export * from "./UnionType";
 export * from "./UnknownType";
 export * from "./VoidType";
-
-import { isPopulated, populate } from "./populate";
 
 export async function initTypes(): Promise<void> {
 	if (!isPopulated()) {

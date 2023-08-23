@@ -1,11 +1,11 @@
 import type ts from "typescript";
-import { Env, TypeChecker, TypecheckingFailure } from "../..";
+import { type Env, TypeChecker, TypecheckingFailure } from "../..";
 import { AnyType, ArrayType, NumberType, UndefinedType, VoidType } from "../../../types";
 import { Bool3 } from "../../../utils/Bool3";
 import { LoggerFactory } from "../../../utils/Logger";
-import { ExpressionReturn } from "../shared/expression";
+import { type ExpressionReturn } from "../shared/expression";
 import { visitFunction } from "../shared/function";
-import { StatementReturn } from "../statement";
+import { type StatementReturn } from "../statement";
 
 const logger = LoggerFactory.create("FunctionExpressionVisitor");
 
@@ -19,7 +19,7 @@ export async function visit(node: ts.FunctionExpression, env: Env): Promise<Expr
 	env.add("this", { vType: fType, isLocal: true, isMutable: true });
 	env.add("arguments", { vType: ArrayType.create(NumberType.create()), isLocal: true, isMutable: true });
 
-	const paramsAlreadyDeclared: Set<string> = new Set();
+	const paramsAlreadyDeclared: Set<string> = new Set<string>();
 
 	for (const param of fType.params) {
 		if (paramsAlreadyDeclared.has(param.name)) {

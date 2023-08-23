@@ -1,5 +1,5 @@
 import ts from "typescript";
-import { BaseEnv, Stage } from "../env";
+import { type BaseEnv, Stage } from "../env";
 import { LoggerFactory } from "./Logger";
 import { NotImplementedException } from "./NotImplementedException";
 import Logger = LoggerFactory.Logger;
@@ -23,7 +23,11 @@ export function sanitizeSyntaxKind(kind: ts.SyntaxKind): string {
 }
 
 export function getVisitorPath(kind: string, kindEnum: ts.SyntaxKind): string {
-	type SorterInfo = { dir: string; name?: ts.SyntaxKind; suffix?: string };
+	interface SorterInfo {
+		dir: string;
+		name?: ts.SyntaxKind;
+		suffix?: string;
+	}
 
 	const sorter: SorterInfo[] = [
 		{ name: ts.SyntaxKind.TypeReference, dir: "type" },

@@ -1,4 +1,4 @@
-import { LiteralType, Property, PropertyAccessor, Type } from ".";
+import { LiteralType, type Property, PropertyAccessor, type Type } from ".";
 
 export class StringType extends PropertyAccessor {
 	private static readonly instance: StringType = new StringType();

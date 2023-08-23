@@ -1,9 +1,9 @@
 import type ts from "typescript";
-import { ExpressionVisitor } from ".";
+import { type ExpressionVisitor } from ".";
 import { TypeChecker, TypecheckingFailure } from "../..";
 import { PropertyAccessor, UndefinedType } from "../../../types";
-import { assert } from "../../../utils";
-import { ExpressionReturn } from "../shared/expression";
+import { assert, stringify } from "../../../utils";
+import { type ExpressionReturn } from "../shared/expression";
 
 export const visit: ExpressionVisitor<ts.PropertyAccessExpression> = async (node, env) => {
 	const expr: ExpressionReturn = await TypeChecker.accept(node.expression, env);
@@ -13,10 +13,10 @@ export const visit: ExpressionVisitor<ts.PropertyAccessExpression> = async (node
 		async () => await TypeChecker.accept(node.name, env),
 	);
 	assert(e.identifier !== undefined, "identifier is undefined");
-	const prop = e.identifier!;
+	const prop = e.identifier;
 
 	if (!(expr.eType instanceof PropertyAccessor)) {
-		throw new TypecheckingFailure(`Property access on non-object type '${expr}'`, node);
+		throw new TypecheckingFailure(`Property access on non-object type '${stringify(expr)}'`, node);
 	}
 
 	if (expr.eType.hasProperty(prop)) {
@@ -24,7 +24,7 @@ export const visit: ExpressionVisitor<ts.PropertyAccessExpression> = async (node
 	}
 
 	if (env.config.strictMode) {
-		throw new TypecheckingFailure(`Property '${prop}' does not exist on type '${expr}'`, node);
+		throw new TypecheckingFailure(`Property '${prop}' does not exist on type '${stringify(expr)}'`, node);
 	} else {
 		return { eType: UndefinedType.create() };
 	}

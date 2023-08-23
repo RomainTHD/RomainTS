@@ -1,8 +1,8 @@
-import ts from "typescript";
-import { TypeVisitor } from ".";
+import type ts from "typescript";
+import { type TypeVisitor } from ".";
 import { TypeChecker, TypecheckingFailure } from "../..";
 import { assert } from "../../../utils";
-import { ExpressionReturn } from "../shared/expression";
+import { type ExpressionReturn } from "../shared/expression";
 
 export const visit: TypeVisitor<ts.TypeReferenceNode> = async (node, env) => {
 	const e: ExpressionReturn = await env.withChildData(
@@ -10,7 +10,7 @@ export const visit: TypeVisitor<ts.TypeReferenceNode> = async (node, env) => {
 		async () => await TypeChecker.accept(node.typeName, env),
 	);
 	assert(e.identifier !== undefined, "identifier is undefined");
-	const name = e.identifier!;
+	const name = e.identifier;
 
 	const t = env.lookupType(name);
 	if (!t) {

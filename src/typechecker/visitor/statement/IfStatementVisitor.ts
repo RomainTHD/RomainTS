@@ -1,5 +1,5 @@
 import ts from "typescript";
-import { StatementReturn, StatementVisitor } from ".";
+import { type StatementReturn, type StatementVisitor } from ".";
 import { TypeChecker, TypecheckingFailure } from "../..";
 import { UnionType } from "../../../types";
 import { Bool3 } from "../../../utils/Bool3";

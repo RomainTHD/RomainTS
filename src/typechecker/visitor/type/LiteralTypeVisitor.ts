@@ -1,7 +1,7 @@
 import type ts from "typescript";
-import { TypeVisitor } from ".";
+import { type TypeVisitor } from ".";
 import { TypeChecker } from "../..";
-import { ExpressionReturn } from "../shared/expression";
+import { type ExpressionReturn } from "../shared/expression";
 
 // Note that this visitor is also called when using `null` as a type
 

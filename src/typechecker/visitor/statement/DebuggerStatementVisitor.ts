@@ -1,5 +1,5 @@
 import type ts from "typescript";
-import { StatementVisitor } from ".";
+import { type StatementVisitor } from ".";
 import { VoidType } from "../../../types";
 import { Bool3 } from "../../../utils/Bool3";
 

@@ -1,10 +1,10 @@
 import type ts from "typescript";
-import { Env, TypeChecker, TypecheckingFailure } from "../..";
+import { type Env, TypeChecker, TypecheckingFailure } from "../..";
 import { AnyType, UndefinedType, VoidType } from "../../../types";
 import { Bool3 } from "../../../utils/Bool3";
-import { ExpressionReturn } from "../shared/expression";
+import { type ExpressionReturn } from "../shared/expression";
 import { visitFunction } from "../shared/function";
-import { StatementReturn } from "../statement";
+import { type StatementReturn } from "../statement";
 
 export async function visit(node: ts.ArrowFunction, env: Env): Promise<ExpressionReturn> {
 	const { fType, infer } = await visitFunction(env, node.typeParameters, node.parameters, node.type);
@@ -12,7 +12,7 @@ export async function visit(node: ts.ArrowFunction, env: Env): Promise<Expressio
 	env.enterScope();
 	env.pushReturnType(fType.retType);
 
-	const paramsAlreadyDeclared: Set<string> = new Set();
+	const paramsAlreadyDeclared: Set<string> = new Set<string>();
 
 	for (const param of fType.params) {
 		if (paramsAlreadyDeclared.has(param.name)) {
@@ -23,7 +23,7 @@ export async function visit(node: ts.ArrowFunction, env: Env): Promise<Expressio
 	}
 
 	let retData: StatementReturn;
-	let bodyData: StatementReturn | ExpressionReturn = await TypeChecker.accept(node.body, env);
+	const bodyData: StatementReturn | ExpressionReturn = await TypeChecker.accept(node.body, env);
 	if (bodyData.hasOwnProperty("eType")) {
 		// If the body is an expression, then it's an implicit return
 		retData = {

@@ -1,3 +1,3 @@
-import { ChildData } from "../..";
+import { type ChildData } from "../..";
 
 export type ExpressionReturn = ChildData["left"];

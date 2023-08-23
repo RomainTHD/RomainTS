@@ -1,4 +1,4 @@
-import { Property, PropertyAccessor, Type } from ".";
+import { type Property, PropertyAccessor, type Type } from ".";
 
 export class BigIntType extends PropertyAccessor {
 	private static readonly instance: BigIntType = new BigIntType();
@@ -8,11 +8,11 @@ export class BigIntType extends PropertyAccessor {
 		super();
 	}
 
-	public contains<T extends Type>(other: T): boolean {
+	public override contains<T extends Type>(other: T): boolean {
 		return other instanceof BigIntType;
 	}
 
-	public equals<T extends Type>(other: T): boolean {
+	public override equals<T extends Type>(other: T): boolean {
 		return other instanceof BigIntType;
 	}
 

@@ -10,16 +10,16 @@ export class AliasType extends Type {
 		this._alias = aliasType;
 	}
 
-	public equals<T extends Type>(other: T): boolean {
+	public override equals<T extends Type>(_other: T): boolean {
 		// FIXME: Complete this
 		return false;
 	}
 
-	public contains<T extends Type>(other: T): boolean {
+	public override contains<T extends Type>(other: T): boolean {
 		return this._alias.contains(other);
 	}
 
-	public generalize(): Type {
+	public override generalize(): Type {
 		return new AliasType(this._label, this._alias.generalize());
 	}
 

@@ -1,19 +1,19 @@
-import { BaseChildData, BaseEnv, BaseValue, EnvConfig, Stage } from "../env";
+import { type BaseChildData, BaseEnv, type BaseValue, type EnvConfig, Stage } from "../env";
 import { NumberType, ObjectType, Type, UndefinedType } from "../types";
-import { assert } from "../utils";
+import { assert, type AtLeast, stringify, throwError } from "../utils";
 
-type Value = BaseValue & {
+interface Value extends BaseValue {
 	vType: Type;
-};
+}
 
-type LeftRightData = {
+interface LeftRightData {
 	eType: Type;
 	isFromVariable?: boolean;
 	isMutable?: boolean;
 	identifier?: string;
-};
+}
 
-export type ChildData = BaseChildData & {
+export interface ChildData extends BaseChildData {
 	resolveIdentifier: boolean;
 	isPropertyAccess: boolean;
 	isFirstStatement: boolean;
@@ -21,7 +21,7 @@ export type ChildData = BaseChildData & {
 	right: LeftRightData;
 	isLocal: boolean;
 	isMutable: boolean;
-};
+}
 
 export class EnvTypechecker extends BaseEnv<Value, ChildData> {
 	// private static override logger = LoggerFactory.create("EnvTypecheck");
@@ -54,10 +54,10 @@ export class EnvTypechecker extends BaseEnv<Value, ChildData> {
 
 	public lookupType(name: string): Type | null {
 		assert(name, `Name is unset, value is '${name}'`);
-		for (let i = this._types.length - 1; i >= 0; i--) {
+		for (let i = this._types.length - 1; i >= 0; --i) {
 			const scope = this._types[i];
 			if (scope.has(name)) {
-				return scope.get(name)!;
+				return scope.get(name) ?? throwError(`Type '${name}' is not in scope`);
 			}
 		}
 		return null;
@@ -65,16 +65,16 @@ export class EnvTypechecker extends BaseEnv<Value, ChildData> {
 
 	public override add(name: string, value: Partial<Value>): void {
 		assert(name, `Name is unset, value is '${name}'`);
-		assert(value, `Value is unset, value is '${value}'`);
+		assert(value, `Value is unset, value is '${stringify(value)}'`);
 		assert(value.vType, `Type is unset, value is '${value.vType}'`);
 		assert(value.vType instanceof Type, `Type '${value.vType}' is not a Type`);
 		assert(value.isLocal !== undefined, `isLocal is unset, value is '${value.isLocal}'`);
 		assert(value.isMutable !== undefined, `isMutable is unset, value is '${value.isMutable}'`);
 
 		const valueSafe: Value = {
-			vType: value.vType!,
-			isLocal: value.isLocal!,
-			isMutable: value.isMutable!,
+			vType: value.vType,
+			isLocal: value.isLocal,
+			isMutable: value.isMutable,
 			builtin: value.builtin ?? false,
 			isFromCurrentScope: value.isFromCurrentScope ?? false,
 		};
@@ -85,10 +85,10 @@ export class EnvTypechecker extends BaseEnv<Value, ChildData> {
 	public addType(name: string, t: Type | unknown): void {
 		assert(name, `Name is unset, value is '${name}'`);
 		assert(t, `Type is unset, value is '${t}'`);
-		assert(t instanceof Type, `Type '${t}' is not a Type`);
+		assert(t instanceof Type, `Type '${JSON.stringify(t)}' is not a Type`);
 		assert(this._types.length > 0, "No scope to add to");
 		const typeScope = this._types[this._types.length - 1];
-		typeScope.set(name, t as Type);
+		typeScope.set(name, t);
 	}
 
 	public override print(): void {
@@ -101,9 +101,9 @@ export class EnvTypechecker extends BaseEnv<Value, ChildData> {
 				EnvTypechecker.logger.debug(`${name}: ${value}`);
 			}
 		}
-		for (const scope of this._types) {
+		this._types.forEach(() => {
 			EnvTypechecker.logger.unindent();
-		}
+		});
 		EnvTypechecker.logger.unindent();
 
 		super.printEnd();
@@ -124,8 +124,12 @@ export class EnvTypechecker extends BaseEnv<Value, ChildData> {
 		return this.returnTypes[this.returnTypes.length - 1];
 	}
 
+	public override valueToString(value: Value): string {
+		return value.vType.toString();
+	}
+
 	private populateEnv(): void {
-		const globals: { name: string; value: Partial<Value> }[] = [
+		const globals: { name: string; value: AtLeast<Value, "vType"> }[] = [
 			{
 				name: "undefined",
 				value: { vType: UndefinedType.create(), isLocal: false, isMutable: false, builtin: true },
@@ -147,7 +151,7 @@ export class EnvTypechecker extends BaseEnv<Value, ChildData> {
 		const globalThis = ObjectType.create(
 			globals.map((g) => ({
 				name: g.name,
-				pType: g.value.vType!,
+				pType: g.value.vType,
 			})),
 		);
 
@@ -159,9 +163,5 @@ export class EnvTypechecker extends BaseEnv<Value, ChildData> {
 
 		this.add("this", { vType: globalThis, isLocal: true, isMutable: true, builtin: true });
 		globalThis.add({ name: "this", pType: globalThis });
-	}
-
-	public override valueToString(value: Value): string {
-		return value.vType.toString();
 	}
 }

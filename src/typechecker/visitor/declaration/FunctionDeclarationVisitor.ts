@@ -1,24 +1,25 @@
 import type ts from "typescript";
-import { Env, TypeChecker, TypecheckingFailure } from "../..";
-import { AnyType, Type, UndefinedType, UnionType, VoidType } from "../../../types";
+import { type Env, TypeChecker, TypecheckingFailure } from "../..";
+import { AnyType, type Type, UndefinedType, UnionType, VoidType } from "../../../types";
 import { assert } from "../../../utils";
 import { Bool3 } from "../../../utils/Bool3";
 import { NotImplementedException } from "../../../utils/NotImplementedException";
-import { ExpressionReturn } from "../shared/expression";
+import { type ExpressionReturn } from "../shared/expression";
 import { visitFunction } from "../shared/function";
-import { StatementReturn } from "../statement";
+import { type StatementReturn } from "../statement";
 
 export async function visit(node: ts.FunctionDeclaration, env: Env): Promise<Type> {
 	if (!node.name) {
 		throw new NotImplementedException("Anonymous functions aren't supported yet");
 	}
 
+	const nodeName = node.name;
 	const e: ExpressionReturn = await env.withChildData(
 		{ resolveIdentifier: false },
-		async () => await TypeChecker.accept(node.name!, env),
+		async () => await TypeChecker.accept(nodeName, env),
 	);
 	assert(e.identifier !== undefined, "identifier is undefined");
-	const name = e.identifier!;
+	const name = e.identifier;
 
 	const { fType, infer } = await visitFunction(env, node.typeParameters, node.parameters, node.type);
 

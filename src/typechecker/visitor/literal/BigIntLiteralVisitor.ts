@@ -1,7 +1,7 @@
 import type ts from "typescript";
-import { LiteralVisitor } from ".";
+import { type LiteralVisitor } from ".";
 import { BigIntType } from "../../../types";
 
-export const visit: LiteralVisitor<ts.BigIntLiteral> = () => {
-	return { eType: BigIntType.create() };
-};
+export const visit: LiteralVisitor<ts.BigIntLiteral> = () => ({
+	eType: BigIntType.create(),
+});

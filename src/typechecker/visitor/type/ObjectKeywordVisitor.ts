@@ -1,7 +1,5 @@
-import ts from "typescript";
-import { KeywordVisitor } from ".";
+import type ts from "typescript";
+import { type KeywordVisitor } from ".";
 import { RawObjectType } from "../../../types";
 
-export const visit: KeywordVisitor<ts.SyntaxKind.ObjectKeyword> = () => {
-	return RawObjectType.create();
-};
+export const visit: KeywordVisitor<ts.SyntaxKind.ObjectKeyword> = () => RawObjectType.create();

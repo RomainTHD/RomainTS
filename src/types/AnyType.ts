@@ -1,4 +1,4 @@
-import { Property, PropertyAccessor, Type } from ".";
+import { type Property, PropertyAccessor, type Type } from ".";
 
 export class AnyType extends PropertyAccessor {
 	private static readonly instance: AnyType = new AnyType();
@@ -7,11 +7,11 @@ export class AnyType extends PropertyAccessor {
 		super([]);
 	}
 
-	public equals<T extends Type>(other: T): boolean {
+	public override equals<T extends Type>(other: T): boolean {
 		return other instanceof AnyType;
 	}
 
-	public contains<T extends Type>(other: T): boolean {
+	public override contains<T extends Type>(_other: T): boolean {
 		return true;
 	}
 
@@ -23,11 +23,11 @@ export class AnyType extends PropertyAccessor {
 		return "any";
 	}
 
-	public override add(property: Property): void {}
+	public override add(_property: Property): void {}
 
-	public override addAll(...props: Property[]): void {}
+	public override addAll(..._props: Property[]): void {}
 
-	public override hasProperty(name: string): boolean {
+	public override hasProperty(_name: string): boolean {
 		return true;
 	}
 

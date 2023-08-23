@@ -1,6 +1,6 @@
 import type ts from "typescript";
-import { Env, TypeChecker } from "../..";
-import { ExpressionReturn } from "../shared/expression";
+import { type Env, TypeChecker } from "../..";
+import { type ExpressionReturn } from "../shared/expression";
 
 export async function visit(node: ts.ExpressionWithTypeArguments, env: Env): Promise<ExpressionReturn> {
 	return await env.withChildData(

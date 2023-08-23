@@ -12,7 +12,7 @@ export class UnionType extends Type {
 	}
 
 	public add(t: Type): void {
-		assert(t !== null && t !== undefined, "Union type must be a Type, is actually " + t);
+		assert(t !== null && t !== undefined, `Union type must be a Type, is actually ${t}`);
 		assert(!t.equals(this), "Union cannot contain itself");
 		if (t instanceof UnionType) {
 			for (const ot of t.types) {
@@ -23,7 +23,7 @@ export class UnionType extends Type {
 		}
 	}
 
-	public equals<T extends Type>(other: T): boolean {
+	public override equals<T extends Type>(other: T): boolean {
 		if (!(other instanceof UnionType)) {
 			return false;
 		}
@@ -35,7 +35,7 @@ export class UnionType extends Type {
 		return this.types.every((t) => other.types.some((ot) => t.equals(ot)));
 	}
 
-	public contains<T extends Type>(other: T): boolean {
+	public override contains<T extends Type>(other: T): boolean {
 		assert(other !== null && other !== undefined, `Union type must be a Type, is actually '${other}'`);
 
 		let union: UnionType;
@@ -56,7 +56,7 @@ export class UnionType extends Type {
 		return this;
 	}
 
-	public generalize(): Type {
+	public override generalize(): Type {
 		const simplified = UnionType.create(this.types.map((t) => t.generalize()));
 
 		if (simplified.types.length === 1) {

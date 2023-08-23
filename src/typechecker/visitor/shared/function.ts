@@ -1,8 +1,8 @@
 import type ts from "typescript";
-import { Env, TypeChecker } from "../..";
-import { AliasType, AnyType, FunctionType, Type, UnknownType } from "../../../types";
+import { type Env, TypeChecker } from "../..";
+import { AliasType, AnyType, FunctionType, type Type, UnknownType } from "../../../types";
 import { assert } from "../../../utils";
-import { ExpressionReturn } from "./expression";
+import { type ExpressionReturn } from "./expression";
 
 export async function visitFunction(
 	env: Env,
@@ -22,8 +22,8 @@ export async function visitFunction(
 				async () => await TypeChecker.accept(generic.name, env),
 			);
 			assert(e.identifier, "identifier is undefined");
-			env.addType(e.identifier!, AliasType.create(e.identifier!, UnknownType.create()));
-			genericsStr.push(e.identifier!);
+			env.addType(e.identifier, AliasType.create(e.identifier, UnknownType.create()));
+			genericsStr.push(e.identifier);
 		}
 	}
 
@@ -34,7 +34,7 @@ export async function visitFunction(
 			async () => await TypeChecker.accept(param.name, env),
 		);
 		assert(e.identifier !== undefined, "identifier is undefined");
-		const name = e.identifier!;
+		const name = e.identifier;
 
 		let pType: Type;
 		if (param.type) {

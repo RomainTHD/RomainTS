@@ -1,9 +1,9 @@
 import ts from "typescript";
-import { Env, TypeChecker, TypecheckingFailure } from "../..";
-import { ObjectType, Property, PropertyAccessor } from "../../../types";
-import { assert } from "../../../utils";
+import { type Env, TypeChecker, TypecheckingFailure } from "../..";
+import { ObjectType, type Property, PropertyAccessor } from "../../../types";
+import { assert, stringify } from "../../../utils";
 import { NotImplementedException } from "../../../utils/NotImplementedException";
-import { ExpressionReturn } from "../shared/expression";
+import { type ExpressionReturn } from "../shared/expression";
 
 export async function visit(node: ts.InterfaceDeclaration, env: Env): Promise<void> {
 	if (node.modifiers) {
@@ -15,7 +15,7 @@ export async function visit(node: ts.InterfaceDeclaration, env: Env): Promise<vo
 		async () => await TypeChecker.accept(node.name, env),
 	);
 	assert(e.identifier !== undefined, "identifier is undefined");
-	const name = e.identifier!;
+	const name = e.identifier;
 
 	const resType = ObjectType.create([]);
 
@@ -52,7 +52,7 @@ export async function visit(node: ts.InterfaceDeclaration, env: Env): Promise<vo
 				}
 
 				parentType.ownProperties.forEach((prop) => {
-					if (resType.hasOwnProperty(prop.name)) {
+					if (resType.hasItsOwnProperty(prop.name)) {
 						if (!prop.pType.contains(resType.getOwnProperty(prop.name).pType)) {
 							throw new TypecheckingFailure(
 								`Interface '${name}' incorrectly extends parent '${parent.identifier}', type '${
@@ -70,10 +70,10 @@ export async function visit(node: ts.InterfaceDeclaration, env: Env): Promise<vo
 
 	for (const member of node.members) {
 		const prop: Property = await TypeChecker.accept(member, env);
-		assert(prop, `Expected property, got '${prop}'`);
+		assert(prop, `Expected property, got '${stringify(prop)}'`);
 		assert(prop.name, `Expected property name, got '${prop.name}'`);
 		assert(prop.pType, `Expected property type, got '${prop.pType}'`);
-		if (resType.hasOwnProperty(prop.name)) {
+		if (resType.hasItsOwnProperty(prop.name)) {
 			const other = resType.getOwnProperty(prop.name);
 			if (other.fromParent && !prop.pType.contains(other.pType)) {
 				throw new TypecheckingFailure(

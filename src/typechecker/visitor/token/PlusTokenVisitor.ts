@@ -1,15 +1,15 @@
 import type ts from "typescript";
-import { TokenVisitor } from ".";
+import { type TokenVisitor } from ".";
 import { TypecheckingFailure } from "../..";
-import { BigIntType, BooleanType, NumberType, StringType, Type, UnionType } from "../../../types";
+import { BigIntType, BooleanType, NumberType, StringType, type Type, UnionType } from "../../../types";
 import { assert, xor } from "../../../utils";
-import { ExpressionReturn } from "../shared/expression";
+import { type ExpressionReturn } from "../shared/expression";
 
 export const visit: TokenVisitor<ts.SyntaxKind.PlusToken> = (node, env) => {
 	const left: ExpressionReturn = env.getData("left", true);
 	let leftType: Type;
 	if (left.identifier) {
-		const v = env.lookup(left.identifier)!;
+		const v = env.lookup(left.identifier);
 		assert(v, `Left type cannot be found, identifier was '${left.identifier}'`);
 		leftType = v.vType;
 	} else {

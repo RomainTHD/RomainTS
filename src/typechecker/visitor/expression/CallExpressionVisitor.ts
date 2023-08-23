@@ -1,19 +1,19 @@
 import type ts from "typescript";
-import { ExpressionVisitor } from ".";
+import { type ExpressionVisitor } from ".";
 import { TypeChecker, TypecheckingFailure } from "../..";
-import { FunctionType, Type } from "../../../types";
-import { ExpressionReturn } from "../shared/expression";
+import { FunctionType, type Type } from "../../../types";
+import { type ExpressionReturn } from "../shared/expression";
 
 export const visit: ExpressionVisitor<ts.CallExpression> = async (node, env) => {
 	const left: ExpressionReturn = await TypeChecker.accept(node.expression, env);
 	if (!(left.eType instanceof FunctionType)) {
 		throw new TypecheckingFailure(`Cannot call non-function type '${left.eType}'`, node);
 	}
-	const f = left.eType as FunctionType;
+	const f = left.eType;
 
 	const args: Type[] = [];
 	for (const arg of node.arguments) {
-		args.push(((await TypeChecker.accept(arg, env)) as ExpressionReturn).eType);
+		args.push((await TypeChecker.accept<ExpressionReturn>(arg, env)).eType);
 	}
 
 	if (f.params.length !== args.length) {

@@ -7,11 +7,11 @@ export class UndefinedType extends Type {
 		super();
 	}
 
-	public equals<T extends Type>(other: T): boolean {
+	public override equals<T extends Type>(other: T): boolean {
 		return other instanceof UndefinedType;
 	}
 
-	public contains<T extends Type>(other: T): boolean {
+	public override contains<T extends Type>(other: T): boolean {
 		return other instanceof UndefinedType;
 	}
 

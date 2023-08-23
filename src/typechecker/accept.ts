@@ -1,4 +1,4 @@
-import ts from "typescript";
+import type ts from "typescript";
 import { Env, TypecheckingFailure } from ".";
 import { baseAccept } from "../utils/ASTHelper";
 import { IllegalStateException } from "../utils/IllegalStateException";
@@ -9,7 +9,7 @@ export namespace TypeChecker {
 	const logger = LoggerFactory.create("TypeChecker");
 
 	export async function accept<T>(node: ts.Node, env: Env): Promise<T> {
-		return baseAccept(node, env, logger);
+		return await baseAccept(node, env, logger);
 	}
 
 	export async function typecheck(root: ts.Node): Promise<boolean> {

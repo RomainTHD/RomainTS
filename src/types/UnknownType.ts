@@ -7,11 +7,11 @@ export class UnknownType extends Type {
 		super();
 	}
 
-	public equals<T extends Type>(other: T): boolean {
+	public override equals<T extends Type>(other: T): boolean {
 		return other instanceof UnknownType;
 	}
 
-	public contains<T extends Type>(other: T): boolean {
+	public override contains<T extends Type>(_other: T): boolean {
 		return true;
 	}
 
@@ -19,7 +19,7 @@ export class UnknownType extends Type {
 		return this;
 	}
 
-	public toString(): string {
+	public override toString(): string {
 		return "unknown";
 	}
 

@@ -1,5 +1,5 @@
 import type ts from "typescript";
-import { ExpressionVisitor } from ".";
+import { type ExpressionVisitor } from ".";
 import { TypeChecker } from "../..";
 import { UndefinedType } from "../../../types";
 

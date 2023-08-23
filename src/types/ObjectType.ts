@@ -1,5 +1,4 @@
-import type { Property, Type } from ".";
-import { PropertyAccessor } from ".";
+import { type Property, PropertyAccessor, type Type } from ".";
 
 export class ObjectType extends PropertyAccessor {
 	private static builtins: Property[] = [];
@@ -8,21 +7,20 @@ export class ObjectType extends PropertyAccessor {
 		super(properties);
 	}
 
-	public equals<T extends Type>(other: T): boolean {
+	public override equals<T extends Type>(other: T): boolean {
 		if (!(other instanceof ObjectType)) {
 			return false;
 		}
 
 		return (
 			this.ownProperties.length === other.ownProperties.length &&
-			this.ownProperties.every((member) => {
-				const thisMember = other.ownProperties.find((m) => m.name === member.name);
-				return thisMember !== undefined && thisMember.pType.equals(member.pType);
-			})
+			this.ownProperties.every(
+				(member) => other.ownProperties.find((m) => m.name === member.name)?.pType.equals(member.pType),
+			)
 		);
 	}
 
-	public contains<T extends Type>(other: T): boolean {
+	public override contains<T extends Type>(other: T): boolean {
 		if (!(other instanceof ObjectType)) {
 			return false;
 		}
@@ -31,10 +29,9 @@ export class ObjectType extends PropertyAccessor {
 			return false;
 		}
 
-		return other.properties.every((member) => {
-			const thisMember = this.properties.find((m) => m.name === member.name);
-			return thisMember !== undefined && thisMember.pType.contains(member.pType);
-		});
+		return other.properties.every(
+			(member) => this.properties.find((m) => m.name === member.name)?.pType.contains(member.pType),
+		);
 	}
 
 	public override generalize(): Type {

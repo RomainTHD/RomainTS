@@ -1,8 +1,8 @@
 import type ts from "typescript";
-import { Env, TypecheckingFailure } from "../..";
-import { BigIntType, LiteralType, NumberType, Type } from "../../../types";
+import { type Env, TypecheckingFailure } from "../..";
+import { BigIntType, LiteralType, NumberType, type Type } from "../../../types";
 import { assert, xor } from "../../../utils";
-import { ExpressionReturn } from "../shared/expression";
+import { type ExpressionReturn } from "../shared/expression";
 
 export function visitBinaryOperatorToken<T extends ts.SyntaxKind>(
 	node: ts.Token<T>,
@@ -23,7 +23,7 @@ export function visitBinaryOperatorToken<T extends ts.SyntaxKind>(
 
 	let leftType: Type;
 	if (left.identifier) {
-		const v = env.lookup(left.identifier)!;
+		const v = env.lookup(left.identifier);
 		assert(v, `Left type cannot be found, identifier was '${left.identifier}'`);
 		leftType = v.vType;
 	} else {
