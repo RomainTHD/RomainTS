@@ -1,6 +1,6 @@
 import type ts from "typescript";
 import { type Env, TypeChecker, TypecheckingFailure } from "../..";
-import { AnyType, FunctionType, GenericType, type Type, UnknownType } from "../../../types";
+import { AnyType, FunctionType, GenericType, type Param, type Type, UnknownType } from "../../../types";
 import { assert } from "../../../utils";
 import { type ExpressionReturn } from "./expression";
 
@@ -32,7 +32,7 @@ export async function visitFunction(
 		}
 	}
 
-	const params: { name: string; pType: Type }[] = [];
+	const params: Param[] = [];
 	for (const param of nodeParams) {
 		const e: ExpressionReturn = await env.withChildData(
 			{ resolveIdentifier: false },
@@ -51,6 +51,7 @@ export async function visitFunction(
 		params.push({
 			name,
 			pType,
+			isGeneric: pType instanceof GenericType,
 		});
 	}
 

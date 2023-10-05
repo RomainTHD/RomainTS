@@ -113,4 +113,16 @@ describe("CallExpressionVisitor", () => {
 		`;
 		await expect(TypeChecker.accept(AST.parse(content), Env.create())).rejects.toThrowError(TypecheckingFailure);
 	});
+
+	it("should work for generic calls and inference", async () => {
+		const content = `
+		function f<T>(a: T): T {
+			return a;
+		}
+		let x = f(0);
+		`;
+		const env = Env.create();
+		await TypeChecker.accept(AST.parse(content), env);
+		expect(env.lookup("x")?.vType).toEqual(NumberType.create());
+	});
 });

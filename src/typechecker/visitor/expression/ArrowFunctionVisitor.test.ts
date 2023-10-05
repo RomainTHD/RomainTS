@@ -14,10 +14,12 @@ describe("ArrowFunctionVisitor", () => {
 					{
 						name: "a",
 						pType: NumberType.create(),
+						isGeneric: false,
 					},
 					{
 						name: "b",
 						pType: StringType.create(),
+						isGeneric: false,
 					},
 				],
 				NumberType.create(),

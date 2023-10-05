@@ -2,6 +2,7 @@ import type ts from "typescript";
 import { type ExpressionVisitor } from ".";
 import { TypeChecker, TypecheckingFailure } from "../..";
 import { FunctionType, GenericType, type Type } from "../../../types";
+import { assert } from "../../../utils";
 import { type ExpressionReturn } from "../shared/expression";
 
 export const visit: ExpressionVisitor<ts.CallExpression> = async (node, env) => {
@@ -29,10 +30,13 @@ export const visit: ExpressionVisitor<ts.CallExpression> = async (node, env) => 
 
 	env.enterScope();
 
+	const inferredTypes = new Map<string, Type>();
+
 	if (typeArgs) {
-		for (let i = 0; i < typeArgs.length; i++) {
-			env.addType(f.generics[i], typeArgs[i]);
-		}
+		typeArgs.forEach((arg, i) => {
+			env.addType(f.generics[i], arg);
+			inferredTypes.set(f.generics[i], arg);
+		});
 	}
 
 	const args: Type[] = [];
@@ -45,23 +49,30 @@ export const visit: ExpressionVisitor<ts.CallExpression> = async (node, env) => 
 		throw new TypecheckingFailure(`Expected ${f.params.length} arguments, got ${args.length}`, node);
 	}
 
-	for (let i = 0; i < args.length; i++) {
+	if (!typeArgs) {
+		args.forEach((arg, i) => {
+			if (!f.params[i].isGeneric) {
+				return;
+			}
+
+			assert(f.params[i].pType instanceof GenericType);
+			const generic = f.params[i].pType as GenericType;
+			env.addType(generic.label, arg);
+			inferredTypes.set(generic.label, arg);
+		});
+	}
+
+	args.forEach((arg, i) => {
 		const param = f.params[i];
-		const arg = args[i];
 		if (!param.pType.contains(arg)) {
 			throw new TypecheckingFailure(`Argument ${i} has type '${arg}', but expected '${param.pType}'`, node);
 		}
-	}
+	});
 
 	let { retType } = f;
-	if (retType instanceof GenericType && typeArgs) {
+	if (retType instanceof GenericType) {
 		const generic = retType;
-		for (let i = 0; i < typeArgs.length; i++) {
-			if (generic.label === f.generics[i]) {
-				retType = typeArgs[i];
-				break;
-			}
-		}
+		retType = inferredTypes.get(generic.label) ?? retType;
 	}
 
 	env.leaveScope();

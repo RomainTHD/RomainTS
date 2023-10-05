@@ -58,7 +58,7 @@ function getCommonBuiltins(): Property[] {
 		},
 		{
 			name: "hasOwnProperty",
-			pType: FunctionType.create([StringType.create()], BooleanType.create()),
+			pType: FunctionType.create([{ pType: StringType.create() }], BooleanType.create()),
 		},
 		{
 			name: "toString",

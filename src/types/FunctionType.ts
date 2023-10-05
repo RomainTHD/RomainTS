@@ -1,8 +1,9 @@
 import { type Property, PropertyAccessor, Type } from ".";
 
-interface Param {
+export interface Param {
 	name: string;
 	pType: Type;
+	isGeneric: boolean;
 }
 
 export class FunctionType extends PropertyAccessor {
@@ -60,6 +61,7 @@ export class FunctionType extends PropertyAccessor {
 			this.params.map((param) => ({
 				name: param.name,
 				pType: param.pType.generalize(),
+				isGeneric: param.isGeneric,
 			})),
 			this.retType.generalize(),
 		);
@@ -88,19 +90,17 @@ export class FunctionType extends PropertyAccessor {
 		return this._generics;
 	}
 
-	public static create(params: (Param | Type)[], retType: Type, generics: string[] = []): FunctionType {
+	public static create(
+		params: { name?: Param["name"]; pType: Param["pType"]; isGeneric?: Param["isGeneric"] }[],
+		retType: Type,
+		generics: string[] = [],
+	): FunctionType {
 		return new FunctionType(
-			params.map((p) => {
-				if (p instanceof Type) {
-					return {
-						// FIXME: Ugly
-						name: "<anonymous>",
-						pType: p,
-					};
-				} else {
-					return p;
-				}
-			}),
+			params.map((p) => ({
+				name: p.name ?? "<anonymous>",
+				pType: p.pType,
+				isGeneric: p.isGeneric ?? false,
+			})),
 			retType,
 			generics,
 		);
