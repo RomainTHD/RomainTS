@@ -82,7 +82,7 @@ export class EnvTypechecker extends BaseEnv<Value, ChildData> {
 		super.add(name, valueSafe);
 	}
 
-	public addType(name: string, t: Type | unknown): void {
+	public addType(name: string, t: Type): void {
 		assert(name, `Name is unset, value is '${name}'`);
 		assert(t, `Type is unset, value is '${t}'`);
 		assert(t instanceof Type, `Type '${JSON.stringify(t)}' is not a Type`);

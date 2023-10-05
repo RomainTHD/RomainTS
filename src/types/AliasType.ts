@@ -30,4 +30,8 @@ export class AliasType extends Type {
 	public static create(label: string, aliasType: Type): AliasType {
 		return new AliasType(label, aliasType);
 	}
+
+	public get label(): string {
+		return this._label;
+	}
 }

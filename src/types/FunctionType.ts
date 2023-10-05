@@ -84,6 +84,10 @@ export class FunctionType extends PropertyAccessor {
 		this._retType = newType;
 	}
 
+	public get generics(): string[] {
+		return this._generics;
+	}
+
 	public static create(params: (Param | Type)[], retType: Type, generics: string[] = []): FunctionType {
 		return new FunctionType(
 			params.map((p) => {
