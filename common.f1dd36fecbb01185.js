@@ -27,6 +27,7 @@ function _visitFunction() {
     env.enterScope();
     const genericsStr = [];
     if (nodeGenerics) {
+      const seen = new Set();
       for (const generic of nodeGenerics) {
         // TODO: Handle default, constraint, etc
         const e = yield env.withChildData({
@@ -35,8 +36,12 @@ function _visitFunction() {
           return yield ___WEBPACK_IMPORTED_MODULE_1__.TypeChecker.accept(generic.name, env);
         }));
         (0,_utils__WEBPACK_IMPORTED_MODULE_3__.assert)(e.identifier, "identifier is undefined");
-        env.addType(e.identifier, _types__WEBPACK_IMPORTED_MODULE_2__.AliasType.create(e.identifier, _types__WEBPACK_IMPORTED_MODULE_2__.UnknownType.create()));
+        if (seen.has(e.identifier)) {
+          throw new ___WEBPACK_IMPORTED_MODULE_1__.TypecheckingFailure(`Duplicate generic '${e.identifier}'`, generic);
+        }
+        seen.add(e.identifier);
         genericsStr.push(e.identifier);
+        env.addType(e.identifier, _types__WEBPACK_IMPORTED_MODULE_2__.AliasType.create(e.identifier, _types__WEBPACK_IMPORTED_MODULE_2__.UnknownType.create()));
       }
     }
     const params = [];
