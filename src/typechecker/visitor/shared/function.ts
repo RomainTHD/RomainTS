@@ -1,5 +1,5 @@
 import type ts from "typescript";
-import { type Env, TypeChecker } from "../..";
+import { type Env, TypeChecker, TypecheckingFailure } from "../..";
 import { AliasType, AnyType, FunctionType, type Type, UnknownType } from "../../../types";
 import { assert } from "../../../utils";
 import { type ExpressionReturn } from "./expression";
@@ -15,6 +15,7 @@ export async function visitFunction(
 	const genericsStr: string[] = [];
 
 	if (nodeGenerics) {
+		const seen = new Set<string>();
 		for (const generic of nodeGenerics) {
 			// TODO: Handle default, constraint, etc
 			const e: ExpressionReturn = await env.withChildData(
@@ -22,8 +23,12 @@ export async function visitFunction(
 				async () => await TypeChecker.accept(generic.name, env),
 			);
 			assert(e.identifier, "identifier is undefined");
-			env.addType(e.identifier, AliasType.create(e.identifier, UnknownType.create()));
+			if (seen.has(e.identifier)) {
+				throw new TypecheckingFailure(`Duplicate generic '${e.identifier}'`, generic);
+			}
+			seen.add(e.identifier);
 			genericsStr.push(e.identifier);
+			env.addType(e.identifier, AliasType.create(e.identifier, UnknownType.create()));
 		}
 	}
 

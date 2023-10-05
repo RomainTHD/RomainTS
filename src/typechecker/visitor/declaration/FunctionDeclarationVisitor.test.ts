@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { Env, TypeChecker } from "../..";
+import { Env, TypeChecker, TypecheckingFailure } from "../..";
 import { AST } from "../../../AST";
 import { FunctionType, LiteralType, NumberType, StringType, UndefinedType, UnionType, VoidType } from "../../../types";
 
@@ -104,5 +104,12 @@ describe("FunctionDeclarationVisitor", () => {
 				UndefinedType.create(),
 			]),
 		);
+	});
+
+	it("should not have multiple generics with same name", async () => {
+		const content = `
+		function f<T, T>() {
+		}`;
+		await expect(TypeChecker.accept(AST.parse(content), Env.create())).rejects.toThrow(TypecheckingFailure);
 	});
 });
