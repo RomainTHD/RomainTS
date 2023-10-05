@@ -1,6 +1,6 @@
 import type ts from "typescript";
 import { type Env, TypeChecker, TypecheckingFailure } from "../..";
-import { AliasType, AnyType, FunctionType, type Type, UnknownType } from "../../../types";
+import { AnyType, FunctionType, GenericType, type Type, UnknownType } from "../../../types";
 import { assert } from "../../../utils";
 import { type ExpressionReturn } from "./expression";
 
@@ -28,7 +28,7 @@ export async function visitFunction(
 			}
 			seen.add(e.identifier);
 			genericsStr.push(e.identifier);
-			env.addType(e.identifier, AliasType.create(e.identifier, UnknownType.create()));
+			env.addType(e.identifier, GenericType.create(e.identifier, UnknownType.create()));
 		}
 	}
 

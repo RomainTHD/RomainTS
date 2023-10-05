@@ -4,12 +4,12 @@ export * from "./Type";
 
 export * from "./PropertyAccessor";
 
-export * from "./AliasType";
 export * from "./AnyType";
 export * from "./ArrayType";
 export * from "./BigIntType";
 export * from "./BooleanType";
 export * from "./FunctionType";
+export * from "./GenericType";
 export * from "./LiteralType";
 export * from "./NeverType";
 export * from "./NullType";

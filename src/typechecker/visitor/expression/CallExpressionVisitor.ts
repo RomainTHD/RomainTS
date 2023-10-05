@@ -1,7 +1,7 @@
 import type ts from "typescript";
 import { type ExpressionVisitor } from ".";
 import { TypeChecker, TypecheckingFailure } from "../..";
-import { AliasType, FunctionType, type Type } from "../../../types";
+import { FunctionType, GenericType, type Type } from "../../../types";
 import { type ExpressionReturn } from "../shared/expression";
 
 export const visit: ExpressionVisitor<ts.CallExpression> = async (node, env) => {
@@ -54,10 +54,10 @@ export const visit: ExpressionVisitor<ts.CallExpression> = async (node, env) => 
 	}
 
 	let { retType } = f;
-	if (retType instanceof AliasType && typeArgs) {
-		const aliasType = retType;
+	if (retType instanceof GenericType && typeArgs) {
+		const generic = retType;
 		for (let i = 0; i < typeArgs.length; i++) {
-			if (aliasType.label === f.generics[i]) {
+			if (generic.label === f.generics[i]) {
 				retType = typeArgs[i];
 				break;
 			}

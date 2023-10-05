@@ -1,6 +1,6 @@
 import { Type } from "./Type";
 
-export class AliasType extends Type {
+export class GenericType extends Type {
 	private readonly _label: string;
 	private readonly _alias: Type;
 
@@ -20,15 +20,15 @@ export class AliasType extends Type {
 	}
 
 	public override generalize(): Type {
-		return new AliasType(this._label, this._alias.generalize());
+		return new GenericType(this._label, this._alias.generalize());
 	}
 
 	public override toString(): string {
 		return this._label;
 	}
 
-	public static create(label: string, aliasType: Type): AliasType {
-		return new AliasType(label, aliasType);
+	public static create(label: string, aliasType: Type): GenericType {
+		return new GenericType(label, aliasType);
 	}
 
 	public get label(): string {
