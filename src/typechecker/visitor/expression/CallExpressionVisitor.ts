@@ -1,13 +1,14 @@
 import type ts from "typescript";
 import { type ExpressionVisitor } from ".";
 import { TypeChecker, TypecheckingFailure } from "../..";
-import { FunctionType, GenericType, type Type } from "../../../types";
+import { FunctionType, GenericType, type Type, UnionType } from "../../../types";
 import { assert } from "../../../utils";
 import { type ExpressionReturn } from "../shared/expression";
 
 export const visit: ExpressionVisitor<ts.CallExpression> = async (node, env) => {
 	let typeArgs: Type[] | null = null;
 	if (node.typeArguments) {
+		// `f<string>(...)`
 		typeArgs = [];
 		for (const typeArg of node.typeArguments) {
 			typeArgs.push(await TypeChecker.accept(typeArg, env));
@@ -33,6 +34,7 @@ export const visit: ExpressionVisitor<ts.CallExpression> = async (node, env) => 
 	const inferredTypes = new Map<string, Type>();
 
 	if (typeArgs) {
+		// `f<string>(...)`
 		typeArgs.forEach((arg, i) => {
 			env.addType(f.generics[i], arg);
 			inferredTypes.set(f.generics[i], arg);
@@ -50,6 +52,7 @@ export const visit: ExpressionVisitor<ts.CallExpression> = async (node, env) => 
 	}
 
 	if (!typeArgs) {
+		// Infer generic types from arguments
 		args.forEach((arg, i) => {
 			if (!f.params[i].isGeneric) {
 				return;
@@ -57,8 +60,54 @@ export const visit: ExpressionVisitor<ts.CallExpression> = async (node, env) => 
 
 			assert(f.params[i].pType instanceof GenericType);
 			const generic = f.params[i].pType as GenericType;
-			env.addType(generic.label, arg);
-			inferredTypes.set(generic.label, arg);
+
+			let inferred: Type;
+
+			if (!inferredTypes.has(generic.label)) {
+				// First time inferring this generic
+				inferred = arg;
+			} else {
+				// Already inferred, confirm that it matches
+				const previous = inferredTypes.get(generic.label);
+				assert(previous);
+				if (previous.contains(arg) || arg.contains(previous)) {
+					// In `f("s", 0 as string | number)`, `T` is first inferred as `string`, but then extended to
+					//  `string | number`, so we extend its definition
+
+					/*
+					FIXME: Actually, this is even more complicated.
+
+					This example is fine:
+					```ts
+					function f<T>(a: T, b: T): T {
+						return a;
+					}
+					let x = f("s", 0 as string | number);
+					```
+
+					But this one is not:
+					```ts
+					function f<T>(a: T, b: T): T {
+						return a;
+					}
+					let snd: string | number = 0;
+					let x = f("s", snd);
+					```
+					 */
+					inferred = UnionType.create([previous, arg]).simplify().generalize();
+				} else {
+					// `f("s", 0)` has a conflict
+					throw new TypecheckingFailure(
+						`Argument of type '${arg}' is not assignable to parameter of type '${inferredTypes.get(
+							generic.label,
+						)}'`,
+						node,
+					);
+				}
+			}
+
+			env.addType(generic.label, inferred);
+			inferredTypes.set(generic.label, inferred);
 		});
 	}
 
