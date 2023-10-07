@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { Env, TypeChecker, TypecheckingFailure } from "../..";
 import { AST } from "../../../AST";
-import { NumberType, StringType, UnionType } from "../../../types";
+import { NumberType, StringType, UnionType, UnknownType } from "../../../types";
 
 describe("CallExpressionVisitor", () => {
 	it("should work for calls", async () => {
@@ -147,5 +147,15 @@ describe("CallExpressionVisitor", () => {
 		const env = Env.create();
 		await TypeChecker.accept(AST.parse(content), env);
 		expect(env.lookup("x")?.vType).toEqual(UnionType.create([NumberType.create(), StringType.create()]));
+	});
+
+	it("should infer generic to default fallback", async () => {
+		const content = `
+		let f: <T> () => T;
+		let x = f();
+		`;
+		const env = Env.create();
+		await TypeChecker.accept(AST.parse(content), env);
+		expect(env.lookup("x")?.vType).toEqual(UnknownType.create());
 	});
 });

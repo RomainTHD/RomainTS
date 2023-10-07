@@ -3,7 +3,10 @@ import { type ExpressionVisitor } from ".";
 import { TypeChecker, TypecheckingFailure } from "../..";
 import { FunctionType, GenericType, type Type, UnionType } from "../../../types";
 import { assert } from "../../../utils";
+import { LoggerFactory } from "../../../utils/Logger";
 import { type ExpressionReturn } from "../shared/expression";
+
+const logger = LoggerFactory.create("CallExpressionVisitor");
 
 export const visit: ExpressionVisitor<ts.CallExpression> = async (node, env) => {
 	let typeArgs: Type[] | null = null;
@@ -121,7 +124,15 @@ export const visit: ExpressionVisitor<ts.CallExpression> = async (node, env) => 
 	let { retType } = f;
 	if (retType instanceof GenericType) {
 		const generic = retType;
-		retType = inferredTypes.get(generic.label) ?? retType;
+		const inferred = inferredTypes.get(generic.label);
+		if (inferred) {
+			retType = inferred;
+		} else {
+			// FIXME: Will break for `f<T>(): T | something`
+			retType = generic.alias;
+			// Should it be a real error?
+			logger.warn(`Could not infer type for generic '${generic.label}'`);
+		}
 	}
 
 	env.leaveScope();

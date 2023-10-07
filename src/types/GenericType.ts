@@ -34,4 +34,8 @@ export class GenericType extends Type {
 	public get label(): string {
 		return this._label;
 	}
+
+	public get alias(): Type {
+		return this._alias;
+	}
 }
