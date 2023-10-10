@@ -2,12 +2,12 @@ import { Type } from "./Type";
 
 export class GenericType extends Type {
 	private readonly _label: string;
-	private readonly _alias: Type;
+	private readonly _aliasType: Type;
 
 	private constructor(label: string, aliasType: Type) {
 		super();
 		this._label = label;
-		this._alias = aliasType;
+		this._aliasType = aliasType;
 	}
 
 	public override equals<T extends Type>(_other: T): boolean {
@@ -16,11 +16,11 @@ export class GenericType extends Type {
 	}
 
 	public override contains<T extends Type>(other: T): boolean {
-		return this._alias.contains(other);
+		return this._aliasType.contains(other);
 	}
 
 	public override generalize(): Type {
-		return new GenericType(this._label, this._alias.generalize());
+		return new GenericType(this._label, this._aliasType.generalize());
 	}
 
 	public override toString(): string {
@@ -35,7 +35,7 @@ export class GenericType extends Type {
 		return this._label;
 	}
 
-	public get alias(): Type {
-		return this._alias;
+	public get aliasType(): Type {
+		return this._aliasType;
 	}
 }

@@ -129,7 +129,7 @@ export const visit: ExpressionVisitor<ts.CallExpression> = async (node, env) => 
 			retType = inferred;
 		} else {
 			// FIXME: Will break for `f<T>(): T | something`
-			retType = generic.alias;
+			retType = generic.aliasType;
 			// Should it be a real error?
 			logger.warn(`Could not infer type for generic '${generic.label}'`);
 		}
