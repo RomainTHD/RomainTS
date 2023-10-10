@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { Env, TypeChecker, TypecheckingFailure } from "../..";
 import { AST } from "../../../AST";
-import { NumberType, UndefinedType } from "../../../types";
+import { NumberType, UndefinedType, UnionType } from "../../../types";
 
 describe("PropertyAccessExpressionVisitor", () => {
 	it("should work for basic access", async () => {
@@ -36,5 +36,12 @@ describe("PropertyAccessExpressionVisitor", () => {
 		const env = Env.create({ strictMode: false });
 		await TypeChecker.accept(AST.parse(content), env);
 		expect(env.lookup("x")?.vType).toEqual(UndefinedType.create());
+	});
+
+	it("should work with generics", async () => {
+		const content = "let x = [1, 2, 3].pop();";
+		const env = Env.create();
+		await TypeChecker.accept(AST.parse(content), env);
+		expect(env.lookup("x")?.vType).toEqual(UnionType.create([NumberType.create(), UndefinedType.create()]));
 	});
 });

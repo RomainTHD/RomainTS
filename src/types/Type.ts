@@ -12,4 +12,8 @@ export abstract class Type {
 	public abstract generalize(): Type;
 
 	public abstract toString(): string;
+
+	public replaceGenerics(generics: { name: string; gType: Type }[]): Type {
+		return this;
+	}
 }

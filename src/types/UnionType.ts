@@ -70,6 +70,10 @@ export class UnionType extends Type {
 		return this.types.map((t) => t.toString()).join(" | ");
 	}
 
+	public override replaceGenerics(generics: { name: string; gType: Type }[]): Type {
+		return new UnionType(this.types.map((t) => t.replaceGenerics(generics))).simplify();
+	}
+
 	public get size(): number {
 		return this.types.length;
 	}

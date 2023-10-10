@@ -27,6 +27,13 @@ export class GenericType extends Type {
 		return this._label;
 	}
 
+	public override replaceGenerics(generics: { name: string; gType: Type }[]): Type {
+		if (generics.some((generic) => generic.name === this._label)) {
+			return generics.find((generic) => generic.name === this._label)!.gType.replaceGenerics(generics);
+		}
+		return this;
+	}
+
 	public static create(label: string, aliasType: Type): GenericType {
 		return new GenericType(label, aliasType);
 	}

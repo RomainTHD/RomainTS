@@ -61,6 +61,7 @@ export const visit: ExpressionVisitor<ts.CallExpression> = async (node, env) => 
 				return;
 			}
 
+			// FIXME: Will break for `f<T>(a: T | something)`
 			assert(f.params[i].pType instanceof GenericType);
 			const generic = f.params[i].pType as GenericType;
 
@@ -133,6 +134,8 @@ export const visit: ExpressionVisitor<ts.CallExpression> = async (node, env) => 
 			// Should it be a real error?
 			logger.warn(`Could not infer type for generic '${generic.label}'`);
 		}
+	} else {
+		retType = retType.replaceGenerics(Array.from(inferredTypes.entries()).map(([k, v]) => ({ name: k, gType: v })));
 	}
 
 	env.leaveScope();

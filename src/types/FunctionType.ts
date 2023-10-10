@@ -1,4 +1,5 @@
 import { type Property, PropertyAccessor, Type } from ".";
+import { assert } from "../utils";
 
 export interface Param {
 	name: string;
@@ -103,6 +104,18 @@ export class FunctionType extends PropertyAccessor {
 			})),
 			retType,
 			generics,
+		);
+	}
+
+	public override replaceGenerics(generics: { name: string; gType: Type }[]): FunctionType {
+		assert(this.generics.length === generics.length, "Incorrect number of generics");
+		return FunctionType.create(
+			this.params.map((param) => ({
+				name: param.name,
+				pType: param.pType.replaceGenerics(generics),
+				isGeneric: false,
+			})),
+			this.retType.replaceGenerics(generics),
 		);
 	}
 
