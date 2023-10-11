@@ -38,4 +38,12 @@ export namespace Bool3 {
 	export function both(a: Bool3, b: Bool3): Bool3 {
 		return a === b ? a : Bool3.Sometimes;
 	}
+
+	export function max(a: Bool3, b: Bool3): Bool3 {
+		return Math.max(a, b);
+	}
+
+	export function min(a: Bool3, b: Bool3): Bool3 {
+		return Math.min(a, b);
+	}
 }
