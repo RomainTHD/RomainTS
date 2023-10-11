@@ -28,6 +28,7 @@ export async function visit(node: ts.Identifier, env: Env): Promise<ExpressionRe
 	} else if (value) {
 		// The identifier exists in the scope
 		t = value.vType;
+		isMutable = value.isMutable;
 	} else if (isPropertyAccess) {
 		// `x.y`, where `y` doesn't exist in `x`
 		t = UndefinedType.create();

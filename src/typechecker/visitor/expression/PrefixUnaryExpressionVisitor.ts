@@ -3,7 +3,6 @@ import { type ExpressionVisitor } from ".";
 import { TypeChecker, TypecheckingFailure } from "../..";
 import { BigIntType, BooleanType, NumberType } from "../../../types";
 import { IllegalStateException } from "../../../utils/IllegalStateException";
-import { NotImplementedException } from "../../../utils/NotImplementedException";
 import { type ExpressionReturn } from "../shared/expression";
 
 export const visit: ExpressionVisitor<ts.PrefixUnaryExpression> = async (node, env) => {
@@ -13,7 +12,17 @@ export const visit: ExpressionVisitor<ts.PrefixUnaryExpression> = async (node, e
 	switch (node.operator) {
 		case ts.SyntaxKind.PlusPlusToken:
 		case ts.SyntaxKind.MinusMinusToken:
-			throw new NotImplementedException();
+			if (!e.isFromVariable) {
+				throw new TypecheckingFailure("Cannot use prefix unary operator on non-variable", node);
+			}
+			if (!e.isMutable) {
+				throw new TypecheckingFailure("Cannot use prefix unary operator on immutable variable", node);
+			}
+			if (t.equals(BigIntType.create())) {
+				return { eType: BigIntType.create() };
+			} else {
+				return { eType: NumberType.create() };
+			}
 
 		case ts.SyntaxKind.PlusToken:
 			if (BigIntType.create().equals(t)) {
