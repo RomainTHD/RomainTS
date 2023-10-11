@@ -1,10 +1,11 @@
-import { type Property, PropertyAccessor, Type } from ".";
+import { type Property, PropertyAccessor, type Type } from ".";
 import { assert } from "../utils";
 
 export interface Param {
 	name: string;
 	pType: Type;
 	isGeneric: boolean;
+	isOptional: boolean;
 }
 
 export class FunctionType extends PropertyAccessor {
@@ -63,6 +64,7 @@ export class FunctionType extends PropertyAccessor {
 				name: param.name,
 				pType: param.pType.generalize(),
 				isGeneric: param.isGeneric,
+				isOptional: param.isOptional,
 			})),
 			this.retType.generalize(),
 		);
@@ -70,7 +72,9 @@ export class FunctionType extends PropertyAccessor {
 
 	public override toString(): string {
 		const generics = this._generics.length === 0 ? "" : `<${this._generics.join(", ")}> `;
-		const params = this.params.map((param) => `${param.name}: ${param.pType.toString()}`).join(", ");
+		const params = this.params
+			.map((param) => `${param.name}${param.isOptional ? "?" : ""}: ${param.pType.toString()}`)
+			.join(", ");
 		const ret = this.retType === this ? "self" : this.retType.toString();
 		return `${generics}(${params}) => ${ret}`;
 	}
@@ -91,20 +95,8 @@ export class FunctionType extends PropertyAccessor {
 		return this._generics;
 	}
 
-	public static create(
-		params: { name?: Param["name"]; pType: Param["pType"]; isGeneric?: Param["isGeneric"] }[],
-		retType: Type,
-		generics: string[] = [],
-	): FunctionType {
-		return new FunctionType(
-			params.map((p) => ({
-				name: p.name ?? "<anonymous>",
-				pType: p.pType,
-				isGeneric: p.isGeneric ?? false,
-			})),
-			retType,
-			generics,
-		);
+	public static create(params: Param[], retType: Type, generics: string[] = []): FunctionType {
+		return new FunctionType(params, retType, generics);
 	}
 
 	public override replaceGenerics(generics: { name: string; gType: Type }[]): FunctionType {
@@ -114,6 +106,7 @@ export class FunctionType extends PropertyAccessor {
 				name: param.name,
 				pType: param.pType.replaceGenerics(generics),
 				isGeneric: false,
+				isOptional: param.isOptional,
 			})),
 			this.retType.replaceGenerics(generics),
 		);

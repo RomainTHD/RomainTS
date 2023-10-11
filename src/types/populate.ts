@@ -48,22 +48,24 @@ async function stringsToTypes(types: string[]): Promise<Property[]> {
 
 function getCommonBuiltins(): Property[] {
 	return [
-		{
-			name: "__proto__",
-			pType: AnyType.create(),
-		},
-		{
-			name: "constructor",
-			pType: AnyType.create(),
-		},
+		{ name: "__proto__", pType: AnyType.create() },
+		{ name: "constructor", pType: AnyType.create() },
 		{
 			name: "hasOwnProperty",
-			pType: FunctionType.create([{ pType: StringType.create() }], BooleanType.create()),
+			pType: FunctionType.create(
+				[
+					{
+						name: "o",
+						pType: StringType.create(),
+						isGeneric: false,
+						isOptional: false,
+					},
+				],
+				BooleanType.create(),
+			),
 		},
-		{
-			name: "toString",
-			pType: FunctionType.create([], StringType.create()),
-		},
+		{ name: "toString", pType: FunctionType.create([], StringType.create()) },
+		{ name: "toLocaleString", pType: FunctionType.create([], StringType.create()) },
 	];
 }
 
@@ -71,10 +73,8 @@ async function populateArrayType(): Promise<void> {
 	// TODO: Use better typing for array methods
 	ArrayType.setBuiltins([
 		...getCommonBuiltins(),
+		{ name: "length", pType: NumberType.create() },
 		...(await stringsToTypes([
-			"length: number",
-			"toString: () => string",
-			"toLocaleString: () => string",
 			"pop: <T> () => T | undefined",
 			"push: <T> (items: T[]) => number",
 			"concat: <T> (items: T[]) => T[]",

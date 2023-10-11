@@ -19,11 +19,13 @@ describe("FunctionExpressionVisitor", () => {
 						name: "a",
 						pType: NumberType.create(),
 						isGeneric: false,
+						isOptional: false,
 					},
 					{
 						name: "b",
 						pType: StringType.create(),
 						isGeneric: false,
+						isOptional: false,
 					},
 				],
 				NumberType.create(),

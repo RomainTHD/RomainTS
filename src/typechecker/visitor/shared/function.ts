@@ -52,6 +52,7 @@ export async function visitFunction(
 			name,
 			pType,
 			isGeneric: pType instanceof GenericType,
+			isOptional: param.questionToken !== undefined,
 		});
 	}
 
