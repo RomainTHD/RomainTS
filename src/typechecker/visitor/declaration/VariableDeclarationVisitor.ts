@@ -22,13 +22,19 @@ export async function visit(node: ts.VariableDeclaration, env: Env): Promise<voi
 	}
 
 	if (!node.initializer) {
-		if (!isMutable) {
-			throw new TypecheckingFailure(`Missing initializer for const '${name}'`, node);
-		}
+		// `for (const e of t) ...`
+		const externalType = env.getData<Type | null>("varDeclType", true, null);
+		if (externalType) {
+			vType = externalType;
+		} else {
+			if (!isMutable) {
+				throw new TypecheckingFailure(`Missing initializer for const '${name}'`, node);
+			}
 
-		if (!vType) {
-			// `let x;` is equivalent to `let x: any;`
-			vType = AnyType.create();
+			if (!vType) {
+				// `let x;` is equivalent to `let x: any;`
+				vType = AnyType.create();
+			}
 		}
 	} else {
 		const e: ExpressionReturn = await TypeChecker.accept(node.initializer, env);

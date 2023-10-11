@@ -148,8 +148,14 @@ export abstract class BaseEnv<Value extends BaseValue, ChildData extends BaseChi
 	}
 
 	public getData<T>(key: keyof ChildData, consume: boolean, defaultValue?: T): T {
-		const data =
-			(this._data.get(key) as T) ?? defaultValue ?? throwError(`Data does not have key '${String(key)}'`);
+		let data: T;
+		if (this._data.has(key)) {
+			data = this._data.get(key) as T;
+		} else if (defaultValue !== undefined) {
+			data = defaultValue;
+		} else {
+			throwError(`Data does not have key '${String(key)}'`);
+		}
 		if (consume) {
 			this._data.delete(key);
 		}
