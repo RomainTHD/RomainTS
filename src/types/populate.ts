@@ -1,109 +1,319 @@
-import ts from "typescript";
 import {
 	AnyType,
 	ArrayType,
 	BigIntType,
 	BooleanType,
 	FunctionType,
+	GenericType,
 	NumberType,
 	ObjectType,
+	type Param,
 	type Property,
 	RawObjectType,
 	StringType,
+	type Type,
+	UndefinedType,
+	UnionType,
+	VoidType,
 } from ".";
-import { Env, TypeChecker } from "../typechecker";
 import { IllegalStateException } from "../utils/IllegalStateException";
 import { LoggerFactory } from "../utils/Logger";
 
-const logger = LoggerFactory.create("populate");
+function stringToType(sType: string): [Type, string[]] {
+	const generics = new Set<string>();
+	const types: Type[] = sType.split("|").map((sTypeRaw) => {
+		let sType = sTypeRaw.trim();
+		const isArray = sType.endsWith("[]");
+		sType = sType.replaceAll("[]", "");
+		const base = (() => {
+			switch (sType) {
+				case "any":
+					return AnyType.create();
 
-/**
- * Ugly af but avoids thousands of lines of code
- * FIXME: Will break interpreter, needs to be moved around
- */
-async function stringToType(t: string): Promise<Property> {
-	const ast = ts.createSourceFile("file.ts", `let ${t}`, ts.ScriptTarget.Latest, true);
-	const env = Env.create();
-	try {
-		await TypeChecker.accept(ast, env);
-	} catch (e) {
-		logger.error(`Failed to parse type: ${t}`);
-		throw e;
-	}
-	const lastScope = env["_scopes"][env["_scopes"].length - 1];
-	const name = Array.from(lastScope.keys()).find((k) => k !== "this");
-	if (!name) {
-		throw new IllegalStateException("Could not find variable name");
-	}
-	const value = env.lookup(name);
-	if (!value) {
-		throw new IllegalStateException("Could not find variable type");
-	}
-	return { name, pType: value.vType };
+				case "bigint":
+					return BigIntType.create();
+
+				case "boolean":
+					return BooleanType.create();
+
+				case "number":
+					return NumberType.create();
+
+				case "object":
+					return RawObjectType.create();
+
+				case "string":
+					return StringType.create();
+
+				case "undefined":
+					return UndefinedType.create();
+
+				case "void":
+					return VoidType.create();
+
+				case "T":
+					generics.add("T");
+					return GenericType.create("T");
+
+				default:
+					throw new IllegalStateException(`Unknown type: ${sType}`);
+			}
+		})();
+		if (isArray) {
+			return ArrayType.create(base);
+		} else {
+			return base;
+		}
+	});
+
+	const pType = UnionType.create(types).simplify();
+
+	return [pType, [...generics.values()]];
 }
 
-async function stringsToTypes(types: string[]): Promise<Property[]> {
-	return await Promise.all(types.map(async (t) => await stringToType(t)));
+interface ExtendedParam extends Param {
+	generics: string[];
+}
+
+function createParams(paramsRaw: ([string, string] | ExtendedParam)[]): ExtendedParam[] {
+	if (paramsRaw.length === 0) {
+		return [];
+	}
+
+	return paramsRaw.map((paramRaw) => {
+		if (Array.isArray(paramRaw)) {
+			const [name, sType] = paramRaw;
+			const [pType, ownGenerics] = stringToType(sType);
+			return {
+				name: name.replaceAll("?", ""),
+				pType,
+				isGeneric: ownGenerics.length > 0,
+				isOptional: name.endsWith("?"),
+				generics: ownGenerics,
+			};
+		} else {
+			return paramRaw;
+		}
+	});
+}
+
+function createFunctionParam(
+	name: string,
+	paramsRaw: ([string, string] | ExtendedParam)[],
+	retTypeRaw: string,
+	skipGenerics = true,
+): ExtendedParam {
+	const params = createParams(paramsRaw);
+	const [retType, retGenerics] = stringToType(retTypeRaw);
+	const generics = [...new Set([...retGenerics, ...params.flatMap((p) => p.generics)]).values()];
+	return {
+		name: name.replaceAll("?", ""),
+		pType: FunctionType.create(params, retType, skipGenerics ? [] : generics),
+		isGeneric: generics.length > 0,
+		isOptional: name.endsWith("?"),
+		generics,
+	};
+}
+
+function createProperty(name: string, pTypeRaw: string | ExtendedParam): Property {
+	let pType: Type;
+	if (typeof pTypeRaw === "string") {
+		[pType] = stringToType(pTypeRaw);
+	} else {
+		pType = pTypeRaw.pType;
+	}
+	return {
+		name: name.replaceAll("?", ""),
+		pType,
+	};
+}
+
+function createFunctionProperty(
+	name: string,
+	paramsRaw: ([string, string] | ExtendedParam)[],
+	retTypeRaw: string,
+): Property {
+	return {
+		name,
+		pType: createFunctionParam(name, paramsRaw, retTypeRaw, false).pType,
+	};
 }
 
 function getCommonBuiltins(): Property[] {
 	return [
-		{ name: "__proto__", pType: AnyType.create() },
-		{ name: "constructor", pType: AnyType.create() },
-		{
-			name: "hasOwnProperty",
-			pType: FunctionType.create(
-				[
-					{
-						name: "o",
-						pType: StringType.create(),
-						isGeneric: false,
-						isOptional: false,
-					},
-				],
-				BooleanType.create(),
-			),
-		},
-		{ name: "toString", pType: FunctionType.create([], StringType.create()) },
-		{ name: "toLocaleString", pType: FunctionType.create([], StringType.create()) },
+		createProperty("__proto__", "any"),
+		createProperty("constructor", "any"),
+		createFunctionProperty("hasOwnProperty", [["o", "string | number"]], "boolean"),
+		createFunctionProperty("toString", [], "string"),
+		createFunctionProperty("toLocaleString", [], "string"),
+		createFunctionProperty("isPrototypeOf", [["v", "object"]], "boolean"),
 	];
 }
 
 async function populateArrayType(): Promise<void> {
-	// TODO: Use better typing for array methods
 	ArrayType.setBuiltins([
 		...getCommonBuiltins(),
-		{ name: "length", pType: NumberType.create() },
-		...(await stringsToTypes([
-			"pop: <T> () => T | undefined",
-			"push: <T> (items: T[]) => number",
-			"concat: <T> (items: T[]) => T[]",
-			"join: (separator: string) => string",
-			"reverse: <T> () => T[]",
-			"shift: <T> () => T | undefined",
-			"slice: <T> (start?: number, end?: number) => T[]",
-			"sort: <T> (compareFn?: (a: T, b: T) => number) => T",
-			"splice: <T> (start: number, deleteCount?: number) => T[]",
-			"splice: <T> (start: number, deleteCount: number, items: T[]) => T[]",
-			"unshift: <T> (items: T[]) => number",
-			"indexOf: <T> (searchElement: T, fromIndex?: number) => number",
-			"lastIndexOf: <T> (searchElement: T, fromIndex?: number) => number",
-			"every: <T> (predicate: (value: T, index: number, array: T[]) => T, thisArg?: any) => boolean",
-			"some: <T> (predicate: (value: T, index: number, array: T[]) => T, thisArg?: any) => boolean",
-			"forEach: <T> (callbackfn: (value: T, index: number, array: T[]) => void, thisArg?: any) => void",
-			"map: <T> (callbackfn: (value: T, index: number, array: T[]) => T, thisArg?: any) => T[]", // FIXME: Should be U[]
-			"filter: <T> (predicate: (value: T, index: number, array: T[]) => T, thisArg?: any) => T[]",
-			"reduce: <T> (callbackfn: (previousValue: T, currentValue: T, currentIndex: number, array: T[]) => T, initialValue: T) => T",
-		])),
+		createProperty("length", "number"),
+		createFunctionProperty("pop", [], "T | undefined"),
+		createFunctionProperty("push", [["items", "T[]"]], "number"),
+		createFunctionProperty("concat", [["items", "T[]"]], "T[]"),
+		createFunctionProperty("join", [["separator", "string"]], "string"),
+		createFunctionProperty("reverse", [], "T[]"),
+		createFunctionProperty("shift", [], "T | undefined"),
+		createFunctionProperty(
+			"slice",
+			[
+				["start?", "number"],
+				["end?", "number"],
+			],
+			"T[]",
+		),
+		createFunctionProperty(
+			"sort",
+			[
+				createFunctionParam(
+					"compareFn?",
+					[
+						["a", "T"],
+						["b", "T"],
+					],
+					"number",
+				),
+			],
+			"T",
+		),
+		createFunctionProperty(
+			"splice",
+			[
+				["start", "number"],
+				["deleteCount", "number"],
+				["items", "T[]"],
+			],
+			"T[]",
+		),
+		createFunctionProperty("unshift", [["items", "T[]"]], "number"),
+		createFunctionProperty(
+			"indexOf",
+			[
+				["searchElement", "T"],
+				["fromIndex?", "number"],
+			],
+			"number",
+		),
+		createFunctionProperty(
+			"lastIndexOf",
+			[
+				["searchElement", "T"],
+				["fromIndex?", "number"],
+			],
+			"number",
+		),
+		createFunctionProperty(
+			"every",
+			[
+				createFunctionParam(
+					"predicate",
+					[
+						["value", "T"],
+						["index", "number"],
+						["array", "T[]"],
+					],
+					"T",
+				),
+				["thisArg?", "any"],
+			],
+			"boolean",
+		),
+		createFunctionProperty(
+			"some",
+			[
+				createFunctionParam(
+					"predicate",
+					[
+						["value", "T"],
+						["index", "number"],
+						["array", "T[]"],
+					],
+					"T",
+				),
+				["thisArg?", "any"],
+			],
+			"boolean",
+		),
+		createFunctionProperty(
+			"forEach",
+			[
+				createFunctionParam(
+					"callbackfn",
+					[
+						["value", "T"],
+						["index", "number"],
+						["array", "T[]"],
+					],
+					"void",
+				),
+				["thisArg?", "any"],
+			],
+			"void",
+		),
+		createFunctionProperty(
+			"map",
+			[
+				createFunctionParam(
+					"callbackfn",
+					[
+						["value", "T"],
+						["index", "number"],
+						["array", "T[]"],
+					],
+					"T", // FIXME: Should be another type
+				),
+				["thisArg?", "any"],
+			],
+			"T[]",
+		),
+		createFunctionProperty(
+			"filter",
+			[
+				createFunctionParam(
+					"predicate",
+					[
+						["value", "T"],
+						["index", "number"],
+						["array", "T[]"],
+					],
+					"T",
+				),
+				["thisArg?", "any"],
+			],
+			"T[]",
+		),
+		createFunctionProperty(
+			"reduce",
+			[
+				createFunctionParam(
+					"callbackfn",
+					[
+						["previousValue", "T"],
+						["currentValue", "T"],
+						["currentIndex", "number"],
+						["array", "T[]"],
+					],
+					"T",
+				),
+				["initialValue", "T"],
+			],
+			"T",
+		),
 	]);
 }
 
 async function populateBigIntType(): Promise<void> {
-	BigIntType.setBuiltins([...getCommonBuiltins()]);
+	BigIntType.setBuiltins([...getCommonBuiltins(), createFunctionProperty("valueOf", [], "bigint")]);
 }
 
 async function populateBooleanType(): Promise<void> {
-	BooleanType.setBuiltins([...getCommonBuiltins()]);
+	BooleanType.setBuiltins([...getCommonBuiltins(), createFunctionProperty("valueOf", [], "boolean")]);
 }
 
 async function populateFunctionType(): Promise<void> {
@@ -111,7 +321,13 @@ async function populateFunctionType(): Promise<void> {
 }
 
 async function populateNumberType(): Promise<void> {
-	NumberType.setBuiltins([...getCommonBuiltins()]);
+	NumberType.setBuiltins([
+		...getCommonBuiltins(),
+		createFunctionProperty("valueOf", [], "number"),
+		createFunctionProperty("toFixed", [["fractionDigits?", "number"]], "string"),
+		createFunctionProperty("toExponential", [["fractionDigits?", "number"]], "string"),
+		createFunctionProperty("toPrecision", [["precision?", "number"]], "string"),
+	]);
 }
 
 async function populateObjectType(): Promise<void> {

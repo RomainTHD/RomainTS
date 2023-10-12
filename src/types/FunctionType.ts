@@ -95,8 +95,29 @@ export class FunctionType extends PropertyAccessor {
 		return this._generics;
 	}
 
-	public static create(params: Param[], retType: Type, generics: string[] = []): FunctionType {
-		return new FunctionType(params, retType, generics);
+	public static create(
+		params: {
+			name: string;
+			pType: Type;
+			isGeneric?: boolean;
+			isOptional?: boolean;
+		}[],
+		retType: Type,
+		generics: string[] = [],
+	): FunctionType {
+		assert(params.every((p) => p.name));
+		assert(!params.some((p) => p.name.includes("?")));
+		assert(params.every((p) => p.pType));
+		return new FunctionType(
+			params.map((p) => ({
+				name: p.name,
+				pType: p.pType,
+				isGeneric: p.isGeneric ?? false,
+				isOptional: p.isOptional ?? false,
+			})),
+			retType,
+			generics,
+		);
 	}
 
 	public override replaceGenerics(generics: { name: string; gType: Type }[]): FunctionType {

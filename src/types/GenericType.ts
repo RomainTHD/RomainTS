@@ -1,4 +1,5 @@
 import { Type } from "./Type";
+import { UnknownType } from "./UnknownType";
 
 export class GenericType extends Type {
 	private readonly _label: string;
@@ -34,8 +35,8 @@ export class GenericType extends Type {
 		return this;
 	}
 
-	public static create(label: string, aliasType: Type): GenericType {
-		return new GenericType(label, aliasType);
+	public static create(label: string, aliasType?: Type): GenericType {
+		return new GenericType(label, aliasType ?? UnknownType.create());
 	}
 
 	public get label(): string {
