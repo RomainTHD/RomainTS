@@ -88,7 +88,7 @@ function _visit() {
       if (retData.returningStatement === _utils_Bool3__WEBPACK_IMPORTED_MODULE_4__.Bool3.No) {
         fType.retType = _types__WEBPACK_IMPORTED_MODULE_2__.VoidType.create();
       } else if (retData.returningStatement === _utils_Bool3__WEBPACK_IMPORTED_MODULE_4__.Bool3.Sometimes) {
-        fType.retType = _types__WEBPACK_IMPORTED_MODULE_2__.UnionType.create([inferredType, _types__WEBPACK_IMPORTED_MODULE_2__.UndefinedType.create()]).simplify();
+        fType.retType = _types__WEBPACK_IMPORTED_MODULE_2__.UnionType.create([inferredType, _types__WEBPACK_IMPORTED_MODULE_2__.VoidType.create()]).simplify();
       } else {
         fType.retType = inferredType;
       }
