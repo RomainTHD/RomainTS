@@ -22,6 +22,9 @@ export interface ChildData extends BaseChildData {
 	isLocal: boolean;
 	isMutable: boolean;
 	varDeclType: Type;
+	switchExprType: Type;
+	allowBreak: boolean;
+	allowContinue: boolean;
 }
 
 export class EnvTypechecker extends BaseEnv<Value, ChildData> {

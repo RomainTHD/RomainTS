@@ -19,7 +19,13 @@ export const visit: StatementVisitor<ts.ForOfStatement> = async (node, env) => {
 		async () => await TypeChecker.accept(node.initializer, env),
 	);
 
-	const res: StatementReturn = await TypeChecker.accept(node.statement, env);
+	const res: StatementReturn = await env.withChildData(
+		{
+			allowBreak: true,
+			allowContinue: true,
+		},
+		async () => await TypeChecker.accept(node.statement, env),
+	);
 
 	env.leaveScope();
 
