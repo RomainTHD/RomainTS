@@ -66,7 +66,7 @@ export async function visit(node: ts.FunctionDeclaration, env: Env): Promise<Typ
 		if (retData.returningStatement === Bool3.No) {
 			fType.retType = VoidType.create();
 		} else if (retData.returningStatement === Bool3.Sometimes) {
-			fType.retType = UnionType.create([inferredType, UndefinedType.create()]).simplify();
+			fType.retType = UnionType.create([inferredType, VoidType.create()]).simplify();
 		} else {
 			fType.retType = inferredType;
 		}
