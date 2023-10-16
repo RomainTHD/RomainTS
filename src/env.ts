@@ -5,6 +5,11 @@ export interface EnvConfig {
 	allowUnreachableCode: boolean;
 	noImplicitAny: boolean;
 	strictMode: boolean;
+
+	/**
+	 * If true, allows for runtime dynamics, such as `for (let e in 0) {}`.
+	 */
+	runtimeDynamics: boolean;
 }
 
 export interface BaseValue {

@@ -43,6 +43,7 @@ export class EnvTypechecker extends BaseEnv<Value, ChildData> {
 			allowUnreachableCode: config?.allowUnreachableCode ?? true,
 			noImplicitAny: config?.noImplicitAny ?? false,
 			strictMode: config?.strictMode ?? false,
+			runtimeDynamics: config?.runtimeDynamics ?? false,
 		});
 	}
 
