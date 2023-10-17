@@ -12,8 +12,8 @@ export namespace TypeChecker {
 		return await baseAccept(node, env, logger);
 	}
 
-	export async function typecheck(root: ts.Node): Promise<boolean> {
-		const env = Env.create();
+	export async function typecheck(root: ts.Node, verbose = false): Promise<boolean> {
+		const env = Env.create({ verbose });
 		try {
 			await accept(root, env);
 			return true;

@@ -44,6 +44,7 @@ export class EnvTypechecker extends BaseEnv<Value, ChildData> {
 			noImplicitAny: config?.noImplicitAny ?? false,
 			strictMode: config?.strictMode ?? false,
 			runtimeDynamics: config?.runtimeDynamics ?? false,
+			verbose: config?.verbose ?? false,
 		});
 	}
 

@@ -64,7 +64,9 @@ export async function baseAccept<T, Env extends BaseEnv<any, any>>(
 	logger: Logger,
 ): Promise<T> {
 	const kind = sanitizeSyntaxKind(node.kind);
-	logger.indent(kind);
+	if (env.config.verbose) {
+		logger.indent(kind);
+	}
 
 	let visitorModule: { visit: (node: ts.Node, env: Env) => Promise<T> };
 	try {

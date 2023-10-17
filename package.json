@@ -22,10 +22,10 @@
 		"prepare": "husky install",
 		"prepublishOnly": "pinst --disable",
 		"start": "tsx ./src/main.ts -i ./example.ts",
-		"start:typecheck": "tsx ./src/main.ts -i ./example.ts --typecheck-only",
-		"start:execute": "tsx ./src/main.ts -i ./example.ts --execute-only",
+		"start:typecheck": "tsx ./src/main.ts -i ./example.ts --typecheck-only --verbose",
+		"start:execute": "tsx ./src/main.ts -i ./example.ts --execute-only --verbose",
 		"start:watch": "tsx watch src/index.ts",
-		"start:debug": "node --inspect --loader tsx 'src/index.ts'",
+		"start:debug": "node --inspect --loader tsx src/main.ts -i ./example.ts --typecheck-only --verbose",
 		"test": "vitest run -r ./src",
 		"test:dev": "vitest dev -r ./src",
 		"testsuite": "python3 testsuite.py"

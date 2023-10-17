@@ -10,6 +10,7 @@ export interface EnvConfig {
 	 * If true, allows for runtime dynamics, such as `for (let e in 0) {}`.
 	 */
 	runtimeDynamics: boolean;
+	verbose: boolean;
 }
 
 export interface BaseValue {

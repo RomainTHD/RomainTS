@@ -5,6 +5,7 @@ import { LoggerFactory } from "./utils/Logger";
 program.option("-i, --input <path>", "Input file path");
 program.option("--typecheck-only", "Only typecheck the program", false);
 program.option("--execute-only", "Only execute the program", false);
+program.option("--verbose", "Verbose", false);
 program.parse();
 
 export namespace CLI {
@@ -26,5 +27,9 @@ export namespace CLI {
 
 	export function executeOnly(): boolean {
 		return options["executeOnly"];
+	}
+
+	export function isVerbose(): boolean {
+		return options["verbose"];
 	}
 }

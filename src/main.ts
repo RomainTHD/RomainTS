@@ -9,18 +9,25 @@ await initTypes();
 
 const content = CLI.getInputContent();
 const node = AST.parse(content);
+const verbose = CLI.isVerbose();
 
 const logger = LoggerFactory.create("Main");
 
 let success = true;
 
 if (!CLI.executeOnly()) {
-	logger.info("Typechecking...");
-	const res = await TypeChecker.typecheck(node);
+	if (verbose) {
+		logger.info("Typechecking...");
+	}
+	const res = await TypeChecker.typecheck(node, verbose);
 	if (res) {
-		logger.success("Typechecking successful!");
+		if (verbose) {
+			logger.success("Typechecking successful!");
+		}
 	} else {
-		logger.error("Typechecking failed!");
+		if (verbose) {
+			logger.error("Typechecking failed!");
+		}
 		success = false;
 	}
 }
