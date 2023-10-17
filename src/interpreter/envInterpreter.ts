@@ -14,6 +14,9 @@ export class EnvInterpreter extends BaseEnv<Value, ChildData> {
 			allowUnreachableCode: config?.allowUnreachableCode ?? true,
 			noImplicitAny: config?.noImplicitAny ?? false,
 			strictMode: config?.strictMode ?? false,
+			runtimeDynamics: config?.runtimeDynamics ?? false,
+			verbose: config?.verbose ?? false,
+			isRoot: config?.isRoot ?? true,
 		});
 	}
 

@@ -37,7 +37,7 @@ export namespace TypeChecker {
 			}
 
 			if (content === undefined) {
-				throw new IllegalStateException(`Could not read file ${filePath}: content is undefined`, fromNode);
+				throw new IllegalStateException(`Could not read file ${filePath}: content is undefined`);
 			}
 
 			const env = Env.create(parentEnvConfig);

@@ -1,7 +1,7 @@
 import { Component, HostListener } from "@angular/core";
-import { MonacoEditorConstructionOptions } from "@materia-ui/ngx-monaco-editor";
+import type { MonacoEditorConstructionOptions } from "@materia-ui/ngx-monaco-editor";
 import { AppService } from "./app.service";
-import { LogEntry } from "./LogEntry";
+import type { LogEntry } from "./LogEntry";
 
 @Component({
 	selector: "app-root",
@@ -19,7 +19,7 @@ export class AppComponent {
 		},
 	};
 
-	public code: string = "";
+	public code = "";
 
 	public output: LogEntry[] = [];
 	public status: "none" | "running" | "success" | "failure" = "none";

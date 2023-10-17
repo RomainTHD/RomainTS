@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { AST } from "../../../src/AST";
 import { TypeChecker } from "../../../src/typechecker";
 import { LoggerFactory } from "../../../src/utils/Logger";
-import { LogEntry } from "./LogEntry";
+import type { LogEntry } from "./LogEntry";
 import { LogLevel } from "./LogLevel";
 
 @Injectable({
@@ -10,8 +10,6 @@ import { LogLevel } from "./LogLevel";
 })
 export class AppService {
 	public static readonly TAB_SIZE = 2;
-
-	public constructor() {}
 
 	public async run(content: string): Promise<{ output: LogEntry[]; ok: boolean }> {
 		const entries: LogEntry[] = [];
@@ -57,10 +55,10 @@ export class AppService {
 				--indent;
 				console.groupEnd();
 			},
-		} as Console);
+		} as typeof console);
 
 		const node = AST.parse(content);
-		const res = await TypeChecker.typecheck(node);
+		const res = await TypeChecker.typecheck(node, true);
 
 		return {
 			output: entries,
