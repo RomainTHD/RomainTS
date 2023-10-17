@@ -30,7 +30,8 @@ export interface ChildData extends BaseChildData {
 export class EnvTypechecker extends BaseEnv<Value, ChildData> {
 	// private static override logger = LoggerFactory.create("EnvTypecheck");
 
-	private readonly _types: Map<string, Type>[] = [new Map()];
+	private readonly _types = [new Map<string, Type>()];
+	private readonly _exports = new Map<string, Type>();
 	private readonly returnTypes: Type[] = [];
 
 	protected constructor(config: EnvConfig) {
@@ -45,6 +46,7 @@ export class EnvTypechecker extends BaseEnv<Value, ChildData> {
 			strictMode: config?.strictMode ?? false,
 			runtimeDynamics: config?.runtimeDynamics ?? false,
 			verbose: config?.verbose ?? false,
+			isRoot: config?.isRoot ?? true,
 		});
 	}
 
@@ -88,13 +90,20 @@ export class EnvTypechecker extends BaseEnv<Value, ChildData> {
 		super.add(name, valueSafe);
 	}
 
-	public addType(name: string, t: Type): void {
+	public addType(name: string, t: Type, exported = false): void {
 		assert(name, `Name is unset, value is '${name}'`);
 		assert(t, `Type is unset, value is '${t}'`);
 		assert(t instanceof Type, `Type '${JSON.stringify(t)}' is not a Type`);
 		assert(this._types.length > 0, "No scope to add to");
 		const typeScope = this._types[this._types.length - 1];
 		typeScope.set(name, t);
+		if (exported) {
+			this._exports.set(name, t);
+		}
+	}
+
+	public getExportedTypes(): Map<string, Type> {
+		return this._exports;
 	}
 
 	public override print(): void {

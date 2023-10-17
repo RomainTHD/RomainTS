@@ -71,7 +71,7 @@ module.exports = {
 		"@typescript-eslint/quotes": ["error", "double"],
 		"@typescript-eslint/semi": ["error", "always"],
 		"@typescript-eslint/no-inferrable-types": "error",
-		"@typescript-eslint/no-non-null-assertion": "error",
+		"@typescript-eslint/no-non-null-assertion": "off",
 		"@typescript-eslint/array-type": "off",
 		"@typescript-eslint/member-delimiter-style": "off",
 		"@typescript-eslint/no-confusing-void-expression": "off",

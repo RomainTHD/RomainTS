@@ -5,7 +5,7 @@ export async function visit(node: ts.SourceFile, env: Env): Promise<void> {
 	for (const [i, stmt] of node.statements.entries()) {
 		await env.withChildData({ isFirstStatement: i === 0 }, async () => await TypeChecker.accept(stmt, env));
 	}
-	if (env.config.verbose) {
+	if (env.config.verbose && env.config.isRoot) {
 		env.print();
 	}
 }

@@ -11,6 +11,11 @@ export interface EnvConfig {
 	 */
 	runtimeDynamics: boolean;
 	verbose: boolean;
+
+	/**
+	 * Whether this env is the main one or an import
+	 */
+	isRoot: boolean;
 }
 
 export interface BaseValue {
