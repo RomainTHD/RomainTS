@@ -41,6 +41,7 @@ export namespace TypeChecker {
 			}
 
 			const env = Env.create(parentEnvConfig);
+			importCache.set(filePath, new Map());
 			await accept(AST.parse(content), env);
 			importCache.set(filePath, env.getExportedTypes());
 		}
