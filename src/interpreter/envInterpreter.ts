@@ -1,4 +1,12 @@
-import { type BaseChildData, BaseEnv, type BaseValue, type EnvConfig, Stage } from "../env";
+import {
+	type BaseChildData,
+	BaseEnv,
+	type BaseValue,
+	type EnvConfig,
+	type InternalEnvConfig,
+	Stage,
+	type TypescriptConfig,
+} from "../env";
 
 interface Value extends BaseValue {}
 
@@ -9,14 +17,19 @@ export class EnvInterpreter extends BaseEnv<Value, ChildData> {
 		super(config, Stage.Interpreter);
 	}
 
-	public static create(config?: Partial<EnvConfig>): EnvInterpreter {
+	public static create(
+		tsConfig?: Partial<TypescriptConfig>,
+		internalConfig?: Partial<InternalEnvConfig>,
+	): EnvInterpreter {
 		return new EnvInterpreter({
-			allowUnreachableCode: config?.allowUnreachableCode ?? true,
-			noImplicitAny: config?.noImplicitAny ?? false,
-			strictMode: config?.strictMode ?? false,
-			runtimeDynamics: config?.runtimeDynamics ?? false,
-			verbose: config?.verbose ?? false,
-			isRoot: config?.isRoot ?? true,
+			allowUnreachableCode: tsConfig?.allowUnreachableCode ?? true,
+			noImplicitAny: tsConfig?.noImplicitAny ?? false,
+			strictMode: tsConfig?.strictMode ?? false,
+			runtimeDynamics: tsConfig?.runtimeDynamics ?? false,
+			verbose: tsConfig?.verbose ?? false,
+
+			isRoot: internalConfig?.isRoot ?? true,
+			basePath: internalConfig?.basePath ?? "",
 		});
 	}
 

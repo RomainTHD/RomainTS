@@ -1,7 +1,7 @@
 import { assert, throwError } from "./utils";
 import { LoggerFactory } from "./utils/Logger";
 
-export interface EnvConfig {
+export interface TypescriptConfig {
 	allowUnreachableCode: boolean;
 	noImplicitAny: boolean;
 	strictMode: boolean;
@@ -11,12 +11,21 @@ export interface EnvConfig {
 	 */
 	runtimeDynamics: boolean;
 	verbose: boolean;
+}
 
+export interface InternalEnvConfig {
 	/**
 	 * Whether this env is the main one or an import
 	 */
 	isRoot: boolean;
+
+	/**
+	 * The base path used for relative imports
+	 */
+	basePath: string;
 }
+
+export type EnvConfig = TypescriptConfig & InternalEnvConfig;
 
 export interface BaseValue {
 	isLocal: boolean;

@@ -1,4 +1,12 @@
-import { type BaseChildData, BaseEnv, type BaseValue, type EnvConfig, Stage } from "../env";
+import {
+	type BaseChildData,
+	BaseEnv,
+	type BaseValue,
+	type EnvConfig,
+	type InternalEnvConfig,
+	Stage,
+	type TypescriptConfig,
+} from "../env";
 import { NumberType, ObjectType, Type, UndefinedType } from "../types";
 import { assert, type AtLeast, stringify, throwError } from "../utils";
 
@@ -39,14 +47,19 @@ export class EnvTypechecker extends BaseEnv<Value, ChildData> {
 		this.populateEnv();
 	}
 
-	public static create(config?: Partial<EnvConfig>): EnvTypechecker {
+	public static create(
+		tsConfig?: Partial<TypescriptConfig>,
+		internalConfig?: Partial<InternalEnvConfig>,
+	): EnvTypechecker {
 		return new EnvTypechecker({
-			allowUnreachableCode: config?.allowUnreachableCode ?? true,
-			noImplicitAny: config?.noImplicitAny ?? false,
-			strictMode: config?.strictMode ?? false,
-			runtimeDynamics: config?.runtimeDynamics ?? false,
-			verbose: config?.verbose ?? false,
-			isRoot: config?.isRoot ?? true,
+			allowUnreachableCode: tsConfig?.allowUnreachableCode ?? true,
+			noImplicitAny: tsConfig?.noImplicitAny ?? false,
+			strictMode: tsConfig?.strictMode ?? false,
+			runtimeDynamics: tsConfig?.runtimeDynamics ?? false,
+			verbose: tsConfig?.verbose ?? false,
+
+			isRoot: internalConfig?.isRoot ?? true,
+			basePath: internalConfig?.basePath ?? "",
 		});
 	}
 

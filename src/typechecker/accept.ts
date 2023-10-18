@@ -1,4 +1,5 @@
 import * as fs from "fs";
+import * as path from "path";
 import type ts from "typescript";
 import { Env, TypecheckingFailure } from ".";
 import { AST } from "../AST";
@@ -24,7 +25,9 @@ export namespace TypeChecker {
 		parentEnvConfig: EnvConfig,
 		fromNode: ts.Node,
 	): Promise<Map<string, Type>> {
-		const filePath = filePathRaw.endsWith(".ts") ? filePathRaw : `${filePathRaw}.ts`;
+		let filePath = filePathRaw.endsWith(".ts") ? filePathRaw : `${filePathRaw}.ts`;
+		filePath = path.normalize(path.join(parentEnvConfig.basePath, filePath));
+		const basePath = path.dirname(filePath);
 
 		if (!importCache.has(filePath)) {
 			let content: string;
@@ -40,7 +43,7 @@ export namespace TypeChecker {
 				throw new IllegalStateException(`Could not read file ${filePath}: content is undefined`);
 			}
 
-			const env = Env.create(parentEnvConfig);
+			const env = Env.create(parentEnvConfig, { ...parentEnvConfig, basePath });
 			importCache.set(filePath, new Map());
 			await accept(AST.parse(content), env);
 			importCache.set(filePath, env.getExportedTypes());
