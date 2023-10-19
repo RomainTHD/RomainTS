@@ -112,4 +112,17 @@ describe("FunctionDeclarationVisitor", () => {
 		}`;
 		await expect(TypeChecker.accept(AST.parse(content), Env.create())).rejects.toThrow(TypecheckingFailure);
 	});
+
+	it("should support optional parameters", async () => {
+		const content = `
+		function f(x?: number) {
+			return x;
+		}
+		`;
+		const env = Env.create();
+		await TypeChecker.accept(AST.parse(content), env);
+		expect((env.lookup("f")!.vType as FunctionType).retType).toEqual(
+			UnionType.create([NumberType.create(), UndefinedType.create()]),
+		);
+	});
 });

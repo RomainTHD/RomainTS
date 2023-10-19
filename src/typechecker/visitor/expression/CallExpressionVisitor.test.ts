@@ -158,4 +158,15 @@ describe("CallExpressionVisitor", () => {
 		await TypeChecker.accept(AST.parse(content), env);
 		expect(env.lookup("x")?.vType).toEqual(UnknownType.create());
 	});
+
+	it("should support missing optional parameters", async () => {
+		const content = `
+		function f(a: number, b?: number): number {
+			return 0;
+		}
+		let x: number = f(1);
+		`;
+		const env = Env.create();
+		await TypeChecker.accept(AST.parse(content), env);
+	});
 });

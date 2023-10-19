@@ -1,6 +1,15 @@
 import type ts from "typescript";
 import { type Env, TypeChecker, TypecheckingFailure } from "../..";
-import { AnyType, FunctionType, GenericType, type Param, type Type, UnknownType } from "../../../types";
+import {
+	AnyType,
+	FunctionType,
+	GenericType,
+	type Param,
+	type Type,
+	UndefinedType,
+	UnionType,
+	UnknownType,
+} from "../../../types";
 import { assert } from "../../../utils";
 import { type ExpressionReturn } from "./expression";
 
@@ -41,6 +50,8 @@ export async function visitFunction(
 		assert(e.identifier !== undefined, "identifier is undefined");
 		const name = e.identifier;
 
+		const isOptional = param.questionToken !== undefined;
+
 		let pType: Type;
 		if (param.type) {
 			pType = await TypeChecker.accept(param.type, env);
@@ -48,11 +59,15 @@ export async function visitFunction(
 			pType = AnyType.create();
 		}
 
+		if (isOptional) {
+			pType = UnionType.create([pType, UndefinedType.create()]).simplify();
+		}
+
 		params.push({
 			name,
 			pType,
 			isGeneric: pType instanceof GenericType,
-			isOptional: param.questionToken !== undefined,
+			isOptional,
 		});
 	}
 

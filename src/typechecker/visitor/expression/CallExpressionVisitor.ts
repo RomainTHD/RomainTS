@@ -50,8 +50,15 @@ export const visit: ExpressionVisitor<ts.CallExpression> = async (node, env) => 
 	}
 
 	if (f.params.length !== args.length) {
-		// TODO: Handle optional parameters
-		throw new TypecheckingFailure(`Expected ${f.params.length} arguments, got ${args.length}`, node);
+		const err = new TypecheckingFailure(`Expected ${f.params.length} arguments, got ${args.length}`, node);
+		if (args.length > f.params.length) {
+			throw err;
+		}
+
+		const firstOptional = f.params.findIndex((param) => param.isOptional);
+		if (firstOptional === -1 || args.length < firstOptional) {
+			throw err;
+		}
 	}
 
 	if (!typeArgs) {
