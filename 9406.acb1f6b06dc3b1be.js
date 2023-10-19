@@ -57,8 +57,14 @@ const visit = /*#__PURE__*/function () {
       args.push((yield ___WEBPACK_IMPORTED_MODULE_1__.TypeChecker.accept(arg, env)).eType);
     }
     if (f.params.length !== args.length) {
-      // TODO: Handle optional parameters
-      throw new ___WEBPACK_IMPORTED_MODULE_1__.TypecheckingFailure(`Expected ${f.params.length} arguments, got ${args.length}`, node);
+      const err = new ___WEBPACK_IMPORTED_MODULE_1__.TypecheckingFailure(`Expected ${f.params.length} arguments, got ${args.length}`, node);
+      if (args.length > f.params.length) {
+        throw err;
+      }
+      const firstOptional = f.params.findIndex(param => param.isOptional);
+      if (firstOptional === -1 || args.length < firstOptional) {
+        throw err;
+      }
     }
     if (!typeArgs) {
       // Infer generic types from arguments

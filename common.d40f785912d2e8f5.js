@@ -53,17 +53,21 @@ function _visitFunction() {
       }));
       (0,_utils__WEBPACK_IMPORTED_MODULE_3__.assert)(e.identifier !== undefined, "identifier is undefined");
       const name = e.identifier;
+      const isOptional = param.questionToken !== undefined;
       let pType;
       if (param.type) {
         pType = yield ___WEBPACK_IMPORTED_MODULE_1__.TypeChecker.accept(param.type, env);
       } else {
         pType = _types__WEBPACK_IMPORTED_MODULE_2__.AnyType.create();
       }
+      if (isOptional) {
+        pType = _types__WEBPACK_IMPORTED_MODULE_2__.UnionType.create([pType, _types__WEBPACK_IMPORTED_MODULE_2__.UndefinedType.create()]).simplify();
+      }
       params.push({
         name,
         pType,
         isGeneric: pType instanceof _types__WEBPACK_IMPORTED_MODULE_2__.GenericType,
-        isOptional: param.questionToken !== undefined
+        isOptional
       });
     }
     let retType;
