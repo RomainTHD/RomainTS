@@ -23,21 +23,21 @@ export async function visit(node: ts.Token<ts.SyntaxKind.EqualsToken>, env: Env)
 	if (variable) {
 		if (variable.builtin) {
 			if (env.config.strictMode) {
-				throw new TypecheckingFailure(`Cannot assign to builtin '${left}'`, node);
+				throw new TypecheckingFailure(`Cannot assign to builtin '${left.identifier}'`, node);
 			} else {
-				logger.warn(`Suspicious assignment to builtin '${left}'`);
+				logger.warn(`Suspicious assignment to builtin '${left.identifier}'`);
 			}
 		} else if (!variable.isMutable) {
-			throw new TypecheckingFailure(`Cannot assign to constant '${left}'`, node);
+			throw new TypecheckingFailure(`Cannot assign to constant '${left.identifier}'`, node);
 		} else if (!variable.vType.contains(right.eType)) {
-			throw new TypecheckingFailure(`Type '${right}' is not assignable to type '${variable.vType}'`, node);
+			throw new TypecheckingFailure(`Type '${left.eType}' is not assignable to type '${variable.vType}'`, node);
 		}
 	} else {
 		// `x = 0` where `x` is not declared. Valid in non-strict mode
 		if (env.config.strictMode) {
-			throw new TypecheckingFailure(`Variable ${left} not found`, node);
+			throw new TypecheckingFailure(`Variable ${left.identifier} not found`, node);
 		} else {
-			logger.warn(`Variable '${left}' not found, declaring it`);
+			logger.warn(`Variable '${left.identifier}' not found, declaring it`);
 			if (right.eType instanceof LiteralType) {
 				env.add(left.identifier, { vType: right.eType.literal.vType, isLocal: false, isMutable: true });
 			} else {
