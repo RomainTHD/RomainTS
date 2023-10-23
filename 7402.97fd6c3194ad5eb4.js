@@ -35,21 +35,21 @@ function _visit() {
     if (variable) {
       if (variable.builtin) {
         if (env.config.strictMode) {
-          throw new ___WEBPACK_IMPORTED_MODULE_1__.TypecheckingFailure(`Cannot assign to builtin '${left}'`, node);
+          throw new ___WEBPACK_IMPORTED_MODULE_1__.TypecheckingFailure(`Cannot assign to builtin '${left.identifier}'`, node);
         } else {
-          logger.warn(`Suspicious assignment to builtin '${left}'`);
+          logger.warn(`Suspicious assignment to builtin '${left.identifier}'`);
         }
       } else if (!variable.isMutable) {
-        throw new ___WEBPACK_IMPORTED_MODULE_1__.TypecheckingFailure(`Cannot assign to constant '${left}'`, node);
+        throw new ___WEBPACK_IMPORTED_MODULE_1__.TypecheckingFailure(`Cannot assign to constant '${left.identifier}'`, node);
       } else if (!variable.vType.contains(right.eType)) {
-        throw new ___WEBPACK_IMPORTED_MODULE_1__.TypecheckingFailure(`Type '${right}' is not assignable to type '${variable.vType}'`, node);
+        throw new ___WEBPACK_IMPORTED_MODULE_1__.TypecheckingFailure(`Type '${left.eType}' is not assignable to type '${variable.vType}'`, node);
       }
     } else {
       // `x = 0` where `x` is not declared. Valid in non-strict mode
       if (env.config.strictMode) {
-        throw new ___WEBPACK_IMPORTED_MODULE_1__.TypecheckingFailure(`Variable ${left} not found`, node);
+        throw new ___WEBPACK_IMPORTED_MODULE_1__.TypecheckingFailure(`Variable ${left.identifier} not found`, node);
       } else {
-        logger.warn(`Variable '${left}' not found, declaring it`);
+        logger.warn(`Variable '${left.identifier}' not found, declaring it`);
         if (right.eType instanceof _types__WEBPACK_IMPORTED_MODULE_2__.LiteralType) {
           env.add(left.identifier, {
             vType: right.eType.literal.vType,
