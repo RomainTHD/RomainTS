@@ -19,9 +19,9 @@ import {
 import { IllegalStateException } from "../utils/IllegalStateException";
 import { LoggerFactory } from "../utils/Logger";
 
-function stringToType(sType: string): [Type, string[]] {
+function stringToType(sTypesRaw: string): [Type, string[]] {
 	const generics = new Set<string>();
-	const types: Type[] = sType.split("|").map((sTypeRaw) => {
+	const types: Type[] = sTypesRaw.split("|").map((sTypeRaw) => {
 		let sType = sTypeRaw.trim();
 		const isArray = sType.endsWith("[]");
 		sType = sType.replaceAll("[]", "");
@@ -150,7 +150,7 @@ function getCommonBuiltins(): Property[] {
 	];
 }
 
-async function populateArrayType(): Promise<void> {
+function populateArrayType(): void {
 	ArrayType.setBuiltins([
 		...getCommonBuiltins(),
 		createProperty("length", "number"),
@@ -308,19 +308,19 @@ async function populateArrayType(): Promise<void> {
 	]);
 }
 
-async function populateBigIntType(): Promise<void> {
+function populateBigIntType(): void {
 	BigIntType.setBuiltins([...getCommonBuiltins(), createFunctionProperty("valueOf", [], "bigint")]);
 }
 
-async function populateBooleanType(): Promise<void> {
+function populateBooleanType(): void {
 	BooleanType.setBuiltins([...getCommonBuiltins(), createFunctionProperty("valueOf", [], "boolean")]);
 }
 
-async function populateFunctionType(): Promise<void> {
+function populateFunctionType(): void {
 	FunctionType.setBuiltins([...getCommonBuiltins()]);
 }
 
-async function populateNumberType(): Promise<void> {
+function populateNumberType(): void {
 	NumberType.setBuiltins([
 		...getCommonBuiltins(),
 		createFunctionProperty("valueOf", [], "number"),
@@ -330,15 +330,15 @@ async function populateNumberType(): Promise<void> {
 	]);
 }
 
-async function populateObjectType(): Promise<void> {
+function populateObjectType(): void {
 	ObjectType.setBuiltins([...getCommonBuiltins()]);
 }
 
-async function populateRawObjectType(): Promise<void> {
+function populateRawObjectType(): void {
 	RawObjectType.setBuiltins([...getCommonBuiltins()]);
 }
 
-async function populateStringType(): Promise<void> {
+function populateStringType(): void {
 	StringType.setBuiltins([...getCommonBuiltins()]);
 }
 
@@ -346,14 +346,14 @@ let populated = false;
 
 export async function populate(): Promise<void> {
 	LoggerFactory.setMinLevel(LoggerFactory.Level.Info);
-	await populateArrayType();
-	await populateBigIntType();
-	await populateBooleanType();
-	await populateFunctionType();
-	await populateNumberType();
-	await populateObjectType();
-	await populateRawObjectType();
-	await populateStringType();
+	populateArrayType();
+	populateBigIntType();
+	populateBooleanType();
+	populateFunctionType();
+	populateNumberType();
+	populateObjectType();
+	populateRawObjectType();
+	populateStringType();
 	LoggerFactory.setMinLevel(LoggerFactory.Level.Debug);
 	populated = true;
 }
