@@ -110,7 +110,7 @@ describe("FunctionDeclarationVisitor", () => {
 		const content = `
 		function f<T, T>() {
 		}`;
-		await expect(TypeChecker.accept(AST.parse(content), Env.create())).rejects.toThrow(TypecheckingFailure);
+		await expect(TypeChecker.accept(AST.parse(content), Env.create())).rejects.toThrowError(TypecheckingFailure);
 	});
 
 	it("should support optional parameters", async () => {
@@ -124,5 +124,26 @@ describe("FunctionDeclarationVisitor", () => {
 		expect((env.lookup("f")!.vType as FunctionType).retType).toEqual(
 			UnionType.create([NumberType.create(), UndefinedType.create()]),
 		);
+	});
+
+	it("should export functions", async () => {
+		const content = `
+		export function f() {
+		}
+		`;
+		const env = Env.create();
+		await TypeChecker.accept(AST.parse(content), env);
+		expect(env.getExportedTypes().get("f")).toBeDefined();
+		expect(env.getExportedTypes().get("f")?.typeOnly).toBe(false);
+	});
+
+	it("should not export inner functions", async () => {
+		const content = `
+		export function f() {
+			export function g() {
+			}
+		}
+		`;
+		await expect(TypeChecker.accept(AST.parse(content), Env.create())).rejects.toThrowError(TypecheckingFailure);
 	});
 });

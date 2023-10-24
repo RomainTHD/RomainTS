@@ -69,5 +69,5 @@ export async function visit(node: ts.VariableDeclaration, env: Env): Promise<voi
 		}
 	}
 
-	env.add(name, { vType, isLocal, isMutable });
+	env.add(name, { vType, isLocal, isMutable }, env.getData("isExported", false, false));
 }

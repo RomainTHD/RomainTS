@@ -104,7 +104,7 @@ export abstract class BaseEnv<Value extends BaseValue, ChildData extends BaseChi
 			BaseEnv.logger.indent("New scope:");
 			for (const [name, value] of scope) {
 				if (BaseEnv.hideBuiltins && !value.builtin) {
-					BaseEnv.logger.debug(`${name}(${value.isMutable ? "L" : "C"}): ${this.valueToString(value)}`);
+					BaseEnv.logger.debug(`(${value.isMutable ? "L" : "C"}) ${name}: ${this.valueToString(value)}`);
 				}
 			}
 		}
@@ -116,7 +116,7 @@ export abstract class BaseEnv<Value extends BaseValue, ChildData extends BaseChi
 		BaseEnv.logger.indent("Globals:");
 		for (const [name, value] of this._globals) {
 			if (BaseEnv.hideBuiltins && !value.builtin) {
-				BaseEnv.logger.debug(`${name}(${value.isMutable ? "L" : "C"}): ${this.valueToString(value)}`);
+				BaseEnv.logger.debug(`(${value.isMutable ? "L" : "C"}) ${name}: ${this.valueToString(value)}`);
 			}
 		}
 		BaseEnv.logger.unindent();

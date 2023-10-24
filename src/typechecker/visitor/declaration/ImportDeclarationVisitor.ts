@@ -1,6 +1,7 @@
 import type ts from "typescript";
 import { type Env, TypeChecker, TypecheckingFailure } from "../..";
 import type { LiteralType } from "../../../types";
+import { arrayToString } from "../../../utils";
 import { NotImplementedException } from "../../../utils/NotImplementedException";
 import type { ExpressionReturn } from "../shared/expression";
 
@@ -24,15 +25,21 @@ export async function visit(node: ts.ImportDeclaration, env: Env): Promise<void>
 	typesToImport.forEach((imported) => {
 		if (!exports.has(imported)) {
 			throw new TypecheckingFailure(
-				`Cannot import non-exported type '${imported}', allowed imports are '${[...exports.keys()]}'`,
+				`Cannot import non-exported type '${imported}', allowed imports are '${arrayToString([
+					...exports.keys(),
+				])}'`,
 				node.importClause!,
 			);
 		}
 	});
 
-	[...exports.entries()].forEach(([name, exportType]) => {
+	[...exports.entries()].forEach(([name, exported]) => {
 		if (typesToImport.includes(name)) {
-			env.addType(name, exportType);
+			if (exported.typeOnly) {
+				env.addType(name, exported.eType);
+			} else {
+				env.add(name, { vType: exported.eType, isLocal: false, isMutable: false });
+			}
 		}
 	});
 

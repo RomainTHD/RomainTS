@@ -29,17 +29,24 @@ export interface ChildData extends BaseChildData {
 	right: LeftRightData;
 	isLocal: boolean;
 	isMutable: boolean;
+	isTopLevel: boolean;
+	isExported: boolean;
 	varDeclType: Type;
 	switchExprType: Type;
 	allowBreak: boolean;
 	allowContinue: boolean;
 }
 
+export interface ExportedData {
+	eType: Type;
+	typeOnly: boolean;
+}
+
 export class EnvTypechecker extends BaseEnv<Value, ChildData> {
 	// private static override logger = LoggerFactory.create("EnvTypecheck");
 
 	private readonly _types = [new Map<string, Type>()];
-	private readonly _exports = new Map<string, Type>();
+	private readonly _exports = new Map<string, ExportedData>();
 	private readonly returnTypes: Type[] = [];
 
 	protected constructor(config: EnvConfig) {
@@ -84,7 +91,7 @@ export class EnvTypechecker extends BaseEnv<Value, ChildData> {
 		return null;
 	}
 
-	public override add(name: string, value: Partial<Value>): void {
+	public override add(name: string, value: Partial<Value>, exported = false): void {
 		assert(name, `Name is unset, value is '${name}'`);
 		assert(value, `Value is unset, value is '${stringify(value)}'`);
 		assert(value.vType, `Type is unset, value is '${value.vType}'`);
@@ -101,6 +108,11 @@ export class EnvTypechecker extends BaseEnv<Value, ChildData> {
 		};
 
 		super.add(name, valueSafe);
+		if (exported) {
+			// FIXME: Should maybe be used as well?
+			// assert(!this._exports.has(name), `Name '${name}' is already exported`);
+			this._exports.set(name, { eType: valueSafe.vType, typeOnly: false });
+		}
 	}
 
 	public addType(name: string, t: Type, exported = false): void {
@@ -111,11 +123,11 @@ export class EnvTypechecker extends BaseEnv<Value, ChildData> {
 		const typeScope = this._types[this._types.length - 1];
 		typeScope.set(name, t);
 		if (exported) {
-			this._exports.set(name, t);
+			this._exports.set(name, { eType: t, typeOnly: true });
 		}
 	}
 
-	public getExportedTypes(): Map<string, Type> {
+	public getExportedTypes(): Map<string, ExportedData> {
 		return this._exports;
 	}
 
@@ -132,6 +144,12 @@ export class EnvTypechecker extends BaseEnv<Value, ChildData> {
 		this._types.forEach(() => {
 			EnvTypechecker.logger.unindent();
 		});
+		EnvTypechecker.logger.unindent();
+
+		EnvTypechecker.logger.indent("Exports:");
+		for (const [name, value] of this._exports) {
+			EnvTypechecker.logger.debug(`(${value.typeOnly ? "T" : "V"}) ${name}: ${value.eType}`);
+		}
 		EnvTypechecker.logger.unindent();
 
 		super.printEnd();

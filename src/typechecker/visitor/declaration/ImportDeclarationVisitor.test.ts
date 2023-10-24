@@ -2,7 +2,7 @@ import * as path from "path";
 import { describe, expect, it, vi } from "vitest";
 import { Env, TypeChecker } from "../..";
 import { AST } from "../../../AST";
-import { NumberType } from "../../../types";
+import { BooleanType, NumberType, StringType } from "../../../types";
 import { IllegalStateException } from "../../../utils/IllegalStateException";
 
 function pathsAreEqual(path1s: string, path2s: string): boolean {
@@ -22,6 +22,7 @@ Filesystem structure:
 - A.ts
 - B.ts
 - X.ts // is a trap
+- C.ts
 - dir
 -- C1.ts
 -- X.ts
@@ -46,6 +47,16 @@ vi.mock("node:fs", async () => ({
 			`;
 		} else if (pathsAreEqual(file, "dir/X.ts")) {
 			return "export type X = number;";
+		} else if (pathsAreEqual(file, "C.ts")) {
+			return `
+			export function f(): number {
+				return 0;
+			}
+			export function g(): string {
+				return "s";
+			}
+			export const CONST = true;
+			`;
 		} else {
 			throw new IllegalStateException(`Unexpected file ${file}`);
 		}
@@ -85,5 +96,19 @@ describe("ImportDeclarationVisitor", () => {
 		let x: C = 0;
 		`;
 		await TypeChecker.accept(AST.parse(content), Env.create());
+	});
+
+	it("should work for variable imports", async () => {
+		const content = `
+		import { f, g, CONST } from "C";
+		let x = f();
+		let y = g();
+		let z = CONST;
+		`;
+		const env = Env.create();
+		await TypeChecker.accept(AST.parse(content), env);
+		expect(env.lookup("x")?.vType).toEqual(NumberType.create());
+		expect(env.lookup("y")?.vType).toEqual(StringType.create());
+		expect(env.lookup("z")?.vType).toEqual(BooleanType.create());
 	});
 });

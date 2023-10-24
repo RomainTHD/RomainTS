@@ -14,7 +14,11 @@ export function throwError(message: string): never {
 	throw new IllegalStateException(message);
 }
 
-export function stringify(obj: object): string {
+export function stringify(obj: object | unknown): string {
+	if (typeof obj !== "object" || obj === null) {
+		return String(obj);
+	}
+
 	const cache: Set<object> = new Set<object>();
 	return JSON.stringify(obj, (key, value): string | undefined => {
 		if (typeof value === "object" && value !== null) {
@@ -27,6 +31,10 @@ export function stringify(obj: object): string {
 		}
 		return value;
 	});
+}
+
+export function arrayToString(arr: unknown[]): string {
+	return `${arr.map((x) => stringify(x)).join(", ")}`;
 }
 
 export type AtLeast<T, K extends keyof T> = Partial<T> & Pick<T, K>;

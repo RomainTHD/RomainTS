@@ -1,10 +1,9 @@
 import * as fs from "fs";
 import * as path from "path";
 import type ts from "typescript";
-import { Env, TypecheckingFailure } from ".";
+import { Env, type ExportedData, TypecheckingFailure } from ".";
 import { AST } from "../AST";
 import type { EnvConfig } from "../env";
-import type { Type } from "../types";
 import { assert } from "../utils";
 import { baseAccept } from "../utils/ASTHelper";
 import { IllegalStateException } from "../utils/IllegalStateException";
@@ -14,7 +13,7 @@ import { NotImplementedException } from "../utils/NotImplementedException";
 export namespace TypeChecker {
 	const logger = LoggerFactory.create("TypeChecker");
 
-	const importCache = new Map<string, Map<string, Type>>();
+	const importCache = new Map<string, Map<string, ExportedData>>();
 
 	export async function accept<T>(node: ts.Node, env: Env): Promise<T> {
 		return await baseAccept(node, env, logger);
@@ -24,7 +23,7 @@ export namespace TypeChecker {
 		filePathRaw: string,
 		parentEnvConfig: EnvConfig,
 		fromNode: ts.Node,
-	): Promise<Map<string, Type>> {
+	): Promise<Map<string, ExportedData>> {
 		let filePath = filePathRaw.endsWith(".ts") ? filePathRaw : `${filePathRaw}.ts`;
 		filePath = path.normalize(path.join(parentEnvConfig.basePath, filePath));
 		const basePath = path.dirname(filePath);

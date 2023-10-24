@@ -1,6 +1,6 @@
-import type ts from "typescript";
+import ts from "typescript";
 import { type Env, TypeChecker, TypecheckingFailure } from "../..";
-import { AnyType, type Type, UndefinedType, UnionType, VoidType } from "../../../types";
+import { AnyType, UndefinedType, UnionType, VoidType } from "../../../types";
 import { assert } from "../../../utils";
 import { Bool3 } from "../../../utils/Bool3";
 import { NotImplementedException } from "../../../utils/NotImplementedException";
@@ -8,9 +8,24 @@ import { type ExpressionReturn } from "../shared/expression";
 import { visitFunction } from "../shared/function";
 import { type StatementReturn } from "../statement";
 
-export async function visit(node: ts.FunctionDeclaration, env: Env): Promise<Type> {
+export async function visit(node: ts.FunctionDeclaration, env: Env): Promise<StatementReturn> {
 	if (!node.name) {
 		throw new NotImplementedException("Anonymous functions aren't supported yet");
+	}
+
+	let exported = false;
+	if (node.modifiers) {
+		for (const modifier of node.modifiers) {
+			if (modifier.kind === ts.SyntaxKind.ExportKeyword) {
+				exported = true;
+			} else {
+				throw new NotImplementedException();
+			}
+		}
+	}
+
+	if (!env.getData("isTopLevel", true, false) && exported) {
+		throw new TypecheckingFailure("Cannot export a function that isn't on the top level", node);
 	}
 
 	const nodeName = node.name;
@@ -27,7 +42,7 @@ export async function visit(node: ts.FunctionDeclaration, env: Env): Promise<Typ
 		throw new NotImplementedException("Functions without body aren't supported yet");
 	}
 
-	env.add(name, { vType: fType, isLocal: false, isMutable: true });
+	env.add(name, { vType: fType, isLocal: true, isMutable: true }, exported);
 
 	env.enterScope();
 	env.pushReturnType(fType.retType);
@@ -72,5 +87,5 @@ export async function visit(node: ts.FunctionDeclaration, env: Env): Promise<Typ
 		}
 	}
 
-	return fType;
+	return { inferredType: fType, returningStatement: Bool3.No };
 }
