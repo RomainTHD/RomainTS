@@ -7,8 +7,9 @@ import {
 	Stage,
 	type TypescriptConfig,
 } from "../env";
-import { NumberType, ObjectType, Type, UndefinedType } from "../types";
-import { assert, type AtLeast, stringify, throwError } from "../utils";
+import { Type } from "../types";
+import { populateWindowObject } from "../types/populate";
+import { assert, stringify, throwError } from "../utils";
 
 interface Value extends BaseValue {
 	vType: Type;
@@ -175,39 +176,13 @@ export class EnvTypechecker extends BaseEnv<Value, ChildData> {
 	}
 
 	private populateEnv(): void {
-		const globals: { name: string; value: AtLeast<Value, "vType"> }[] = [
-			{
-				name: "undefined",
-				value: { vType: UndefinedType.create(), isLocal: false, isMutable: false, builtin: true },
-			},
-			{
-				name: "NaN",
-				value: { vType: NumberType.create(), isLocal: false, isMutable: false, builtin: true },
-			},
-			{
-				name: "Infinity",
-				value: { vType: NumberType.create(), isLocal: false, isMutable: false, builtin: true },
-			},
-		];
-
-		for (const { name, value } of globals) {
-			this.add(name, value);
-		}
-
-		const globalThis = ObjectType.create(
-			globals.map((g) => ({
-				name: g.name,
-				pType: g.value.vType,
-			})),
+		populateWindowObject().forEach((prop) =>
+			this.add(prop.name, {
+				vType: prop.vType,
+				isLocal: prop.isLocal ?? false,
+				isMutable: prop.isMutable ?? false,
+				builtin: true,
+			}),
 		);
-
-		this.add("globalThis", { vType: globalThis, isLocal: false, isMutable: false, builtin: true });
-		globalThis.add({ name: "globalThis", pType: globalThis });
-
-		this.add("window", { vType: globalThis, isLocal: false, isMutable: false, builtin: true });
-		globalThis.add({ name: "window", pType: globalThis });
-
-		this.add("this", { vType: globalThis, isLocal: true, isMutable: true, builtin: true });
-		globalThis.add({ name: "this", pType: globalThis });
 	}
 }

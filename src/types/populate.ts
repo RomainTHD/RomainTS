@@ -14,6 +14,7 @@ import {
 	type Type,
 	UndefinedType,
 	UnionType,
+	UnknownType,
 	VoidType,
 } from ".";
 import { IllegalStateException } from "../utils/IllegalStateException";
@@ -47,6 +48,9 @@ function stringToType(sTypesRaw: string): [Type, string[]] {
 
 				case "undefined":
 					return UndefinedType.create();
+
+				case "unknown":
+					return UnknownType.create();
 
 				case "void":
 					return VoidType.create();
@@ -360,4 +364,58 @@ export async function populate(): Promise<void> {
 
 export function isPopulated(): boolean {
 	return populated;
+}
+
+export function populateWindowObject(): { name: string; vType: Type; isLocal?: boolean; isMutable?: boolean }[] {
+	const globals: { name: string; pType: Type }[] = [
+		createProperty("undefined", "undefined"),
+		createProperty("NaN", "number"),
+		createProperty("Infinity", "number"),
+		createProperty("console", "unknown"), // TODO: Create console type
+		createProperty("document", "object"),
+		createFunctionProperty("alert", [["message?", "string"]], "void"),
+		createFunctionProperty(
+			"addEventListener",
+			[
+				["type", "string"],
+				createFunctionParam("listener", [["event?", "unknown"]], "void"),
+				["options?", "boolean | object"],
+			],
+			"void",
+		),
+		createFunctionProperty("btoa", [["stringToEncode", "unknown"]], "string"),
+		createFunctionProperty(
+			"fetch",
+			[
+				["resource", "string"],
+				["options?", "object"],
+			],
+			"void",
+		),
+		createFunctionProperty(
+			"setInterval",
+			[createFunctionParam("func", [], "void"), ["delay?", "number"], ["args?", "unknown[]"]],
+			"number",
+		),
+		createFunctionProperty(
+			"setTimeout",
+			[createFunctionParam("functionRef", [], "void"), ["delay?", "number"], ["args?", "unknown[]"]],
+			"number",
+		),
+	];
+
+	const globalThis = ObjectType.create(globals);
+
+	globalThis.add({ name: "globalThis", pType: globalThis });
+	globalThis.add({ name: "window", pType: globalThis });
+	globalThis.add({ name: "this", pType: globalThis });
+	globalThis.add({ name: "self", pType: globalThis });
+
+	return [
+		...globals.map((g) => ({ name: g.name, vType: g.pType })),
+		{ name: "globalThis", vType: globalThis },
+		{ name: "window", vType: globalThis },
+		{ name: "this", vType: globalThis, isLocal: true, isMutable: true },
+		{ name: "self", vType: globalThis },
+	];
 }

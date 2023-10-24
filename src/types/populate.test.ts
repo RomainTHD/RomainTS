@@ -6,6 +6,7 @@ import { BooleanType } from "./BooleanType";
 import { FunctionType } from "./FunctionType";
 import { NumberType } from "./NumberType";
 import { ObjectType } from "./ObjectType";
+import { populateWindowObject } from "./populate";
 import { RawObjectType } from "./RawObjectType";
 import { StringType } from "./StringType";
 
@@ -153,5 +154,32 @@ describe("populate", () => {
 			"sup: () => string",
 			"replaceAll: (searchValue: string | RegExp, replaceValue: string) => string",
 		]);
+	});
+
+	it("should populate window", () => {
+		const win = populateWindowObject();
+		const globalThis = win.find((p) => p.name === "globalThis")?.vType;
+		expect(globalThis).toBeDefined();
+		expect(
+			win
+				.filter((p) => !["globalThis", "window", "this", "self"].includes(p.name))
+				.map((p) => `${p.name}: ${p.vType.toString()}`),
+		).toEqual([
+			"undefined: undefined",
+			"NaN: number",
+			"Infinity: number",
+			"console: unknown",
+			"document: object",
+			"alert: (message?: string) => void",
+			"addEventListener: (type: string, listener: (event?: unknown) => void, options?: boolean | object) => void",
+			"btoa: (stringToEncode: unknown) => string",
+			"fetch: (resource: string, options?: object) => void",
+			"setInterval: (func: () => void, delay?: number, args?: unknown[]) => number",
+			"setTimeout: (functionRef: () => void, delay?: number, args?: unknown[]) => number",
+		]);
+		expect(win.find((p) => p.name === "globalThis")?.vType).toBe(globalThis);
+		expect(win.find((p) => p.name === "window")?.vType).toBe(globalThis);
+		expect(win.find((p) => p.name === "self")?.vType).toBe(globalThis);
+		expect(win.find((p) => p.name === "this")?.vType).toBe(globalThis);
 	});
 });
