@@ -3,9 +3,9 @@ import { Env, TypeChecker } from "../..";
 import { AST } from "../../../AST";
 import { BooleanType } from "../../../types";
 
-describe("LessThanEqualsTokenVisitor", () => {
-	it("should work for less than equal", async () => {
-		const content = "let x = 1 <= 2;";
+describe("LessThanLessThanTokenVisitor", () => {
+	it("should work for less than less than", async () => {
+		const content = "let x = 1 << 2;";
 		const env = Env.create();
 		await TypeChecker.accept(AST.parse(content), env);
 		expect(env.lookup("x")?.vType).toEqual(BooleanType.create());
