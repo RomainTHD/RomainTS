@@ -7,7 +7,7 @@ import { visitFunction } from "../shared/function";
 import { type StatementReturn } from "../statement";
 
 export async function visit(node: ts.ArrowFunction, env: Env): Promise<ExpressionReturn> {
-	const { fType, infer } = await visitFunction(env, node.typeParameters, node.parameters, node.type);
+	const { fType, infer } = await visitFunction(node, env);
 
 	env.enterScope();
 	env.pushReturnType(fType.retType);
@@ -24,7 +24,7 @@ export async function visit(node: ts.ArrowFunction, env: Env): Promise<Expressio
 
 	let retData: StatementReturn;
 	const bodyData: StatementReturn | ExpressionReturn = await TypeChecker.accept(node.body, env);
-	if (bodyData.hasOwnProperty("eType")) {
+	if (Object.prototype.hasOwnProperty.call(bodyData, "eType")) {
 		// If the body is an expression, then it's an implicit return
 		retData = {
 			returningStatement: Bool3.Yes,
@@ -32,6 +32,13 @@ export async function visit(node: ts.ArrowFunction, env: Env): Promise<Expressio
 		};
 	} else {
 		retData = bodyData as StatementReturn;
+	}
+
+	if (!fType.retType.contains(retData.inferredType)) {
+		throw new TypecheckingFailure(
+			`Function must return a value of type '${fType.retType}', got '${retData.inferredType.generalize()}'`,
+			node,
+		);
 	}
 
 	if (

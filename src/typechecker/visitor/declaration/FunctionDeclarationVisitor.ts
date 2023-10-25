@@ -36,7 +36,7 @@ export async function visit(node: ts.FunctionDeclaration, env: Env): Promise<Sta
 	assert(e.identifier !== undefined, "identifier is undefined");
 	const name = e.identifier;
 
-	const { fType, infer } = await visitFunction(env, node.typeParameters, node.parameters, node.type);
+	const { fType, infer } = await visitFunction(node, env);
 
 	if (!node.body) {
 		throw new NotImplementedException("Functions without body aren't supported yet");

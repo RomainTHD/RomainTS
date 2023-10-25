@@ -10,7 +10,7 @@ import { type StatementReturn } from "../statement";
 const logger = LoggerFactory.create("FunctionExpressionVisitor");
 
 export async function visit(node: ts.FunctionExpression, env: Env): Promise<ExpressionReturn> {
-	const { fType, infer } = await visitFunction(env, node.typeParameters, node.parameters, node.type);
+	const { fType, infer } = await visitFunction(node, env);
 
 	env.enterScope();
 	env.pushReturnType(fType.retType);

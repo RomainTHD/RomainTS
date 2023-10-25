@@ -83,4 +83,74 @@ describe("ArrowFunctionVisitor", () => {
 		`;
 		await expect(TypeChecker.accept(AST.parse(content), Env.create())).rejects.toThrowError(TypecheckingFailure);
 	});
+
+	it("should be correctly typed", async () => {
+		const content = `
+		let f: (x: number) => number = (x) => x;
+		`;
+		const env = Env.create();
+		await TypeChecker.accept(AST.parse(content), env);
+		expect(env.lookup("f")?.vType).toEqual(
+			FunctionType.create(
+				[
+					{
+						name: "x",
+						pType: NumberType.create(),
+						isGeneric: false,
+						isOptional: false,
+					},
+				],
+				NumberType.create(),
+			),
+		);
+	});
+
+	it("should accept different params name", async () => {
+		const content = `
+		let f: (x: number) => number = (y) => y;
+		`;
+		await TypeChecker.accept(AST.parse(content), Env.create());
+	});
+
+	it("should not accept type-only params name", async () => {
+		const content = `
+		let f: (x: number) => number = (y) => x;
+		`;
+		await expect(TypeChecker.accept(AST.parse(content), Env.create())).rejects.toThrowError(TypecheckingFailure);
+	});
+
+	it("should override same params type", async () => {
+		const content = `
+		let f: (x: number) => number = (x: number) => 0;
+		`;
+		await TypeChecker.accept(AST.parse(content), Env.create());
+	});
+
+	it("should accept broader params type", async () => {
+		const content = `
+		let f: (x: number) => number = (x: number | string) => 0;
+		`;
+		await TypeChecker.accept(AST.parse(content), Env.create());
+	});
+
+	it("should not accept thinner params type", async () => {
+		const content = `
+		let f: (x: number | string) => number = (x: number) => 0;
+		`;
+		await expect(TypeChecker.accept(AST.parse(content), Env.create())).rejects.toThrowError(TypecheckingFailure);
+	});
+
+	it("should not override params type", async () => {
+		const content = `
+		let f: (x: number) => number = (x: string) => 0;
+		`;
+		await expect(TypeChecker.accept(AST.parse(content), Env.create())).rejects.toThrowError(TypecheckingFailure);
+	});
+
+	it("should not override return type", async () => {
+		const content = `
+		let f: (x: number) => number = (x) => "s";
+		`;
+		await expect(TypeChecker.accept(AST.parse(content), Env.create())).rejects.toThrowError(TypecheckingFailure);
+	});
 });

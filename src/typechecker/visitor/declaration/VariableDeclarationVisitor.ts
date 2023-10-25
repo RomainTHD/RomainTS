@@ -37,7 +37,15 @@ export async function visit(node: ts.VariableDeclaration, env: Env): Promise<voi
 			}
 		}
 	} else {
-		const e: ExpressionReturn = await TypeChecker.accept(node.initializer, env);
+		let e: ExpressionReturn;
+		if (vType) {
+			e = await env.withChildData(
+				{ varDeclType: vType },
+				async () => await TypeChecker.accept(node.initializer!, env),
+			);
+		} else {
+			e = await TypeChecker.accept(node.initializer, env);
+		}
 		const exprType = e.eType;
 
 		if (vType) {

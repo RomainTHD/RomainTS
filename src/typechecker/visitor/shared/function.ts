@@ -14,11 +14,26 @@ import { assert } from "../../../utils";
 import { type ExpressionReturn } from "./expression";
 
 export async function visitFunction(
+	node: ts.FunctionLikeDeclaration,
 	env: Env,
-	nodeGenerics: ts.NodeArray<ts.TypeParameterDeclaration> | undefined,
-	nodeParams: ts.NodeArray<ts.ParameterDeclaration>,
-	nodeRetType: ts.TypeNode | undefined,
 ): Promise<{ fType: FunctionType; infer: boolean }> {
+	const explicitType: Type | null = env.getData("varDeclType", true, null);
+	if (explicitType) {
+		assert(explicitType instanceof FunctionType, "explicitType is not a FunctionType");
+		return await visitTypedFunction(node, env, explicitType);
+	} else {
+		return await visitUntypedFunction(node, env);
+	}
+}
+
+async function visitUntypedFunction(
+	node: ts.FunctionLikeDeclaration,
+	env: Env,
+): Promise<{ fType: FunctionType; infer: boolean }> {
+	const nodeGenerics = node.typeParameters;
+	const nodeParams = node.parameters;
+	const nodeRetType = node.type;
+
 	env.enterScope();
 
 	const genericsStr: string[] = [];
@@ -84,4 +99,69 @@ export async function visitFunction(
 	env.leaveScope();
 
 	return { fType: FunctionType.create(params, retType, genericsStr), infer };
+}
+
+async function visitTypedFunction(
+	node: ts.FunctionLikeDeclaration,
+	env: Env,
+	explicitType: FunctionType,
+): Promise<{ fType: FunctionType; infer: boolean }> {
+	const nodeGenerics = node.typeParameters;
+	const nodeParams = node.parameters;
+	const nodeRetType = node.type;
+
+	if (nodeParams.length !== explicitType.params.length) {
+		throw new TypecheckingFailure(
+			`Expected ${explicitType.params.length} parameters, but got ${nodeParams.length}`,
+			node,
+		);
+	}
+
+	const params: Param[] = [];
+
+	for (const [i, param] of nodeParams.entries()) {
+		const e: ExpressionReturn = await env.withChildData(
+			{ resolveIdentifier: false },
+			async () => await TypeChecker.accept(param.name, env),
+		);
+		assert(e.identifier, "identifier is undefined");
+		const name = e.identifier;
+
+		const isOptional = param.questionToken !== undefined;
+
+		let pType: Type;
+		if (param.type) {
+			pType = await TypeChecker.accept(param.type, env);
+		} else {
+			pType = explicitType.params[i].pType;
+		}
+
+		if (isOptional) {
+			pType = UnionType.create([pType, UndefinedType.create()]).simplify();
+		}
+
+		if (!pType.contains(explicitType.params[i].pType)) {
+			throw new TypecheckingFailure(
+				`Param type '${pType}' is not assignable to type '${explicitType.params[i].pType}'`,
+				param,
+			);
+		}
+
+		params.push({
+			...explicitType.params[i],
+			name,
+		});
+	}
+
+	if (nodeRetType) {
+		const retType: Type = await TypeChecker.accept(nodeRetType, env);
+		if (!explicitType.retType.contains(retType)) {
+			throw new TypecheckingFailure(
+				`Return type '${retType}' is not assignable to type '${explicitType.retType}'`,
+				nodeRetType,
+			);
+		}
+	}
+
+	return { fType: FunctionType.create(params, explicitType.retType, explicitType.generics), infer: false };
 }
