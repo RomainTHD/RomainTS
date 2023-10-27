@@ -1,4 +1,4 @@
-import { type Property, PropertyAccessor, type Type } from ".";
+import { AnyType, type Property, PropertyAccessor, type Type } from ".";
 
 export class ObjectType extends PropertyAccessor {
 	private static builtins: Property[] = [];
@@ -21,6 +21,10 @@ export class ObjectType extends PropertyAccessor {
 	}
 
 	public override contains<T extends Type>(other: T): boolean {
+		if (other instanceof AnyType) {
+			return true;
+		}
+
 		if (!(other instanceof ObjectType)) {
 			return false;
 		}

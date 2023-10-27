@@ -1,4 +1,4 @@
-import { Type } from ".";
+import { AnyType, Type } from ".";
 import { assert } from "../utils";
 
 export class UnionType extends Type {
@@ -36,6 +36,10 @@ export class UnionType extends Type {
 	}
 
 	public override contains<T extends Type>(other: T): boolean {
+		if (other instanceof AnyType) {
+			return true;
+		}
+
 		assert(other !== null && other !== undefined, `Union type must be a Type, is actually '${other}'`);
 
 		let union: UnionType;

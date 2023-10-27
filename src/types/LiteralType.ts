@@ -1,4 +1,4 @@
-import { StringType, Type } from ".";
+import { AnyType, StringType, Type } from ".";
 
 interface LiteralValue {
 	vType: Type;
@@ -21,6 +21,10 @@ export class LiteralType extends Type {
 	}
 
 	public override contains<T extends Type>(other: T): boolean {
+		if (other instanceof AnyType) {
+			return true;
+		}
+
 		return this.equals(other);
 	}
 

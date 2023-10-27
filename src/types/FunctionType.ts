@@ -1,4 +1,4 @@
-import { type Property, PropertyAccessor, type Type } from ".";
+import { AnyType, type Property, PropertyAccessor, type Type } from ".";
 import { assert } from "../utils";
 
 export interface Param {
@@ -41,6 +41,10 @@ export class FunctionType extends PropertyAccessor {
 	}
 
 	public override contains<T extends Type>(other: T): boolean {
+		if (other instanceof AnyType) {
+			return true;
+		}
+
 		if (!(other instanceof FunctionType)) {
 			return false;
 		}

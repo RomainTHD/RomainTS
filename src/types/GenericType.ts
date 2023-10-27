@@ -1,14 +1,16 @@
+import { AnyType } from "./AnyType";
 import { Type } from "./Type";
-import { UnknownType } from "./UnknownType";
 
 export class GenericType extends Type {
 	private readonly _label: string;
-	private readonly _aliasType: Type;
+	private readonly _defaultType: Type;
+	private readonly _constraint: Type;
 
-	private constructor(label: string, aliasType: Type) {
+	private constructor(label: string, aliasType: Type, contraint: Type) {
 		super();
 		this._label = label;
-		this._aliasType = aliasType;
+		this._defaultType = aliasType;
+		this._constraint = contraint;
 	}
 
 	public override equals<T extends Type>(_other: T): boolean {
@@ -17,14 +19,27 @@ export class GenericType extends Type {
 	}
 
 	public override contains<T extends Type>(other: T): boolean {
-		return this._aliasType.contains(other);
+		if (other instanceof AnyType) {
+			return true;
+		}
+
+		if (other instanceof GenericType) {
+			return this._defaultType.contains(other._defaultType);
+		}
+
+		return this._defaultType.contains(other);
 	}
 
 	public override generalize(): Type {
-		return new GenericType(this._label, this._aliasType.generalize());
+		return new GenericType(this._label, this._defaultType.generalize(), this._constraint.generalize());
 	}
 
 	public override toString(): string {
+		if (!this._defaultType.equals(AnyType.create())) {
+			// FIXME: Will break for explicit `let f: <T = any> () => T;`
+			return this._defaultType.toString();
+		}
+
 		return this._label;
 	}
 
@@ -39,15 +54,19 @@ export class GenericType extends Type {
 		return true;
 	}
 
-	public static create(label: string, aliasType?: Type): GenericType {
-		return new GenericType(label, aliasType ?? UnknownType.create());
+	public static create(label: string, defaultType?: Type, constraint?: Type): GenericType {
+		return new GenericType(label, defaultType ?? AnyType.create(), constraint ?? AnyType.create());
 	}
 
 	public get label(): string {
 		return this._label;
 	}
 
-	public get aliasType(): Type {
-		return this._aliasType;
+	public get defaultType(): Type {
+		return this._defaultType;
+	}
+
+	public get constraint(): Type {
+		return this._constraint;
 	}
 }

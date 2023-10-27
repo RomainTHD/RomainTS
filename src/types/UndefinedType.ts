@@ -1,4 +1,4 @@
-import { Type } from ".";
+import { AnyType, Type } from ".";
 
 export class UndefinedType extends Type {
 	private static readonly instance: UndefinedType = new UndefinedType();
@@ -12,6 +12,10 @@ export class UndefinedType extends Type {
 	}
 
 	public override contains<T extends Type>(other: T): boolean {
+		if (other instanceof AnyType) {
+			return true;
+		}
+
 		return other instanceof UndefinedType;
 	}
 

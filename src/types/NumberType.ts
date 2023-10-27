@@ -1,4 +1,4 @@
-import { LiteralType, type Property, PropertyAccessor, type Type } from ".";
+import { AnyType, LiteralType, type Property, PropertyAccessor, type Type } from ".";
 
 export class NumberType extends PropertyAccessor {
 	private static readonly instance: NumberType = new NumberType();
@@ -13,7 +13,7 @@ export class NumberType extends PropertyAccessor {
 	}
 
 	public override contains<T extends Type>(other: T): boolean {
-		if (other instanceof NumberType) {
+		if (other instanceof NumberType || other instanceof AnyType) {
 			return true;
 		}
 		if (other instanceof LiteralType) {

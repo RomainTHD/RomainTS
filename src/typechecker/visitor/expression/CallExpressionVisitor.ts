@@ -76,6 +76,12 @@ export const visit: ExpressionVisitor<ts.CallExpression> = async (node, env) => 
 
 			if (!inferredTypes.has(generic.label)) {
 				// First time inferring this generic
+				if (!generic.constraint.contains(arg)) {
+					throw new TypecheckingFailure(
+						`Argument of type '${arg}' is not assignable to parameter of type '${generic.constraint}'`,
+						node,
+					);
+				}
 				inferred = arg;
 			} else {
 				// Already inferred, confirm that it matches
@@ -137,7 +143,7 @@ export const visit: ExpressionVisitor<ts.CallExpression> = async (node, env) => 
 			retType = inferred;
 		} else {
 			// FIXME: Will break for `f<T>(): T | something`
-			retType = generic.aliasType;
+			retType = generic.defaultType;
 			// Should it be a real error?
 			logger.warn(`Could not infer type for generic '${generic.label}'`);
 		}

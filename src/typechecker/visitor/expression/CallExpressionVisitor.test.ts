@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { Env, TypeChecker, TypecheckingFailure } from "../..";
 import { AST } from "../../../AST";
-import { NumberType, StringType, UnionType, UnknownType } from "../../../types";
+import { AnyType, NumberType, StringType, UnionType } from "../../../types";
 
 describe("CallExpressionVisitor", () => {
 	it("should work for calls", async () => {
@@ -156,7 +156,7 @@ describe("CallExpressionVisitor", () => {
 		`;
 		const env = Env.create();
 		await TypeChecker.accept(AST.parse(content), env);
-		expect(env.lookup("x")?.vType).toEqual(UnknownType.create());
+		expect(env.lookup("x")?.vType).toEqual(AnyType.create());
 	});
 
 	it("should support missing optional parameters", async () => {
@@ -168,5 +168,40 @@ describe("CallExpressionVisitor", () => {
 		`;
 		const env = Env.create();
 		await TypeChecker.accept(AST.parse(content), env);
+	});
+
+	it("should work with satisfied constraints", async () => {
+		const content = `
+		let f: <T extends string | number> (x: T) => T = (x) => x;
+		let x = f(0);
+		let y = f("s");
+		`;
+		const env = Env.create();
+		await TypeChecker.accept(AST.parse(content), env);
+		expect(env.lookup("x")?.vType).toEqual(NumberType.create());
+		expect(env.lookup("y")?.vType).toEqual(StringType.create());
+	});
+
+	it("should not work with unsatisfied constraints", async () => {
+		const content = `
+		let f: <T extends string | number> (x: T) => T = (x) => x;
+		let x = f(false);
+		`;
+		await expect(TypeChecker.accept(AST.parse(content), Env.create())).rejects.toThrowError(TypecheckingFailure);
+	});
+
+	it("should work with default", async () => {
+		const content = `
+		let f: <T = number> (x: T) => T = (x) => x;
+		let x = f(0);
+		`;
+		const env = Env.create();
+		await TypeChecker.accept(AST.parse(content), env);
+		expect(env.lookup("x")?.vType).toEqual(NumberType.create());
+	});
+
+	it("should not work with unsatisfied constraints on default", async () => {
+		const content = "let f: <T extends string = number> (x: T) => T;";
+		await expect(TypeChecker.accept(AST.parse(content), Env.create())).rejects.toThrowError(TypecheckingFailure);
 	});
 });

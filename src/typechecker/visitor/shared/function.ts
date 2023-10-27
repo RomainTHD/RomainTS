@@ -1,16 +1,8 @@
 import type ts from "typescript";
 import { type Env, TypeChecker, TypecheckingFailure } from "../..";
-import {
-	AnyType,
-	FunctionType,
-	GenericType,
-	type Param,
-	type Type,
-	UndefinedType,
-	UnionType,
-	UnknownType,
-} from "../../../types";
+import { AnyType, FunctionType, GenericType, type Param, type Type, UndefinedType, UnionType } from "../../../types";
 import { assert } from "../../../utils";
+import { NotImplementedException } from "../../../utils/NotImplementedException";
 import { type ExpressionReturn } from "./expression";
 
 export async function visitFunction(
@@ -41,7 +33,6 @@ async function visitUntypedFunction(
 	if (nodeGenerics) {
 		const seen = new Set<string>();
 		for (const generic of nodeGenerics) {
-			// TODO: Handle default, constraint, etc
 			const e: ExpressionReturn = await env.withChildData(
 				{ resolveIdentifier: false },
 				async () => await TypeChecker.accept(generic.name, env),
@@ -50,9 +41,29 @@ async function visitUntypedFunction(
 			if (seen.has(e.identifier)) {
 				throw new TypecheckingFailure(`Duplicate generic '${e.identifier}'`, generic);
 			}
+
+			if (generic.modifiers) {
+				throw new NotImplementedException();
+			}
+
+			const constraint: Type = generic.constraint
+				? await TypeChecker.accept(generic.constraint, env)
+				: AnyType.create();
+
+			const defaultType: Type = generic.default
+				? await TypeChecker.accept(generic.default, env)
+				: AnyType.create();
+
+			if (!constraint.contains(defaultType)) {
+				throw new TypecheckingFailure(
+					`Default type '${defaultType}' is not assignable to constraint '${constraint}'`,
+					generic,
+				);
+			}
+
 			seen.add(e.identifier);
 			genericsStr.push(e.identifier);
-			env.addType(e.identifier, GenericType.create(e.identifier, UnknownType.create()));
+			env.addType(e.identifier, GenericType.create(e.identifier, defaultType, constraint));
 		}
 	}
 

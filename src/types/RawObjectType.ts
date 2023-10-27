@@ -1,4 +1,4 @@
-import { type Property, PropertyAccessor, type Type, UndefinedType } from ".";
+import { AnyType, type Property, PropertyAccessor, type Type, UndefinedType } from ".";
 
 export class RawObjectType extends PropertyAccessor {
 	private static readonly instance: RawObjectType = new RawObjectType();
@@ -13,6 +13,10 @@ export class RawObjectType extends PropertyAccessor {
 	}
 
 	public override contains<T extends Type>(other: T): boolean {
+		if (other instanceof AnyType) {
+			return true;
+		}
+
 		return other instanceof RawObjectType;
 	}
 

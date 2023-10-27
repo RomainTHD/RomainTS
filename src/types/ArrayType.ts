@@ -1,4 +1,4 @@
-import { type Property, PropertyAccessor, type Type, UnionType } from ".";
+import { AnyType, type Property, PropertyAccessor, type Type, UnionType } from ".";
 
 export class ArrayType extends PropertyAccessor {
 	private static builtins: Property[] = [];
@@ -15,6 +15,10 @@ export class ArrayType extends PropertyAccessor {
 	}
 
 	public override equals<T extends Type>(other: T): boolean {
+		if (other instanceof AnyType) {
+			return true;
+		}
+
 		if (!(other instanceof ArrayType)) {
 			return false;
 		}

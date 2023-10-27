@@ -13,7 +13,7 @@ export class BooleanType extends PropertyAccessor {
 	}
 
 	public override contains<T extends Type>(other: T): boolean {
-		if (other instanceof BooleanType) {
+		if (other instanceof BooleanType || other instanceof LiteralType) {
 			return true;
 		}
 		if (other instanceof LiteralType) {

@@ -1,3 +1,4 @@
+import { AnyType } from "./AnyType";
 import { Type } from "./Type";
 
 export class VoidType extends Type {
@@ -12,6 +13,10 @@ export class VoidType extends Type {
 	}
 
 	public override contains<T extends Type>(other: T): boolean {
+		if (other instanceof AnyType) {
+			return true;
+		}
+
 		return other instanceof VoidType;
 	}
 
