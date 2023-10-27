@@ -1,5 +1,5 @@
 import type ts from "typescript";
-import { Env, TypecheckingFailure } from "../..";
+import { type Env, TypecheckingFailure } from "../..";
 import { LiteralType } from "../../../types";
 import { LoggerFactory } from "../../../utils/Logger";
 import { type ExpressionReturn } from "../shared/expression";
@@ -34,6 +34,8 @@ export async function visit(node: ts.Token<ts.SyntaxKind.EqualsToken>, env: Env)
 		}
 	} else {
 		// `x = 0` where `x` is not declared. Valid in non-strict mode
+
+		// eslint-disable-next-line no-lonely-if
 		if (env.config.strictMode) {
 			throw new TypecheckingFailure(`Variable ${left.identifier} not found`, node);
 		} else {

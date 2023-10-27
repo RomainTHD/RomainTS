@@ -50,7 +50,9 @@ export function getVisitorPath(kind: string, kindEnum: ts.SyntaxKind): string {
 		{ suffix: "Signature", dir: "type" },
 	];
 
-	const sorterInfo = sorter.find((e) => (e.name && e.name === kindEnum) || (e.suffix && kind.endsWith(e.suffix)));
+	const sorterInfo = sorter.find(
+		(e) => Boolean(e.name && e.name === kindEnum) || (e.suffix && kind.endsWith(e.suffix)),
+	);
 	if (sorterInfo) {
 		return `${sorterInfo.dir}/${kind}`;
 	}

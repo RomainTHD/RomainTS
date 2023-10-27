@@ -7,6 +7,7 @@ import { Bool3 } from "../../../utils/Bool3";
 export const visit: StatementVisitor<ts.TryStatement> = async (node, env) => {
 	if (
 		(!node.catchClause && !node.finallyBlock) ||
+		// eslint-disable-next-line no-bitwise
 		(node.finallyBlock && (node.finallyBlock.flags & ts.NodeFlags.ThisNodeHasError) !== 0)
 	) {
 		throw new TypecheckingFailure("Try statement must have either a catch clause or a finally block", node);

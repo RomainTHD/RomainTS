@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { Env, TypeChecker } from "../..";
 import { AST } from "../../../AST";
-import { FunctionType, NeverType } from "../../../types";
+import { type FunctionType, NeverType } from "../../../types";
 
 describe("ThrowStatementVisitor", () => {
 	it("should work for throw", async () => {

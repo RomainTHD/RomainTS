@@ -37,6 +37,7 @@ export async function visit(node: ts.VariableDeclarationList, env: Env): Promise
 				};
 
 			default:
+				// eslint-disable-next-line no-bitwise
 				if ((node.flags & ts.NodeFlags.ThisNodeHasError) !== 0) {
 					throw new TypecheckingFailure("Expression expected", node);
 				}

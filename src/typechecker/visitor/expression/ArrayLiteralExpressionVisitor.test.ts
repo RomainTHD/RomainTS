@@ -19,7 +19,7 @@ describe("ArrayLiteralExpressionVisitor", () => {
 	});
 
 	it("should work for union arrays", async () => {
-		const content = `let t = [1, "s"];`;
+		const content = "let t = [1, 's'];";
 		const env = Env.create();
 		await TypeChecker.accept(AST.parse(content), env);
 		expect(env.lookup("t")?.vType).toEqual(
@@ -28,7 +28,7 @@ describe("ArrayLiteralExpressionVisitor", () => {
 	});
 
 	it("should work for 2-D arrays", async () => {
-		const content = `let t = [[1, 2], ["s1", "s2"]];`;
+		const content = "let t = [[1, 2], ['s1', 's2']];";
 		const env = Env.create();
 		await TypeChecker.accept(AST.parse(content), env);
 		expect(env.lookup("t")?.vType).toEqual(

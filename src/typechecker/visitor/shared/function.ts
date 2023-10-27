@@ -17,7 +17,7 @@ export async function visitFunction(
 	node: ts.FunctionLikeDeclaration,
 	env: Env,
 ): Promise<{ fType: FunctionType; infer: boolean }> {
-	const explicitType: Type | null = env.getData("varDeclType", true, null);
+	const explicitType = env.getData<Type | null>("varDeclType", true, null);
 	if (explicitType) {
 		assert(explicitType instanceof FunctionType, "explicitType is not a FunctionType");
 		return await visitTypedFunction(node, env, explicitType);
@@ -106,7 +106,6 @@ async function visitTypedFunction(
 	env: Env,
 	explicitType: FunctionType,
 ): Promise<{ fType: FunctionType; infer: boolean }> {
-	const nodeGenerics = node.typeParameters;
 	const nodeParams = node.parameters;
 	const nodeRetType = node.type;
 

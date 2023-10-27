@@ -45,6 +45,7 @@ describe("populate", () => {
 			"forEach: <T> (callbackfn: (value: T, index: number, array: T[]) => void, thisArg?: any) => void",
 			"map: <T> (callbackfn: (value: T, index: number, array: T[]) => T, thisArg?: any) => T[]",
 			"filter: <T> (predicate: (value: T, index: number, array: T[]) => T, thisArg?: any) => T[]",
+			// eslint-disable-next-line max-len
 			"reduce: <T> (callbackfn: (previousValue: T, currentValue: T, currentIndex: number, array: T[]) => T, initialValue: T) => T",
 		]);
 	});

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { Env, TypeChecker, TypecheckingFailure } from "../..";
 import { AST } from "../../../AST";
-import { FunctionType, NumberType, StringType, UnionType } from "../../../types";
+import { type FunctionType, NumberType, StringType, UnionType } from "../../../types";
 
 describe("TryStatementVisitor", () => {
 	it("should work for try / catch / finally", async () => {

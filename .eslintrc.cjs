@@ -34,6 +34,7 @@ module.exports = {
 		"no-restricted-syntax": "off",
 		"max-len": ["warn", { code: 120 }],
 		"import/prefer-default-export": "off",
+		"import/no-cycle": "off",
 		"no-await-in-loop": "off",
 		"no-else-return": "off",
 		"class-methods-use-this": "off",

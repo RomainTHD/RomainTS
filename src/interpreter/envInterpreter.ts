@@ -33,7 +33,7 @@ export class EnvInterpreter extends BaseEnv<Value, ChildData> {
 		});
 	}
 
-	protected valueToString(value: Value): string {
+	protected valueToString(_value: Value): string {
 		return "(TODO)";
 	}
 }

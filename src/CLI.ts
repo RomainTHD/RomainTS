@@ -17,7 +17,7 @@ export namespace CLI {
 			return fs.readFileSync(options["input"], "utf8");
 		} catch (e: unknown) {
 			logger.error(`Couldn't read input file: ${e}`);
-			process.exit(1);
+			return process.exit(1);
 		}
 	}
 

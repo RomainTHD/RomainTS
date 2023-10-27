@@ -13,7 +13,7 @@ export abstract class Type {
 
 	public abstract toString(): string;
 
-	public replaceGenerics(generics: { name: string; gType: Type }[]): Type {
+	public replaceGenerics(_generics: { name: string; gType: Type }[]): Type {
 		return this;
 	}
 }

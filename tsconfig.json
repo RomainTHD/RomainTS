@@ -5,5 +5,5 @@
 		"baseUrl": ".",
 		"esModuleInterop": true
 	},
-	"exclude": ["node_modules", ".build", "ts-testsuite"]
+	"exclude": ["node_modules", ".build", "ts-testsuite", "**/*.test.ts", "**/*.test.setup.ts"]
 }

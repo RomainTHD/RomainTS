@@ -1,6 +1,6 @@
 import type ts from "typescript";
-import { Env, TypeChecker } from "../..";
-import { AnyType, Property, Type } from "../../../types";
+import { type Env, TypeChecker } from "../..";
+import { AnyType, type Property, type Type } from "../../../types";
 import { assert } from "../../../utils";
 import { type ExpressionReturn } from "../shared/expression";
 

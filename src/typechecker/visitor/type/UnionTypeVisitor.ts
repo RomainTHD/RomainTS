@@ -1,7 +1,7 @@
 import type ts from "typescript";
 import { type TypeVisitor } from ".";
 import { TypeChecker } from "../..";
-import { Type, UnionType } from "../../../types";
+import { type Type, UnionType } from "../../../types";
 
 export const visit: TypeVisitor<ts.UnionTypeNode> = async (node, env) => {
 	const types: Type[] = [];

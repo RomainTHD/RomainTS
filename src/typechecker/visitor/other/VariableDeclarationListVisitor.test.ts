@@ -5,7 +5,7 @@ import { NumberType, StringType } from "../../../types";
 
 describe("VariableDeclarationListVisitor", () => {
 	it("should work for declaration list", async () => {
-		const content = `let x = 0, y = "s";`;
+		const content = "let x = 0, y = 's';";
 		const env = Env.create();
 		await TypeChecker.accept(AST.parse(content), env);
 		expect(env.lookup("x")?.vType).toEqual(NumberType.create());
