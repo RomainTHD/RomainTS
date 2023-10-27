@@ -81,7 +81,7 @@ async function visitUntypedFunction(
 		params.push({
 			name,
 			pType,
-			isGeneric: pType instanceof GenericType,
+			isGeneric: pType.isGeneric(),
 			isOptional,
 		});
 	}

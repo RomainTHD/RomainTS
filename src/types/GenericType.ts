@@ -35,6 +35,10 @@ export class GenericType extends Type {
 		return this;
 	}
 
+	public override isGeneric(): boolean {
+		return true;
+	}
+
 	public static create(label: string, aliasType?: Type): GenericType {
 		return new GenericType(label, aliasType ?? UnknownType.create());
 	}

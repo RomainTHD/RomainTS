@@ -74,6 +74,10 @@ export class UnionType extends Type {
 		return new UnionType(this.types.map((t) => t.replaceGenerics(generics))).simplify();
 	}
 
+	public override isGeneric(): boolean {
+		return this.types.some((t) => t.isGeneric());
+	}
+
 	public get size(): number {
 		return this.types.length;
 	}

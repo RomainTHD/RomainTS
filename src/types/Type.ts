@@ -16,4 +16,8 @@ export abstract class Type {
 	public replaceGenerics(_generics: { name: string; gType: Type }[]): Type {
 		return this;
 	}
+
+	public isGeneric(): boolean {
+		return false;
+	}
 }
