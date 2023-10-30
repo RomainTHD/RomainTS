@@ -1,17 +1,9 @@
 # RomainTS
 
-A (future) TypeScript compiler written in TypeScript. For now, it's just a
-typechecker though.
+A TypeScript typechecker, and maybe someday an interpreter or compiler as well.
 
-I'm too lazy to write my own lexer / parser, and it's not as fun, so I'm using
-the TypeScript one to generate the raw AST, but maybe at some point I'll work
-on it.
-
-### Usage
-
-```shell
-tsx ./src/main.ts -i <file.ts>
-```
+Writing my own lexer / parser isn't fun, so I'm using the TypeScript one to
+generate the raw AST, but maybe at some point I'll work on it.
 
 ### Project status
 
